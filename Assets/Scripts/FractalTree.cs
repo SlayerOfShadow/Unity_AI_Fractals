@@ -31,6 +31,20 @@ public class FractalTree : MonoBehaviour
         GameObject branch = Instantiate(prefab, position, Quaternion.identity, gameObject.transform);
         branch.transform.up = direction;
         branch.transform.localScale *= length;
+        for (int i = 0; i < branch.transform.childCount; i++)
+        {
+            // Get the child at index 'i'
+            Transform child = branch.transform.GetChild(i);
+
+            // Check if the child has a MeshFilter component
+            MeshFilter meshFilter = child.GetComponent<MeshFilter>();
+
+            // If a MeshFilter component is found, add it to the list
+            if (meshFilter != null)
+            {
+                meshFilters.Add(meshFilter);
+            }
+        }
         meshFilters.Add(branch.transform.GetChild(0).GetComponent<MeshFilter>());
         Destroy(branch);
 

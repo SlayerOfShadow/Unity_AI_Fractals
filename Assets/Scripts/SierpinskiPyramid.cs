@@ -63,8 +63,10 @@ public class SierpinskiPyramid : MonoBehaviour
             combine[i].mesh = meshFilters[i].mesh;
             combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
         }
-        Mesh temp = new Mesh();
-        temp.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        Mesh temp = new Mesh
+        {
+            indexFormat = UnityEngine.Rendering.IndexFormat.UInt32
+        };
         temp.CombineMeshes(combine);
         meshFilter.mesh = temp;
 

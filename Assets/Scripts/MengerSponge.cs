@@ -22,9 +22,9 @@ public class MengerSponge : MonoBehaviour
         CombineMesh();
     }
 
-    void GenerateMengerSponge(Vector3 position, float size, int iterations, int level = 0)
+    void GenerateMengerSponge(Vector3 position, float size, int iterations)
     {
-        if (level == iterations)
+        if (iterations == 0)
         {
             GameObject obj = Instantiate(prefab, position, Quaternion.identity, gameObject.transform);
             obj.transform.localScale = new Vector3(size, size, size);
@@ -46,7 +46,7 @@ public class MengerSponge : MonoBehaviour
                         && Mathf.Abs(xOffset) + Mathf.Abs(yOffset) + Mathf.Abs(zOffset) != 1)
                     {
                         Vector3 newPosition = position + new Vector3(xOffset * subSize, yOffset * subSize, zOffset * subSize) * offset;
-                        GenerateMengerSponge(newPosition, subSize, iterations, level + 1);
+                        GenerateMengerSponge(newPosition, subSize, iterations - 1);
                     }
                 }
             }
@@ -64,8 +64,10 @@ public class MengerSponge : MonoBehaviour
             combine[i].mesh = meshFilters[i].mesh;
             combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
         }
-        Mesh temp = new Mesh();
-        temp.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        Mesh temp = new Mesh
+        {
+            indexFormat = UnityEngine.Rendering.IndexFormat.UInt32
+        };
         temp.CombineMeshes(combine);
         meshFilter.mesh = temp;
 
