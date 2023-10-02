@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class FractalTree : MonoBehaviour
+public class LSystemTree : MonoBehaviour
 {
     [SerializeField] int iterations = 5; // Depth of the fractal tree.
     [SerializeField] float scale; // Scaling factor for branches.
