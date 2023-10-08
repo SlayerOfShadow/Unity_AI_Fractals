@@ -13,7 +13,7 @@ public class LSystemTree : MonoBehaviour
     Vector3 startPosition;
     Quaternion startRotation;
 
-    void Start()
+    void Awake()
     {
         meshFilter = GetComponent<MeshFilter>();
         startPosition = transform.position;
