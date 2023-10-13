@@ -135,6 +135,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Point Light
       objectReference: {fileID: 0}
+    - target: {fileID: 5208429343600433256, guid: 1e127523bdb70cc42a7953e615016475, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6388805049834489647, guid: 1e127523bdb70cc42a7953e615016475, type: 3}
       propertyPath: m_LocalPosition.x
       value: -58.22367
@@ -683,6 +687,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GridManager
       objectReference: {fileID: 0}
+    - target: {fileID: 3490666780000374036, guid: 9cb47d6f2ad60d546b2f2d89412d13bc, type: 3}
+      propertyPath: cellPrefab
+      value: 
+      objectReference: {fileID: 9191818967079684238, guid: d18c78883f444eb4281f684eda1fe5ad, type: 3}
     - target: {fileID: 5743236373714976689, guid: 9cb47d6f2ad60d546b2f2d89412d13bc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1334,6 +1342,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SphereGridManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8069589739164051728, guid: 095000063cc2ae94596855bff718f935, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1451,7 +1463,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1762641043
 Transform:
   m_ObjectHideFlags: 0
