@@ -158,26 +158,26 @@ public class DynamicModelGenerator : MonoBehaviour
         {
             if (number == 0)
             {
-                eye = Instantiate(eyePrefab, new Vector3(0f+(float)position* 3.5f, 0f, 0f), Quaternion.identity);
+                eye = Instantiate(eyePrefab, new Vector3(0f+(float)position* 3.5f, 0f, 1f), Quaternion.identity);
             }
             if (number == 1)
             {
-                eye = Instantiate(eyePrefab, new Vector3((i % 2) * (-0.6f) + ((i + 1) % 2) * 0.6f + (float)position * 3.5f, 0f, 0f), Quaternion.identity);
+                eye = Instantiate(eyePrefab, new Vector3((i % 2) * (-0.6f) + ((i + 1) % 2) * 0.6f + (float)position * 3.5f, 0f, 1f), Quaternion.identity);
             }
             if (number == 2)
             {
                 if (i < 2)
                 {
-                    eye = Instantiate(eyePrefab, new Vector3((i % 2) * (-0.6f) + ((i + 1) % 2) * 0.6f + (float)position * 3.5f, 0f, 0f), Quaternion.identity);
+                    eye = Instantiate(eyePrefab, new Vector3((i % 2) * (-0.6f) + ((i + 1) % 2) * 0.6f + (float)position * 3.5f, 0f, 1f), Quaternion.identity);
                 }
                 else
                 {
-                    eye = Instantiate(eyePrefab, new Vector3(0f + (float)position * 3.5f, 0.6f, 0f), Quaternion.identity);
+                    eye = Instantiate(eyePrefab, new Vector3(0f + (float)position * 3.5f, 0.6f,1f), Quaternion.identity);
                 }
             }
             if (number == 3)
             {
-                eye = Instantiate(eyePrefab, new Vector3((i * 0.6f - (i % 2) * 0.6f) - 0.6f + (float)position * 3.5f, (i % 2f) * 0.6f + 0f, 0f), Quaternion.identity);
+                eye = Instantiate(eyePrefab, new Vector3((i * 0.6f - (i % 2) * 0.6f) - 0.6f + (float)position * 3.5f, (i % 2f) * 0.6f + 0f, 1f), Quaternion.identity);
             }
             eye.transform.localScale = new Vector3(nSize, nSize, nSize);
         }
@@ -258,11 +258,11 @@ public class DynamicModelGenerator : MonoBehaviour
 
         for (int i = 0; i <= number; i++)
         {
-            leg = Instantiate(legPrefab, new Vector3(0.6f + (float)position * 3.5f, -3f - ((float)size * 0.5f) * 0.35f, 1.1f + (float)i * 0.5f), Quaternion.identity);
-            leg.transform.localScale = new Vector3(nSize, (float)size * 0.5f, nSize);
+            leg = Instantiate(legPrefab, new Vector3(0.6f + (float)position * 3.5f, -(float)size * 0.2f-2.5f, 1.1f + (float)i * 0.5f), Quaternion.identity);
+            leg.transform.localScale = new Vector3(nSize, (float)size*0.15f , nSize);
 
-            leg = Instantiate(legPrefab, new Vector3(-0.6f + (float)position * 3.5f, -3f - ((float)size *0.5f) * 0.35f, 1.1f + (float)i * 0.5f), Quaternion.identity);
-            leg.transform.localScale = new Vector3(nSize, (float)size *0.5f, nSize);
+            leg = Instantiate(legPrefab, new Vector3(-0.6f + (float)position * 3.5f, -(float)size * 0.2f - 2.5f, 1.1f + (float)i * 0.5f), Quaternion.identity);
+            leg.transform.localScale = new Vector3(nSize, (float)size * 0.15f, nSize);
         }
     }
     private void CreateArms(int size, int number, int position)
