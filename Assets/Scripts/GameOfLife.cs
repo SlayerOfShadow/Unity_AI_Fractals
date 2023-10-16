@@ -13,11 +13,12 @@ public class GameOfLife : MonoBehaviour
     int[,] cells2;
     float lastFrameTime = 0;
     int count = 0;
+    Vector3 startPosition;
 
     void Start()
     {
         lastFrameTime = Time.time;
-
+        startPosition = transform.position;
         CreateGrid();
         ResetSketch();
     }
@@ -111,7 +112,7 @@ public class GameOfLife : MonoBehaviour
                 {
                     if (cells2[i, j] == 1)
                     {
-                        GameObject obj = Instantiate(prefab, new Vector3(i * size, count * size, j * size), Quaternion.identity, gameObject.transform);
+                        GameObject obj = Instantiate(prefab, new Vector3(i * size + startPosition.x, count * size, j * size + startPosition.z), Quaternion.identity, gameObject.transform);
                         obj.transform.localScale = new Vector3(size, size, size);
                         cubes[i, j] = obj;
                     }

@@ -55,7 +55,7 @@ public class GeneticAlgorithm : MonoBehaviour
 
             if (allTreesBelowThreshold)
             {
-                Debug.Log("All trees are below y = 1. Stopping generation.");
+                Debug.Log("All trees are below y = " + maxTreeHeight + ". Stopping generation. Count = " + generation + ".");
                 break; // Stop the algorithm if all trees are below y = 1
             }
 

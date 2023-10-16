@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
-    public GameObject cellPrefab; // Référence au prefab du cube
+    public GameObject cellPrefab; // Rï¿½fï¿½rence au prefab du cube
 
 
     private GameObject[,,] gridObjects; // Tableau pour stocker les objets de la grille
@@ -16,7 +16,7 @@ public class GridManager : MonoBehaviour
         CreateGrid();
     }
 
-    public float updateInterval = .0001f; // Mettre à jour toutes les 0.0001 secondes
+    public float updateInterval = .0001f; // Mettre ï¿½ jour toutes les 0.0001 secondes
     private float timeSinceLastUpdate = 0.0f;
 
     void Update()
@@ -24,16 +24,16 @@ public class GridManager : MonoBehaviour
         // Accumuler le temps
         timeSinceLastUpdate += Time.deltaTime;
 
-        // Vérifier s'il est temps de mettre à jour la grille
+        // Vï¿½rifier s'il est temps de mettre ï¿½ jour la grille
         if (timeSinceLastUpdate >= updateInterval)
         {
-            // Mettre à jour la logique de la grille
+            // Mettre ï¿½ jour la logique de la grille
             cellularAutomaton.UpdateGrid();
 
-            // Mettre à jour les objets de la grille existants
+            // Mettre ï¿½ jour les objets de la grille existants
             UpdateGridVisuals();
 
-            // Réinitialiser le compteur de temps
+            // Rï¿½initialiser le compteur de temps
             timeSinceLastUpdate = 0.0f;
         }
     }
@@ -74,17 +74,17 @@ public class GridManager : MonoBehaviour
 
                     if (cellState == 1)
                     {
-                        // Activer le cube et ajuster sa position si nécessaire
+                        // Activer le cube et ajuster sa position si nï¿½cessaire
                         if (cell == null)
                         {
-                            cell = Instantiate(cellPrefab, new Vector3(x, y, z), Quaternion.identity);
+                            cell = Instantiate(cellPrefab, new Vector3(x, y, z), Quaternion.identity, transform);
                             gridObjects[x, y, z] = cell;
                         }
-                        // Vous pouvez également mettre à jour la couleur ici si nécessaire
+                        // Vous pouvez ï¿½galement mettre ï¿½ jour la couleur ici si nï¿½cessaire
                     }
                     else
                     {
-                        // Désactiver le cube s'il est actuellement activé
+                        // Dï¿½sactiver le cube s'il est actuellement activï¿½
                         if (cell != null)
                         {
                             Destroy(cell);
