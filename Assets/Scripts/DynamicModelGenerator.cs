@@ -77,16 +77,16 @@ public GameObject modelObject;
     {
         if (make_a_new_generation)
         {
-            GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+            // Obtenez une référence au GameObject parent (Model)
+            GameObject parentObject = GameObject.Find("Model");
 
-            // Parcourir tous les GameObjects
-            foreach (GameObject obj in allObjects)
+            // Vérifiez si le parentObject est trouvé
+            if (parentObject != null)
             {
-                // Vérifier si l'objet n'est pas la caméra et n'a pas d'autres tags/identifiants que vous voulez conserver
-                if (!obj.CompareTag("MainCamera") && !obj.CompareTag("Model"))
+                // Parcourez tous les enfants du parentObject et détruisez-les
+                foreach (Transform child in parentObject.transform)
                 {
-                    // Détruire l'objet
-                    UnityEngine.Object.Destroy(obj);
+                    GameObject.Destroy(child.gameObject);
                 }
             }
             Properties wanted_properties = new Properties(strength,speed,health,vision,smart,resistance);
