@@ -54,6 +54,7 @@ public class GridManager : MonoBehaviour
                     if (cellState == 1)
                     {
                         GameObject cell = Instantiate(cellPrefab, cellPosition, Quaternion.identity);
+                        cell.transform.SetParent(gameObject.transform);
                         gridObjects[x, y, z] = cell;
                     }
                 }
@@ -74,17 +75,15 @@ public class GridManager : MonoBehaviour
 
                     if (cellState == 1)
                     {
-                        // Activer le cube et ajuster sa position si n�cessaire
                         if (cell == null)
                         {
                             cell = Instantiate(cellPrefab, new Vector3(x, y, z), Quaternion.identity, transform);
+                            cell.transform.SetParent(gameObject.transform);
                             gridObjects[x, y, z] = cell;
                         }
-                        // Vous pouvez �galement mettre � jour la couleur ici si n�cessaire
                     }
                     else
                     {
-                        // D�sactiver le cube s'il est actuellement activ�
                         if (cell != null)
                         {
                             Destroy(cell);
