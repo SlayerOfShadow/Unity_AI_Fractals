@@ -42,10 +42,10 @@ public GameObject modelObject;
     {
         for (int j = 0; j < population_size; j++)
         {
-        int[] genome = new int[26]; // Déclarez et initialisez le tableau genome
+            Genome genome = new Genome(genome_size);
             for (int i = 0; i < genome_size; i++)
             {
-                genome[i] = UnityEngine.Random.Range(0, 2); // Remplissez le tableau genome avec des 0 ou des 1
+                genome.SetByIndex(i,UnityEngine.Random.Range(0, 2)); // Remplir le tableau genome avec des 0 ou des 1
             }
 
             // Maintenant que le génome est généré, vous pouvez créer une instance de la classe Individual
@@ -55,11 +55,11 @@ public GameObject modelObject;
             population.add_individual(individual);
 
             // Utilisez cet individu comme vous le souhaitez
-            string adn_eye = string.Join("", individual.genome.Take(4).Select(bit => bit.ToString()));
-            string adn_head = string.Join("", individual.genome.Skip(4).Take(5).Select(bit => bit.ToString()));
-            string adn_chest = string.Join("", individual.genome.Skip(8).Take(5).Select(bit => bit.ToString()));
-            string adn_legs = string.Join("", individual.genome.Skip(12).Take(7).Select(bit => bit.ToString()));
-            string adn_arms = string.Join("", individual.genome.Skip(18).Take(5).Select(bit => bit.ToString()));
+            string adn_eye = string.Join("", individual.genome.Get().Take(4).Select(bit => bit.ToString()));
+            string adn_head = string.Join("", individual.genome.Get().Skip(4).Take(5).Select(bit => bit.ToString()));
+            string adn_chest = string.Join("", individual.genome.Get().Skip(8).Take(5).Select(bit => bit.ToString()));
+            string adn_legs = string.Join("", individual.genome.Get().Skip(12).Take(7).Select(bit => bit.ToString()));
+            string adn_arms = string.Join("", individual.genome.Get().Skip(18).Take(5).Select(bit => bit.ToString()));
             // population.create_population(population_size, genome_size);
             // DynamicModelGenerator generator = new DynamicModelGenerator();
             // population.visualize();
@@ -98,11 +98,11 @@ public GameObject modelObject;
             int i = 0;
             foreach (Individual individual in population.individuals)
             {
-                string adn_eye = string.Join("", individual.genome.Take(4).Select(bit => bit.ToString()));
-                string adn_head = string.Join("", individual.genome.Skip(4).Take(5).Select(bit => bit.ToString()));
-                string adn_chest = string.Join("", individual.genome.Skip(8).Take(5).Select(bit => bit.ToString()));
-                string adn_legs = string.Join("", individual.genome.Skip(12).Take(7).Select(bit => bit.ToString()));
-                string adn_arms = string.Join("", individual.genome.Skip(18).Take(5).Select(bit => bit.ToString()));
+                string adn_eye = string.Join("", individual.genome.Get().Take(4).Select(bit => bit.ToString()));
+                string adn_head = string.Join("", individual.genome.Get().Skip(4).Take(5).Select(bit => bit.ToString()));
+                string adn_chest = string.Join("", individual.genome.Get().Skip(8).Take(5).Select(bit => bit.ToString()));
+                string adn_legs = string.Join("", individual.genome.Get().Skip(12).Take(7).Select(bit => bit.ToString()));
+                string adn_arms = string.Join("", individual.genome.Get().Skip(18).Take(5).Select(bit => bit.ToString()));
                 visualize_individual(adn_eye, adn_head, adn_chest, adn_legs, adn_arms, population_size - i);
                 i++;
 
@@ -325,6 +325,36 @@ public GameObject modelObject;
     //     resistance = 10
     // }
 
+    public class Genome{
+        private int[] _value;
+        public Genome(int[] value){
+            _value = value;
+        }
+        public Genome(int size){
+            _value = new int[size];
+        }
+        public Genome(Genome g){
+            _value = g.Get();
+        }
+        public int[] Get(){
+            return _value;
+        }
+        public int GetIndex(int i){
+            return _value[i];
+        }
+        public void SetByIndex(int i, int value){
+            _value[i] = value;
+        }
+    }
+
+    // class Capacity{
+    //     public int value;
+    //     public Capacity(v){
+    //         value = value;
+    //     }
+    //     void update()
+    // }
+
 
     public enum FitnessAlgorithm
     {
@@ -334,14 +364,15 @@ public GameObject modelObject;
 
     public class Individual
     {
-        public int[] genome;
+        public Genome genome;
         public int fitness_score;
+        // Capacity speed;
         // public Dictionary<Caracteristic, int> caracteristics;
-        private DynamicModelGenerator dynamicModelGenerator;
+        // private DynamicModelGenerator dynamicModelGenerator;
 
-        public Individual(int[] initial_genome)
+        public Individual(Genome initial_genome)
         {
-            genome = initial_genome;
+            genome = new Genome(initial_genome);
 
             // Initialiser les caractéristiques à partir du génome
             // caracteristics = new Dictionary<Caracteristic, int>
@@ -356,7 +387,7 @@ public GameObject modelObject;
 
             // evaluate_fitness_score(properties);
 
-            dynamicModelGenerator = new DynamicModelGenerator();
+            // dynamicModelGenerator = new DynamicModelGenerator();
         }
 
         // void evaluate_caracteristics()
@@ -394,27 +425,27 @@ public GameObject modelObject;
         public void evaluate_fitness_score(Properties properties){
             fitness_score=0;
             if(properties.speed){
-                fitness_score+=genome[13]+genome[12];
-                fitness_score+=(genome[14]+genome[15]+genome[16]+genome[17])*2;
+                fitness_score+=genome.GetIndex(13)+genome.GetIndex(12);
+                fitness_score+=(genome.GetIndex(14)+genome.GetIndex(15)+genome.GetIndex(16)+genome.GetIndex(17))*2;
             }
             if(properties.strength){
-                fitness_score+=genome[18]+genome[19];
-                fitness_score+=(genome[20]+genome[21])*2;
+                fitness_score+=genome.GetIndex(18)+genome.GetIndex(19);
+                fitness_score+=(genome.GetIndex(20)+genome.GetIndex(21))*2;
             }
             if(properties.health){
-                fitness_score+=genome[22]+genome[23]+genome[24]+genome[25];
+                fitness_score+=genome.GetIndex(22)+genome.GetIndex(23)+genome.GetIndex(24)+genome.GetIndex(25);
             }
             if(properties.resistance){
-                fitness_score+=genome[9]+genome[8];
-                fitness_score+=(genome[11]+genome[10])*2;
+                fitness_score+=genome.GetIndex(9)+genome.GetIndex(8);
+                fitness_score+=(genome.GetIndex(11)+genome.GetIndex(10))*2;
             }    
             if(properties.smart){
-                fitness_score+=genome[4]+genome[5];
-                fitness_score+=(genome[7]+genome[6])*2;
+                fitness_score+=genome.GetIndex(4)+genome.GetIndex(5);
+                fitness_score+=(genome.GetIndex(7)+genome.GetIndex(6))*2;
             }   
             if(properties.vision){
-                fitness_score+=genome[0]+genome[1];
-                fitness_score+=(genome[2]+genome[3])*2;
+                fitness_score+=genome.GetIndex(0)+genome.GetIndex(1);
+                fitness_score+=(genome.GetIndex(2)+genome.GetIndex(3))*2;
             }     
         }
 
@@ -439,9 +470,9 @@ public GameObject modelObject;
                     int index2 = UnityEngine.Random.Range(0, genome_length);
 
                     // Échanger les valeurs des bits à index1 et index2
-                    int temp = genome[index1];
-                    genome[index1] = genome[index2];
-                    genome[index2] = temp;
+                    int temp = genome.GetIndex(index1);
+                    genome.SetByIndex(index1,genome.GetIndex(index2));
+                    genome.SetByIndex(index2,temp);
                 }
             }
         }
@@ -460,9 +491,9 @@ public GameObject modelObject;
                     // Inverse l'ordre des bits entre start et end inclus
                     while (start < end)
                     {
-                        int temp = genome[start];
-                        genome[start] = genome[end];
-                        genome[end] = temp;
+                        int temp = genome.GetIndex(start);
+                        genome.SetByIndex(start, genome.GetIndex(end));
+                        genome.SetByIndex(end, temp);
                         start++;
                         end--;
                     }
@@ -478,7 +509,7 @@ public GameObject modelObject;
                 if (UnityEngine.Random.Range(0f, 1f) < mutation_rate)
                 {
                     // Inverser le bit (0 devient 1, 1 devient 0)
-                    genome[i] = 1 - genome[i];
+                    genome.SetByIndex(i, 1 - genome.GetIndex(i));
                 }
             }
         }
@@ -527,7 +558,7 @@ public GameObject modelObject;
             individuals.Remove(individuals.Last());
         }
 
-        public void create_population(int population_length, int[] genome)
+        public void create_population(int population_length, Genome genome)
         {
             for (int i = 0; i < population_length; i++)
             {
@@ -542,27 +573,27 @@ public GameObject modelObject;
             int crossover = UnityEngine.Random.Range(0, genome_length); // Point de croisement al atoire
             
             // Cr ez deux enfants en copiant les g nes des parents
-            int[] genome1 = new int[26];
-            int[] genome2 = new int[26];
+            Genome genome1 = new Genome(genome_length);
+            Genome genome2 = new Genome(genome_length);
 
             for (int i = 0; i < genome_length; i++)
             {
-                genome1[i] = UnityEngine.Random.Range(0, 2); // Remplissez le tableau genome avec des 0 ou des 1
-                genome2[i] = UnityEngine.Random.Range(0, 2); // Remplissez le tableau genome avec des 0 ou des 1
+                genome1.SetByIndex(i,UnityEngine.Random.Range(0, 2)); // Remplissez le tableau genome avec des 0 ou des 1
+                genome2.SetByIndex(i,UnityEngine.Random.Range(0, 2)); // Remplissez le tableau genome avec des 0 ou des 1
             }
             Individual child1 = new Individual(genome1);
             Individual child2 = new Individual(genome2);
 
             for (int i = 0; i < crossover; i++)
             {
-                child1.genome[i] = parent1.genome[i];
-                child2.genome[i] = parent2.genome[i];
+                child1.genome.SetByIndex(i, parent1.genome.GetIndex(i));
+                child2.genome.SetByIndex(i, parent2.genome.GetIndex(i));
             }
 
-            for (int i = crossover; i < parent1.genome.Length; i++)
+            for (int i = crossover; i < parent1.genome.Get().Length; i++)
             {
-                child1.genome[i] = parent2.genome[i];
-                child2.genome[i] = parent1.genome[i];
+                child1.genome.SetByIndex(i, parent2.genome.GetIndex(i));
+                child2.genome.SetByIndex(i, parent1.genome.GetIndex(i));
             }
 
             // mutation
