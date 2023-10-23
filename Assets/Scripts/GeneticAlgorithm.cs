@@ -12,6 +12,7 @@ public class GeneticAlgorithm : MonoBehaviour
     [SerializeField] float maxTreeHeight = 5;
     [SerializeField] bool tournament = true;
     [SerializeField] int tournamentSize = 5;
+    [SerializeField] float waterHeight = 10;
     List<Tree> population = new List<Tree>();
     GameObject[] treeObjects;
     Terrain terrain;
@@ -46,7 +47,7 @@ public class GeneticAlgorithm : MonoBehaviour
             bool allTreesBelowThreshold = true;
             foreach (Tree tree in population)
             {
-                if (tree.Position.y > maxTreeHeight)
+                if (tree.Position.y > maxTreeHeight || tree.Position.y < waterHeight)
                 {
                     allTreesBelowThreshold = false;
                     break; // Exit the loop if any tree is not below y = 1
@@ -61,23 +62,27 @@ public class GeneticAlgorithm : MonoBehaviour
 
             // Selection, Crossover, and Mutation
             List<Tree> newPopulation = new List<Tree>();
-            Tree parent1;
-            Tree parent2;
+            
             for (int i = 0; i < populationSize; i++)
             {
-                if (tournament)
+                if (treeObjects[i].transform.position.y > maxTreeHeight || treeObjects[i].transform.position.y < waterHeight)
                 {
-                    parent1 = SelectParentTournament();
-                    parent2 = SelectParentTournament();
-                } else
-                {
-                    parent1 = SelectParentRoulette();
-                    parent2 = SelectParentRoulette();
+                    Tree parent1;
+                    Tree parent2;
+                    if (tournament)
+                    {
+                        parent1 = SelectParentTournament();
+                        parent2 = SelectParentTournament();
+                    } else
+                    {
+                        parent1 = SelectParentRoulette();
+                        parent2 = SelectParentRoulette();
+                    }
+                    
+                    Tree child = Crossover(parent1, parent2);
+                    Mutate(child);
+                    newPopulation.Add(child);
                 }
-                
-                Tree child = Crossover(parent1, parent2);
-                Mutate(child);
-                newPopulation.Add(child);
             }
 
             // Replace the old population
@@ -120,9 +125,11 @@ public class GeneticAlgorithm : MonoBehaviour
 
     void EvaluateFitness()
     {
+        float bestFitness = (maxTreeHeight + waterHeight) * 0.5f;
         foreach (Tree tree in population)
         {
-            tree.Fitness = -tree.Position.y;
+            float distanceToBestFitness = Mathf.Abs(tree.Position.y - bestFitness);
+            tree.Fitness = 1.0f / (distanceToBestFitness + 1.0f);
         }
     }
 
