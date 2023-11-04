@@ -53,6 +53,7 @@ public class DynamicModelGenerator : MonoBehaviour
             individual.evaluate_fitness_score(wanted_properties);
 
             population.add_individual(individual);
+            // ArraySegment<int> adn_eye = new ArraySegment<int>(individual.genome.Get(), 0, 4);
 
             string adn_eye = string.Join("", individual.genome.Get().Take(4).Select(bit => bit.ToString()));
             string adn_head = string.Join("", individual.genome.Get().Skip(4).Take(5).Select(bit => bit.ToString()));
