@@ -26,13 +26,12 @@ public class GeneticAlgorithm : MonoBehaviour
         treeObjects = new GameObject[populationSize];
         for (int i = 0; i < populationSize; i++)
         {
-            treeObjects[i] = Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
+            treeObjects[i] = Instantiate(prefab, transform.position, Quaternion.identity, transform);
         }
 
         InitializePopulation();
 
         StartCoroutine(RunGeneticAlgorithm());
-        GeneratePopulation();
     }
 
     IEnumerator RunGeneticAlgorithm()
@@ -43,29 +42,11 @@ public class GeneticAlgorithm : MonoBehaviour
             // Evaluate fitness
             EvaluateFitness();
 
-            // Check if all trees are below y = 1
+            // Check if all trees have good position
             bool allTreesBelowThreshold = true;
             foreach (Tree tree in population)
             {
                 if (tree.Position.y > maxTreeHeight || tree.Position.y < waterHeight)
-                {
-                    allTreesBelowThreshold = false;
-                    break; // Exit the loop if any tree is not below y = 1
-                }
-            }
-
-            if (allTreesBelowThreshold)
-            {
-                Debug.Log("All trees are below y = " + maxTreeHeight + ". Stopping generation. Count = " + generation + ".");
-                break; // Stop the algorithm if all trees are below y = 1
-            }
-
-            // Selection, Crossover, and Mutation
-            List<Tree> newPopulation = new List<Tree>();
-            
-            for (int i = 0; i < populationSize; i++)
-            {
-                if (treeObjects[i].transform.position.y > maxTreeHeight || treeObjects[i].transform.position.y < waterHeight)
                 {
                     Tree parent1;
                     Tree parent2;
@@ -81,12 +62,17 @@ public class GeneticAlgorithm : MonoBehaviour
                     
                     Tree child = Crossover(parent1, parent2);
                     Mutate(child);
-                    newPopulation.Add(child);
+                    tree.Position = child.Position;
+                    tree.Fitness = child.Fitness;
+                    allTreesBelowThreshold = false;
                 }
             }
 
-            // Replace the old population
-            population = newPopulation;
+            if (allTreesBelowThreshold)
+            {
+                Debug.Log("All trees are below y = " + maxTreeHeight + " and above y = " + waterHeight + ". Stopping generation. Count = " + generation + ".");
+                break; 
+            }
 
             // Generate trees
             GeneratePopulation();
@@ -102,9 +88,9 @@ public class GeneticAlgorithm : MonoBehaviour
         {
             // Generate random position within the terrain bounds
             Vector3 randomPosition = new Vector3(
-                Random.Range(0, terrainSize.x),
+                Random.Range(transform.position.x, transform.position.x + terrainSize.x),
                 0,
-                Random.Range(0, terrainSize.z)
+                Random.Range(transform.position.z, transform.position.z + terrainSize.z)
             );
 
             // Adjust the Y position based on terrain height
@@ -129,7 +115,7 @@ public class GeneticAlgorithm : MonoBehaviour
         foreach (Tree tree in population)
         {
             float distanceToBestFitness = Mathf.Abs(tree.Position.y - bestFitness);
-            tree.Fitness = 1.0f / (distanceToBestFitness + 1.0f);
+            tree.Fitness = -distanceToBestFitness;
         }
     }
 
@@ -218,9 +204,9 @@ public class GeneticAlgorithm : MonoBehaviour
         if (Random.Range(0f, 1f) < mutationRate)
         {
             Vector3 randomPosition = new Vector3(
-                Random.Range(0, terrainSize.x),
+                Random.Range(transform.position.x, transform.position.x + terrainSize.x),
                 0,
-                Random.Range(0, terrainSize.z)
+                Random.Range(transform.position.z, transform.position.z + terrainSize.z)
             );
 
             // Adjust the Y position based on terrain height
