@@ -28,7 +28,7 @@ public class CharacterGenerator : MonoBehaviour
     public Individual individual;
 
     // Start is called before the first frame update
-    void Start()
+    public void GenerateCharacter(int i)
     {
 
         int[] adn_eye =  individual.genome.PartialGenome(0, 4);
@@ -43,8 +43,13 @@ public class CharacterGenerator : MonoBehaviour
         Debug.Log("Génome des jambes : " + string.Join(", ", adn_legs));
         Debug.Log("Génome des bras : " + string.Join(", ", adn_arms));
 
-        visualize_individual(adn_eye, adn_head, adn_chest, adn_legs, adn_arms);
+        GameObject individualObject = new GameObject("Individual" + i);
+        individualObject.transform.parent = transform;
+
+        visualize_individual(adn_eye, adn_head, adn_chest, adn_legs, adn_arms, individualObject.transform);
     }
+
+    void Start(){}
 
     // Update is called once per frame
     void Update()
@@ -52,44 +57,44 @@ public class CharacterGenerator : MonoBehaviour
     }
 
 
-    private void GenerateEyes(int[] adnEye)
+    private void GenerateEyes(int[] adnEye, Transform parent)
     {
         int bitSize = adnEye[0] + adnEye[1];
         int bitNumber = adnEye[2] + adnEye[3];
-        CreateEyes(bitSize, bitNumber);
+        CreateEyes(bitSize, bitNumber, parent);
     }
 
-    private void GenerateHead(int[] adnHead)
+    private void GenerateHead(int[] adnHead, Transform parent)
     {
         int bitShape = adnHead[0] + adnHead[1];
         int bitDeformY = adnHead[2];
         int bitDeformZ = adnHead[3];
-        CreateHead(bitShape, bitDeformY, bitDeformZ);
+        CreateHead(bitShape, bitDeformY, bitDeformZ, parent);
     }
 
-    private void GenerateChest(int[] adnChest)
+    private void GenerateChest(int[] adnChest, Transform parent)
     {
         int bitForm = adnChest[0] + adnChest[1];
         int bitSizeY = adnChest[2];
         int bitSizeZ = adnChest[3];
-        CreateChest(bitForm, bitSizeY, bitSizeZ);
+        CreateChest(bitForm, bitSizeY, bitSizeZ, parent);
     }
 
-    private void GenerateLegs(int[] adnLegs)
+    private void GenerateLegs(int[] adnLegs, Transform parent)
     {
         int bitNumber = adnLegs[0] + adnLegs[1];
         int bitSize = adnLegs[2] + adnLegs[3] + adnLegs[4] + adnLegs[5];
-        CreateLegs(bitSize, bitNumber);
+        CreateLegs(bitSize, bitNumber, parent);
     }
 
-    private void GenerateArms(int[] adnArms)
+    private void GenerateArms(int[] adnArms, Transform parent)
     {
         int bitNumber = adnArms[0] + adnArms[1];
         int bitSize = adnArms[2] + adnArms[3];
-        CreateArms(bitSize, bitNumber);
+        CreateArms(bitSize, bitNumber, parent);
     }
 
-    private void CreateEyes(int size, int number)
+    private void CreateEyes(int size, int number, Transform parent)
     {
         float nSize = (size + 1) * 0.1f * scale;
         GameObject eye = null;
@@ -119,11 +124,11 @@ public class CharacterGenerator : MonoBehaviour
                 eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3((i * width - (i % 2) * width) - width, (i % 2f) * width + characterSize - 0.3f, -.4f), Quaternion.identity);
             }
             eye.transform.localScale = new Vector3(nSize, nSize, nSize);
-            eye.transform.SetParent(modelObject.transform);
+            eye.transform.SetParent(parent);
         }
     }
 
-    private void CreateHead(int Shape, int DeformY, int DeformZ)
+    private void CreateHead(int Shape, int DeformY, int DeformZ, Transform parent)
     {
         GameObject head;
         Vector3 relativePosition = new Vector3(0f, characterSize - 0.3f, 0f);
@@ -149,10 +154,10 @@ public class CharacterGenerator : MonoBehaviour
                 break;
         }
         head.transform.localScale = new Vector3(scale + (float)DeformY, scale + (float)DeformZ, scale);
-        head.transform.SetParent(modelObject.transform);
+        head.transform.SetParent(parent);
     }
 
-    private void CreateChest(int bitForm, int bitSizeY, int bitSizeZ)
+    private void CreateChest(int bitForm, int bitSizeY, int bitSizeZ, Transform parent)
     {
         GameObject chest;
         Vector3 relativePosition = new Vector3(0f, characterSize - 0.9f, 0f);
@@ -178,10 +183,10 @@ public class CharacterGenerator : MonoBehaviour
                 break;
         }
         chest.transform.localScale = new Vector3(scale + bitSizeY, scale + bitSizeZ * 0.3f, scale);
-        chest.transform.SetParent(modelObject.transform);
+        chest.transform.SetParent(parent);
     }
 
-    private void CreateArms(int size, int number)
+    private void CreateArms(int size, int number, Transform parent)
     {
         float nSize = 0.2f * scale;
         GameObject arm; 
@@ -190,16 +195,16 @@ public class CharacterGenerator : MonoBehaviour
             arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(width, characterSize - .6f - ((float)size + 1f) * 0.7f, -.1f + (float)i * 0.2f), Quaternion.identity);
             arm.transform.localScale = new Vector3(nSize, (float)size * 0.2f, nSize);
             arm.transform.localRotation = Quaternion.Euler(new Vector3(0f, 15f, 5f));
-            arm.transform.SetParent(modelObject.transform);
+            arm.transform.SetParent(parent);
 
             arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(-width, characterSize - .6f - ((float)size + 1f) * 0.7f, -.1f + (float)i * 0.2f), Quaternion.identity);
             arm.transform.localScale = new Vector3(nSize, (float)size * 0.2f, nSize);
             arm.transform.localRotation = Quaternion.Euler(new Vector3(0f, -15f, -5f));
-            arm.transform.SetParent(modelObject.transform);
+            arm.transform.SetParent(parent);
         }
     }
 
-    private void CreateLegs(int size, int number)
+    private void CreateLegs(int size, int number, Transform parent)
     {
         float nSize = 0.2f * scale;
         GameObject leg;
@@ -207,21 +212,21 @@ public class CharacterGenerator : MonoBehaviour
         {
             leg = Instantiate(legPrefab, modelObject.transform.position + new Vector3(width, characterSize -1.2f-(float)size * 0.2f - .5f, -.1f + (float)i * 0.2f), Quaternion.identity);
             leg.transform.localScale = new Vector3(nSize, (float)size * 0.15f + 1f, nSize);
-            leg.transform.SetParent(modelObject.transform);
+            leg.transform.SetParent(parent);
 
             leg = Instantiate(legPrefab, modelObject.transform.position + new Vector3(-width, characterSize -1.2f -(float)size * 0.2f - .5f, -.1f + (float)i * 0.2f), Quaternion.identity);
             leg.transform.localScale = new Vector3(nSize, (float)size * 0.15f + 1f, nSize);
-            leg.transform.SetParent(modelObject.transform);
+            leg.transform.SetParent(parent);
         }
     }
 
-    public void visualize_individual(int[] adnEye, int[] adnHead, int[] adnChest, int[] adnLegs, int[] adnArms)
+    public void visualize_individual(int[] adnEye, int[] adnHead, int[] adnChest, int[] adnLegs, int[] adnArms, Transform parent)
     {
-        GenerateEyes(adnEye);
-        GenerateHead(adnHead);
-        GenerateChest(adnChest);
-        GenerateArms(adnArms);
-        GenerateLegs(adnLegs);
+        GenerateEyes(adnEye, parent);
+        GenerateHead(adnHead, parent);
+        GenerateChest(adnChest, parent);
+        GenerateArms(adnArms, parent);
+        GenerateLegs(adnLegs, parent);
     }
 
 }
