@@ -94,26 +94,26 @@ public class CharacterGenerator : MonoBehaviour
         {
             if (number == 0)
             {
-                eye = Instantiate(eyePrefab, new Vector3(0f, 0f, 1f), Quaternion.identity);
+                eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3(0f, 0f, 1f), Quaternion.identity);
             }
             if (number == 1)
             {
-                eye = Instantiate(eyePrefab, new Vector3((i % 2) * (-0.6f) + ((i + 1) % 2) * 0.6f, 0f, 1f), Quaternion.identity);
+                eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3((i % 2) * (-0.6f) + ((i + 1) % 2) * 0.6f, 0f, 1f), Quaternion.identity);
             }
             if (number == 2)
             {
                 if (i < 2)
                 {
-                    eye = Instantiate(eyePrefab, new Vector3((i % 2) * (-0.6f) + ((i + 1) % 2) * 0.6f, 0f, 1f), Quaternion.identity);
+                    eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3((i % 2) * (-0.6f) + ((i + 1) % 2) * 0.6f, 0f, 1f), Quaternion.identity);
                 }
                 else
                 {
-                    eye = Instantiate(eyePrefab, new Vector3(0f, 0.6f,1f), Quaternion.identity);
+                    eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3(0f, 0.6f,1f), Quaternion.identity);
                 }
             }
             if (number == 3)
             {
-                eye = Instantiate(eyePrefab, new Vector3((i * 0.6f - (i % 2) * 0.6f) - 0.6f, (i % 2f) * 0.6f + 0f, 1f), Quaternion.identity);
+                eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3((i * 0.6f - (i % 2) * 0.6f) - 0.6f, (i % 2f) * 0.6f + 0f, 1f), Quaternion.identity);
             }
             eye.transform.localScale = new Vector3(nSize, nSize, nSize);
             eye.transform.SetParent(modelObject.transform);
@@ -126,21 +126,21 @@ public class CharacterGenerator : MonoBehaviour
         switch (Shape)
         {
             case 0:
-                head = Instantiate(headPrefab1, new Vector3(0f, 0f, 2f), Quaternion.identity);
+                head = Instantiate(headPrefab1, modelObject.transform.position + new Vector3(0f, 0f, 2f), Quaternion.identity);
                 break;
             case 1:
-                head = Instantiate(headPrefab2, new Vector3(0f, 0f, 2f), Quaternion.identity);
+                head = Instantiate(headPrefab2, modelObject.transform.position + new Vector3(0f, 0f, 2f), Quaternion.identity);
                 break;
             case 2:
-                head = Instantiate(headPrefab3, new Vector3(0f, 0f, 2f), Quaternion.identity);
+                head = Instantiate(headPrefab3, modelObject.transform.position + new Vector3(0f, 0f, 2f), Quaternion.identity);
                 break;
             case 3:
-                head = Instantiate(headPrefab4, new Vector3(0f, 0f, 2f), Quaternion.identity);
+                head = Instantiate(headPrefab4, modelObject.transform.position + new Vector3(0f, 0f, 2f), Quaternion.identity);
                 break;
             default:
                 // Handle invalid Shape values or provide a default behavior
                 Debug.LogWarning("Invalid Shape value. Using default headPrefab1.");
-                head = Instantiate(headPrefab1, new Vector3(0f, 0f, 1f), Quaternion.identity);
+                head = Instantiate(headPrefab1, modelObject.transform.position + new Vector3(0f, 0f, 1f), Quaternion.identity);
                 break;
         }
         head.transform.localScale = new Vector3(2f + (float)DeformY, 2f + (float)DeformZ, 2f);
@@ -153,21 +153,21 @@ public class CharacterGenerator : MonoBehaviour
         switch (bitForm)
         {
             case 0:
-                chest = Instantiate(chestPrefab1, new Vector3(0f, -2f, 2f), Quaternion.identity);
+                chest = Instantiate(chestPrefab1, modelObject.transform.position + new Vector3(0f, -2f, 2f), Quaternion.identity);
                 break;
             case 1:
-                chest = Instantiate(chestPrefab2, new Vector3(0f, -2f, 2f), Quaternion.identity);
+                chest = Instantiate(chestPrefab2, modelObject.transform.position + new Vector3(0f, -2f, 2f), Quaternion.identity);
                 break;
             case 2:
-                chest = Instantiate(chestPrefab3, new Vector3(0f, -2f, 2f), Quaternion.identity);
+                chest = Instantiate(chestPrefab3, modelObject.transform.position + new Vector3(0f, -2f, 2f), Quaternion.identity);
                 break;
             case 3:
-                chest = Instantiate(chestPrefab4, new Vector3(0f, -2f, 2f), Quaternion.identity);
+                chest = Instantiate(chestPrefab4, modelObject.transform.position + new Vector3(0f, -2f, 2f), Quaternion.identity);
                 break;
             default:
                 // Handle invalid Shape values or provide a default behavior
                 Debug.LogWarning("Invalid Shape value. Using default headPrefab1.");
-                chest = Instantiate(headPrefab1, new Vector3(0f, 0f, 1f), Quaternion.identity);
+                chest = Instantiate(headPrefab1, modelObject.transform.position + new Vector3(0f, 0f, 1f), Quaternion.identity);
                 break;
         }
         chest.transform.localScale = new Vector3(2 + bitSizeY, 2 + bitSizeZ * 0.3f, 2);
@@ -180,11 +180,11 @@ public class CharacterGenerator : MonoBehaviour
         GameObject leg;
         for (int i = 0; i <= number; i++)
         {
-            leg = Instantiate(legPrefab, new Vector3(0.6f, -(float)size * 0.2f-2.5f, 1.1f + (float)i * 0.5f), Quaternion.identity);
+            leg = Instantiate(legPrefab, modelObject.transform.position + new Vector3(0.6f, -(float)size * 0.2f-2.5f, 1.1f + (float)i * 0.5f), Quaternion.identity);
             leg.transform.localScale = new Vector3(nSize, (float)size * 0.15f, nSize);
             leg.transform.SetParent(modelObject.transform);
 
-            leg = Instantiate(legPrefab, new Vector3(-0.6f, -(float)size * 0.2f - 2.5f, 1.1f + (float)i * 0.5f), Quaternion.identity);
+            leg = Instantiate(legPrefab, modelObject.transform.position + new Vector3(-0.6f, -(float)size * 0.2f - 2.5f, 1.1f + (float)i * 0.5f), Quaternion.identity);
             leg.transform.localScale = new Vector3(nSize, (float)size * 0.15f, nSize);
             leg.transform.SetParent(modelObject.transform);
         }
@@ -196,12 +196,12 @@ public class CharacterGenerator : MonoBehaviour
         GameObject arm;
         for (int i = 0; i <= number; i++)
         {
-            arm = Instantiate(armPrefab, new Vector3(1.2f, -1f - ((float)size + 1f) * 0.7f, 1.1f + (float)i * 0.5f), Quaternion.identity);
+            arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(1.2f, -1f - ((float)size + 1f) * 0.7f, 1.1f + (float)i * 0.5f), Quaternion.identity);
             arm.transform.localScale = new Vector3(nSize, (float)size * 0.2f + 1f, nSize);
             arm.transform.localRotation = Quaternion.Euler(new Vector3(0f, 15f, 5f));
             arm.transform.SetParent(modelObject.transform);
 
-            arm = Instantiate(armPrefab, new Vector3(-1.2f, -1f - ((float)size + 1f) * 0.7f, 1.1f + (float)i * 0.5f), Quaternion.identity);
+            arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(-1.2f, -1f - ((float)size + 1f) * 0.7f, 1.1f + (float)i * 0.5f), Quaternion.identity);
             arm.transform.localScale = new Vector3(nSize, (float)size * 0.2f + 1f, nSize);
             arm.transform.localRotation = Quaternion.Euler(new Vector3(0f, -15f, -5f));
             arm.transform.SetParent(modelObject.transform);
