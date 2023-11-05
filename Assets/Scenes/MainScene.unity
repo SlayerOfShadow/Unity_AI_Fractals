@@ -831,6 +831,9 @@ MonoBehaviour:
   legPrefab: {fileID: 7370123494247621927, guid: 35c28608ec2868b4fb700f0306db72a0, type: 3}
   armPrefab: {fileID: 7370123494247621927, guid: 35c28608ec2868b4fb700f0306db72a0, type: 3}
   modelObject: {fileID: 761815402}
+  characterSize: 1.8
+  scale: 0.5
+  width: 0.2
   individual: {fileID: 761815405}
 --- !u!114 &761815405
 MonoBehaviour:

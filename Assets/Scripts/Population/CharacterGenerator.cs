@@ -20,6 +20,10 @@ public class CharacterGenerator : MonoBehaviour
 
     public GameObject modelObject;
 
+    public float characterSize = 1.8f;
+    public float scale = .5f;
+    public float width = 0.2f;
+
 
     public Individual individual;
 
@@ -45,7 +49,6 @@ public class CharacterGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 
 
@@ -88,32 +91,32 @@ public class CharacterGenerator : MonoBehaviour
 
     private void CreateEyes(int size, int number)
     {
-        float nSize = (size + 1) * 0.2f;
+        float nSize = (size + 1) * 0.1f * scale;
         GameObject eye = null;
         for (int i = 0; i <= number; i++)
         {
             if (number == 0)
             {
-                eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3(0f, 0f, 1f), Quaternion.identity);
+                eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3(0f, characterSize - 0.3f, -.4f), Quaternion.identity);
             }
             if (number == 1)
             {
-                eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3((i % 2) * (-0.6f) + ((i + 1) % 2) * 0.6f, 0f, 1f), Quaternion.identity);
+                eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3((i % 2) * (-width) + ((i + 1) % 2) * width, characterSize - 0.3f, -.4f), Quaternion.identity);
             }
             if (number == 2)
             {
                 if (i < 2)
                 {
-                    eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3((i % 2) * (-0.6f) + ((i + 1) % 2) * 0.6f, 0f, 1f), Quaternion.identity);
+                    eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3((i % 2) * (-width) + ((i + 1) % 2) * width, characterSize - 0.3f, -.4f), Quaternion.identity);
                 }
                 else
                 {
-                    eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3(0f, 0.6f,1f), Quaternion.identity);
+                    eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3(0f, characterSize - 0.3f + width, -.4f), Quaternion.identity);
                 }
             }
             if (number == 3)
             {
-                eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3((i * 0.6f - (i % 2) * 0.6f) - 0.6f, (i % 2f) * 0.6f + 0f, 1f), Quaternion.identity);
+                eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3((i * width - (i % 2) * width) - width, (i % 2f) * width + characterSize - 0.3f, -.4f), Quaternion.identity);
             }
             eye.transform.localScale = new Vector3(nSize, nSize, nSize);
             eye.transform.SetParent(modelObject.transform);
@@ -123,88 +126,92 @@ public class CharacterGenerator : MonoBehaviour
     private void CreateHead(int Shape, int DeformY, int DeformZ)
     {
         GameObject head;
+        Vector3 relativePosition = new Vector3(0f, characterSize - 0.3f, 0f);
+        Vector3 position = modelObject.transform.position + relativePosition;
         switch (Shape)
         {
             case 0:
-                head = Instantiate(headPrefab1, modelObject.transform.position + new Vector3(0f, 0f, 2f), Quaternion.identity);
+                head = Instantiate(headPrefab1, position, Quaternion.identity);
                 break;
             case 1:
-                head = Instantiate(headPrefab2, modelObject.transform.position + new Vector3(0f, 0f, 2f), Quaternion.identity);
+                head = Instantiate(headPrefab2, position, Quaternion.identity);
                 break;
             case 2:
-                head = Instantiate(headPrefab3, modelObject.transform.position + new Vector3(0f, 0f, 2f), Quaternion.identity);
+                head = Instantiate(headPrefab3, position, Quaternion.identity);
                 break;
             case 3:
-                head = Instantiate(headPrefab4, modelObject.transform.position + new Vector3(0f, 0f, 2f), Quaternion.identity);
+                head = Instantiate(headPrefab4, position, Quaternion.identity);
                 break;
             default:
                 // Handle invalid Shape values or provide a default behavior
                 Debug.LogWarning("Invalid Shape value. Using default headPrefab1.");
-                head = Instantiate(headPrefab1, modelObject.transform.position + new Vector3(0f, 0f, 1f), Quaternion.identity);
+                head = Instantiate(headPrefab1, position, Quaternion.identity);
                 break;
         }
-        head.transform.localScale = new Vector3(2f + (float)DeformY, 2f + (float)DeformZ, 2f);
+        head.transform.localScale = new Vector3(scale + (float)DeformY, scale + (float)DeformZ, scale);
         head.transform.SetParent(modelObject.transform);
     }
 
     private void CreateChest(int bitForm, int bitSizeY, int bitSizeZ)
     {
         GameObject chest;
+        Vector3 relativePosition = new Vector3(0f, characterSize - 0.9f, 0f);
+        Vector3 position = modelObject.transform.position + relativePosition;
         switch (bitForm)
         {
             case 0:
-                chest = Instantiate(chestPrefab1, modelObject.transform.position + new Vector3(0f, -2f, 2f), Quaternion.identity);
+                chest = Instantiate(chestPrefab1, position, Quaternion.identity);
                 break;
             case 1:
-                chest = Instantiate(chestPrefab2, modelObject.transform.position + new Vector3(0f, -2f, 2f), Quaternion.identity);
+                chest = Instantiate(chestPrefab2, position, Quaternion.identity);
                 break;
             case 2:
-                chest = Instantiate(chestPrefab3, modelObject.transform.position + new Vector3(0f, -2f, 2f), Quaternion.identity);
+                chest = Instantiate(chestPrefab3, position, Quaternion.identity);
                 break;
             case 3:
-                chest = Instantiate(chestPrefab4, modelObject.transform.position + new Vector3(0f, -2f, 2f), Quaternion.identity);
+                chest = Instantiate(chestPrefab4, position, Quaternion.identity);
                 break;
             default:
                 // Handle invalid Shape values or provide a default behavior
                 Debug.LogWarning("Invalid Shape value. Using default headPrefab1.");
-                chest = Instantiate(headPrefab1, modelObject.transform.position + new Vector3(0f, 0f, 1f), Quaternion.identity);
+                chest = Instantiate(headPrefab1, position, Quaternion.identity);
                 break;
         }
-        chest.transform.localScale = new Vector3(2 + bitSizeY, 2 + bitSizeZ * 0.3f, 2);
+        chest.transform.localScale = new Vector3(scale + bitSizeY, scale + bitSizeZ * 0.3f, scale);
         chest.transform.SetParent(modelObject.transform);
-    }
-
-    private void CreateLegs(int size, int number)
-    {
-        float nSize = 0.2f;
-        GameObject leg;
-        for (int i = 0; i <= number; i++)
-        {
-            leg = Instantiate(legPrefab, modelObject.transform.position + new Vector3(0.6f, -(float)size * 0.2f-2.5f, 1.1f + (float)i * 0.5f), Quaternion.identity);
-            leg.transform.localScale = new Vector3(nSize, (float)size * 0.15f, nSize);
-            leg.transform.SetParent(modelObject.transform);
-
-            leg = Instantiate(legPrefab, modelObject.transform.position + new Vector3(-0.6f, -(float)size * 0.2f - 2.5f, 1.1f + (float)i * 0.5f), Quaternion.identity);
-            leg.transform.localScale = new Vector3(nSize, (float)size * 0.15f, nSize);
-            leg.transform.SetParent(modelObject.transform);
-        }
     }
 
     private void CreateArms(int size, int number)
     {
-        float nSize = 0.2f;
-        GameObject arm;
+        float nSize = 0.2f * scale;
+        GameObject arm; 
         for (int i = 0; i <= number; i++)
         {
-            arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(1.2f, -1f - ((float)size + 1f) * 0.7f, 1.1f + (float)i * 0.5f), Quaternion.identity);
-            arm.transform.localScale = new Vector3(nSize, (float)size * 0.2f + 1f, nSize);
+            arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(width, characterSize - .6f - ((float)size + 1f) * 0.7f, -.1f + (float)i * 0.2f), Quaternion.identity);
+            arm.transform.localScale = new Vector3(nSize, (float)size * 0.2f, nSize);
             arm.transform.localRotation = Quaternion.Euler(new Vector3(0f, 15f, 5f));
             arm.transform.SetParent(modelObject.transform);
 
-            arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(-1.2f, -1f - ((float)size + 1f) * 0.7f, 1.1f + (float)i * 0.5f), Quaternion.identity);
-            arm.transform.localScale = new Vector3(nSize, (float)size * 0.2f + 1f, nSize);
+            arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(-width, characterSize - .6f - ((float)size + 1f) * 0.7f, -.1f + (float)i * 0.2f), Quaternion.identity);
+            arm.transform.localScale = new Vector3(nSize, (float)size * 0.2f, nSize);
             arm.transform.localRotation = Quaternion.Euler(new Vector3(0f, -15f, -5f));
             arm.transform.SetParent(modelObject.transform);
+        }
+    }
+
+    private void CreateLegs(int size, int number)
+    {
+        float nSize = 0.2f * scale;
+        GameObject leg;
+        for (int i = 0; i <= number; i++)
+        {
+            leg = Instantiate(legPrefab, modelObject.transform.position + new Vector3(width, characterSize -1.2f-(float)size * 0.2f - .5f, -.1f + (float)i * 0.2f), Quaternion.identity);
+            leg.transform.localScale = new Vector3(nSize, (float)size * 0.15f + 1f, nSize);
+            leg.transform.SetParent(modelObject.transform);
+
+            leg = Instantiate(legPrefab, modelObject.transform.position + new Vector3(-width, characterSize -1.2f -(float)size * 0.2f - .5f, -.1f + (float)i * 0.2f), Quaternion.identity);
+            leg.transform.localScale = new Vector3(nSize, (float)size * 0.15f + 1f, nSize);
+            leg.transform.SetParent(modelObject.transform);
         }
     }
 
@@ -213,8 +220,8 @@ public class CharacterGenerator : MonoBehaviour
         GenerateEyes(adnEye);
         GenerateHead(adnHead);
         GenerateChest(adnChest);
-        GenerateLegs(adnLegs);
         GenerateArms(adnArms);
+        GenerateLegs(adnLegs);
     }
 
 }
