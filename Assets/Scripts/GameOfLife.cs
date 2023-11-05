@@ -99,30 +99,31 @@ public class GameOfLife : MonoBehaviour
     }
 
     void Update()
+{
+    if (count < iterations && Time.time - lastFrameTime > 1f / speed)
     {
-        if (count < iterations &&Time.time - lastFrameTime > 1f / speed)
+        lastFrameTime = Time.time;
+
+        Evolution();
+
+        for (int i = 0; i < columns; i++)
         {
-            lastFrameTime = Time.time;
-
-            Evolution();
-
-            for (int i = 0; i < columns; i++)
+            for (int j = 0; j < rows; j++)
             {
-                for (int j = 0; j < rows; j++)
+                if (cells2[i, j] == 1)
                 {
-                    if (cells2[i, j] == 1)
-                    {
-                        GameObject obj = Instantiate(prefab, new Vector3(i * size + startPosition.x, count * size, j * size + startPosition.z), Quaternion.identity, gameObject.transform);
-                        obj.transform.localScale = new Vector3(size, size, size);
-                        cubes[i, j] = obj;
-                    }
+                    GameObject obj = Instantiate(prefab, new Vector3(-count * size + startPosition.x, j * size + startPosition.y, i * size + startPosition.z), Quaternion.identity, gameObject.transform);
+                    obj.transform.localScale = new Vector3(size, size, size);
+                    cubes[i, j] = obj;
                 }
             }
-            
-            int[,] temp = cells;
-            cells = cells2;
-            cells2 = temp;
-            count++;
         }
+
+        int[,] temp = cells;
+        cells = cells2;
+        cells2 = temp;
+        count++;
     }
+}
+
 }

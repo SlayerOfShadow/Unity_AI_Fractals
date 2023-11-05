@@ -12,6 +12,7 @@ public class GeneticAlgorithm : MonoBehaviour
     [SerializeField] float maxTreeHeight = 5;
     [SerializeField] bool tournament = true;
     [SerializeField] int tournamentSize = 5;
+    [SerializeField] float waterHeight = 10;
     List<Tree> population = new List<Tree>();
     GameObject[] treeObjects;
     Terrain terrain;
@@ -25,13 +26,12 @@ public class GeneticAlgorithm : MonoBehaviour
         treeObjects = new GameObject[populationSize];
         for (int i = 0; i < populationSize; i++)
         {
-            treeObjects[i] = Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
+            treeObjects[i] = Instantiate(prefab, transform.position, Quaternion.identity, transform);
         }
 
         InitializePopulation();
 
         StartCoroutine(RunGeneticAlgorithm());
-        GeneratePopulation();
     }
 
     IEnumerator RunGeneticAlgorithm()
@@ -42,46 +42,37 @@ public class GeneticAlgorithm : MonoBehaviour
             // Evaluate fitness
             EvaluateFitness();
 
-            // Check if all trees are below y = 1
+            // Check if all trees have good position
             bool allTreesBelowThreshold = true;
             foreach (Tree tree in population)
             {
-                if (tree.Position.y > maxTreeHeight)
+                if (tree.Position.y > maxTreeHeight || tree.Position.y < waterHeight)
                 {
+                    Tree parent1;
+                    Tree parent2;
+                    if (tournament)
+                    {
+                        parent1 = SelectParentTournament();
+                        parent2 = SelectParentTournament();
+                    } else
+                    {
+                        parent1 = SelectParentRoulette();
+                        parent2 = SelectParentRoulette();
+                    }
+                    
+                    Tree child = Crossover(parent1, parent2);
+                    Mutate(child);
+                    tree.Position = child.Position;
+                    tree.Fitness = child.Fitness;
                     allTreesBelowThreshold = false;
-                    break; // Exit the loop if any tree is not below y = 1
                 }
             }
 
             if (allTreesBelowThreshold)
             {
-                Debug.Log("All trees are below y = " + maxTreeHeight + ". Stopping generation. Count = " + generation + ".");
-                break; // Stop the algorithm if all trees are below y = 1
+                Debug.Log("All trees are below y = " + maxTreeHeight + " and above y = " + waterHeight + ". Stopping generation. Count = " + generation + ".");
+                break; 
             }
-
-            // Selection, Crossover, and Mutation
-            List<Tree> newPopulation = new List<Tree>();
-            Tree parent1;
-            Tree parent2;
-            for (int i = 0; i < populationSize; i++)
-            {
-                if (tournament)
-                {
-                    parent1 = SelectParentTournament();
-                    parent2 = SelectParentTournament();
-                } else
-                {
-                    parent1 = SelectParentRoulette();
-                    parent2 = SelectParentRoulette();
-                }
-                
-                Tree child = Crossover(parent1, parent2);
-                Mutate(child);
-                newPopulation.Add(child);
-            }
-
-            // Replace the old population
-            population = newPopulation;
 
             // Generate trees
             GeneratePopulation();
@@ -97,9 +88,9 @@ public class GeneticAlgorithm : MonoBehaviour
         {
             // Generate random position within the terrain bounds
             Vector3 randomPosition = new Vector3(
-                Random.Range(0, terrainSize.x),
+                Random.Range(transform.position.x, transform.position.x + terrainSize.x),
                 0,
-                Random.Range(0, terrainSize.z)
+                Random.Range(transform.position.z, transform.position.z + terrainSize.z)
             );
 
             // Adjust the Y position based on terrain height
@@ -120,9 +111,11 @@ public class GeneticAlgorithm : MonoBehaviour
 
     void EvaluateFitness()
     {
+        float bestFitness = (maxTreeHeight + waterHeight) * 0.5f;
         foreach (Tree tree in population)
         {
-            tree.Fitness = -tree.Position.y;
+            float distanceToBestFitness = Mathf.Abs(tree.Position.y - bestFitness);
+            tree.Fitness = -distanceToBestFitness;
         }
     }
 
@@ -211,9 +204,9 @@ public class GeneticAlgorithm : MonoBehaviour
         if (Random.Range(0f, 1f) < mutationRate)
         {
             Vector3 randomPosition = new Vector3(
-                Random.Range(0, terrainSize.x),
+                Random.Range(transform.position.x, transform.position.x + terrainSize.x),
                 0,
-                Random.Range(0, terrainSize.z)
+                Random.Range(transform.position.z, transform.position.z + terrainSize.z)
             );
 
             // Adjust the Y position based on terrain height
