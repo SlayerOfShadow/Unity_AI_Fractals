@@ -16,6 +16,12 @@ public class Population : MonoBehaviour
         {
             for (int i = 0; i < populationSize; i++){
                 CharacterGeneratorScript.GenerateCharacter(i);
+                var navMeshAgentController = CharacterGeneratorScript.GetComponent<NavMeshAgentController>();
+                if (navMeshAgentController != null)
+                {
+                    Vector3 destination = new Vector3(300,26,33);
+                    navMeshAgentController.SetDestination(destination);
+                }
             }
         }
     }
