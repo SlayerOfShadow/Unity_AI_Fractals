@@ -19,7 +19,7 @@ public class Population : MonoBehaviour
                 var navMeshAgentController = CharacterGeneratorScript.GetComponent<NavMeshAgentController>();
                 if (navMeshAgentController != null)
                 {
-                    Vector3 destination = new Vector3(300,26,33);
+                    Vector3 destination = new Vector3(300, 26, 33 + i*3.5f);
                     navMeshAgentController.SetDestination(destination);
                 }
             }
