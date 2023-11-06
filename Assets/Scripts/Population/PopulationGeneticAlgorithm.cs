@@ -33,20 +33,22 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
         individualsSorted.Remove(individualsSorted.Last());
     }
 
-    public void crossover(Character.Individual parent1, Character.Individual parent2, int population_length, int genome_length, Character.Properties properties, Character.MutationRate mutation_rate)
+    public void crossover(Character.Individual parent1, Character.Individual parent2, int population_length, Character.Properties properties, Character.MutationRate mutation_rate)
     {            
         // Créer deux enfants en copiant les gènes des parents
         Character.Genome genome1 = new Character.Genome();
         Character.Genome genome2 = new Character.Genome();
 
-        for (int i = 0; i < genome_length; i++)
+        int genomeSize = genome1.Size();
+
+        for (int i = 0; i < genomeSize; i++)
         {
             genome1.SetByIndex(i,UnityEngine.Random.Range(0, 2)); 
             genome2.SetByIndex(i,UnityEngine.Random.Range(0, 2));
         }
 
         // Crossover
-        int crossover = UnityEngine.Random.Range(0, genome_length); // Point de croisement aléatoire
+        int crossover = UnityEngine.Random.Range(0, genomeSize); // Point de croisement aléatoire
         Character.Individual child1 = new Character.Individual();
         Character.Individual child2 = new Character.Individual();
         
@@ -66,8 +68,8 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
         }
 
         // mutation
-        child1.mutation(genome_length, mutation_rate);
-        child2.mutation(genome_length, mutation_rate);
+        child1.mutation(mutation_rate);
+        child2.mutation(mutation_rate);
 
         // Réévaluer les enfants
         child1.evaluate_fitness_score(properties);
@@ -117,11 +119,11 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
         parent2 = individualsSorted[index_parent2];
     }
 
-    public void new_generation(int population_length, int genome_length, FitnessAlgorithm algorithm, Character.Properties properties, Character.MutationRate mutation_rate)
+    public void new_generation(int population_length, FitnessAlgorithm algorithm, Character.Properties properties, Character.MutationRate mutation_rate)
     {
         Character.Individual parent1, parent2;
         choose_parent(out parent1, out parent2, algorithm);
-        crossover(parent1, parent2, population_length, genome_length, properties, mutation_rate);
+        crossover(parent1, parent2, population_length, properties, mutation_rate);
     }
 
     public void roulette_wheel_selection(out int index_parent1, out int index_parent2)

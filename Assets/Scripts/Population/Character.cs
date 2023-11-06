@@ -7,8 +7,6 @@ using Unity.VisualScripting;
 
 public class Character : MonoBehaviour
 {
-    public int genome_size = 26;
-
     public class Genome{
         private int[] _value;
         private int _size = 26;
@@ -61,8 +59,6 @@ public class Character : MonoBehaviour
         }
     }
 
-
-
     public class MutationRate
     {
         public double bit;
@@ -86,6 +82,10 @@ public class Character : MonoBehaviour
 
         public Individual(Genome g){
             genome.Set(g);
+        }
+
+        public int GenomeSize(){
+            return genome.Size();
         }
 
         public void evaluate_fitness_score(Properties properties){
@@ -114,6 +114,7 @@ public class Character : MonoBehaviour
                 fitness_score+=(genome.GetIndex(2)+genome.GetIndex(3))*2;
             }     
         }
+
         /*    
         Mutation non codées :
         - Mutation de valeur : Modifier la valeur d'un gène à un autre aléatoire dans une certaine plage. 
@@ -124,14 +125,14 @@ public class Character : MonoBehaviour
         */
 
         // Mutation par permutation : Permute l'emplacement de deux gènes dans le génome.
-        public void swap_mutation(int genome_length, double mutation_rate)
+        public void swap_mutation(double mutation_rate)
         {
-            for (int i = 0; i < genome_length; i++)
+            for (int i = 0; i < GenomeSize(); i++)
             {
                 if (UnityEngine.Random.Range(0f, 1f) < mutation_rate)
                 {
-                    int index1 = UnityEngine.Random.Range(0, genome_length);
-                    int index2 = UnityEngine.Random.Range(0, genome_length);
+                    int index1 = UnityEngine.Random.Range(0, GenomeSize());
+                    int index2 = UnityEngine.Random.Range(0, GenomeSize());
 
                     // Échanger les valeurs des bits à index1 et index2
                     int temp = genome.GetIndex(index1);
@@ -141,16 +142,15 @@ public class Character : MonoBehaviour
             }
         }
 
-
         //Mutation par inversion : Inverse l'ordre des gènes dans une partie du génome.
-        public void inversion_mutation(int genome_length, double mutation_rate)
+        public void inversion_mutation(double mutation_rate)
         {
-            for (int i = 0; i < genome_length; i++)
+            for (int i = 0; i < GenomeSize(); i++)
             {
                 if (UnityEngine.Random.Range(0f, 1f) < mutation_rate)
                 {
-                    int start = UnityEngine.Random.Range(0, genome_length);
-                    int end = UnityEngine.Random.Range(start, genome_length);
+                    int start = UnityEngine.Random.Range(0, GenomeSize());
+                    int end = UnityEngine.Random.Range(start, GenomeSize());
 
                     // Inverse l'ordre des bits entre start et end inclus
                     while (start < end)
@@ -166,9 +166,9 @@ public class Character : MonoBehaviour
         }
 
         // Mutation de bit : Inverse le bit(0 devient 1, et vice versa) à un emplacement aléatoire du génome.
-        public void bit_mutation(int genome_length, double mutation_rate)
+        public void bit_mutation(double mutation_rate)
         {
-            for (int i = 0; i < genome_length; i++)
+            for (int i = 0; i < GenomeSize(); i++)
             {
                 if (UnityEngine.Random.Range(0f, 1f) < mutation_rate)
                 {
@@ -188,12 +188,11 @@ public class Character : MonoBehaviour
             Debug.Log("Le Génome de l'individu est : "+ string.Join(", ", genome.Get()));
         }
 
-        
-        public void mutation(int genome_length, MutationRate mutation_rate)
+        public void mutation(MutationRate mutation_rate)
         {
-            bit_mutation(genome_length, mutation_rate.bit);
-            swap_mutation(genome_length, mutation_rate.swap);
-            inversion_mutation(genome_length, mutation_rate.inversion);
+            bit_mutation(mutation_rate.bit);
+            swap_mutation(mutation_rate.swap);
+            inversion_mutation(mutation_rate.inversion);
         }
     }
 

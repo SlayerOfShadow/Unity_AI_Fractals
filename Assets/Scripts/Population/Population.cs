@@ -58,7 +58,7 @@ public class Population : MonoBehaviour
             foreach (Character.Individual individual in PopulationGeneticAlgorithmScript.individualsSorted){
                 individual.evaluate_fitness_score(wanted_properties);
             }
-            PopulationGeneticAlgorithmScript.new_generation(populationSize, CharacterScript.genome_size, fitness_algorithm, wanted_properties, mutation_rate);
+            PopulationGeneticAlgorithmScript.new_generation(populationSize, fitness_algorithm, wanted_properties, mutation_rate);
             AddIndividual = false;
         }
     }
