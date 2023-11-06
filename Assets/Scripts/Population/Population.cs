@@ -27,6 +27,7 @@ public class Population : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Create population");
         CharacterGeneratorScript = GetComponentInChildren<CharacterGenerator>();
         CharacterScript = GetComponentInChildren<Character>();
         PopulationGeneticAlgorithmScript = GetComponent<PopulationGeneticAlgorithm>();
@@ -47,11 +48,13 @@ public class Population : MonoBehaviour
                 }
             }
         }
+        Debug.Log("Population created");
     }
 
     private void Update()
     {
         if (AddIndividual){
+            Debug.Log("Add Individual");
             Character.Properties wanted_properties = new Character.Properties(strength, speed, health, vision, smart, resistance);
             Character.MutationRate mutation_rate = new Character.MutationRate(bit_mutation_rate, swap_mutation_rate, inversion_mutation_rate);
 
@@ -60,6 +63,7 @@ public class Population : MonoBehaviour
             }
             PopulationGeneticAlgorithmScript.new_generation(populationSize, fitness_algorithm, wanted_properties, mutation_rate);
             AddIndividual = false;
+            Debug.Log("individual added");
         }
     }
     // Update is called once per frame
