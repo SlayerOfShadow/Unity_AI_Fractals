@@ -199,12 +199,12 @@ public class CharacterGenerator : MonoBehaviour
         GameObject arm; 
         for (int i = 0; i <= number; i++)
         {
-            arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(width + (float)offset + (float)offset, characterSize - .6f - ((float)size + 1f) * 0.7f, -.1f + (float)i * 0.2f), Quaternion.identity);
+            arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(width + (float)offset, characterSize - .6f - ((float)size + 1f) * 0.7f, -.1f + (float)i * 0.2f), Quaternion.identity);
             arm.transform.localScale = new Vector3(nSize, (float)size * 0.2f, nSize);
             arm.transform.localRotation = Quaternion.Euler(new Vector3(0f, 15f, 5f));
             arm.transform.SetParent(parent);
 
-            arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(-width + (float)offset + (float)offset, characterSize - .6f - ((float)size + 1f) * 0.7f, -.1f + (float)i * 0.2f), Quaternion.identity);
+            arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(-width + (float)offset, characterSize - .6f - ((float)size + 1f) * 0.7f, -.1f + (float)i * 0.2f), Quaternion.identity);
             arm.transform.localScale = new Vector3(nSize, (float)size * 0.2f, nSize);
             arm.transform.localRotation = Quaternion.Euler(new Vector3(0f, -15f, -5f));
             arm.transform.SetParent(parent);
