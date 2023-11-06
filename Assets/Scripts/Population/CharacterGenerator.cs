@@ -49,6 +49,17 @@ public class CharacterGenerator : MonoBehaviour
         visualize_individual(adn_eye, adn_head, adn_chest, adn_legs, adn_arms, individualObject.transform);
     }
 
+    void Destroy(int i){           
+        GameObject parentObject = GameObject.Find("Individual" + i);
+        if (parentObject != null)
+        {
+            foreach (Transform child in parentObject.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+        }
+    }
+
     void Start(){}
 
     // Update is called once per frame
