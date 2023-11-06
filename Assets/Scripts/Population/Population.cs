@@ -53,14 +53,20 @@ public class Population : MonoBehaviour
 
     private void Update()
     {
+        Character.Properties wanted_properties = new Character.Properties(strength, speed, health, vision, smart, resistance);
+        Character.MutationRate mutation_rate = new Character.MutationRate(bit_mutation_rate, swap_mutation_rate, inversion_mutation_rate);
+
+        foreach (Character.Individual individual in PopulationGeneticAlgorithmScript.individualsSorted){
+            individual.evaluate_fitness_score(wanted_properties);
+        }
+        var navMeshAgentController = CharacterGeneratorScript.GetComponent<NavMeshAgentController>();
+        if (navMeshAgentController != null)
+        {
+            Vector3 destination = new Vector3(300,26,33);
+            navMeshAgentController.SetDestination(destination);
+        }
         if (AddIndividual){
             Debug.Log("Add Individual");
-            Character.Properties wanted_properties = new Character.Properties(strength, speed, health, vision, smart, resistance);
-            Character.MutationRate mutation_rate = new Character.MutationRate(bit_mutation_rate, swap_mutation_rate, inversion_mutation_rate);
-
-            foreach (Character.Individual individual in PopulationGeneticAlgorithmScript.individualsSorted){
-                individual.evaluate_fitness_score(wanted_properties);
-            }
             PopulationGeneticAlgorithmScript.new_generation(populationSize, fitness_algorithm, wanted_properties, mutation_rate);
             AddIndividual = false;
             Debug.Log("individual added");

@@ -434,6 +434,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AddIndividual: 0
   populationSize: 6
+  fitness_algorithm: 1
+  bit_mutation_rate: 0.1
+  swap_mutation_rate: 0.01
+  inversion_mutation_rate: 0.001
+  strength: 0
+  speed: 0
+  health: 0
+  vision: 0
+  smart: 0
+  resistance: 0
 --- !u!114 &418610425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -875,8 +885,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7393418625afe0747baef7eae4d497f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  genome_size: 26
-  fitness_score: 0
 --- !u!195 &761815406
 NavMeshAgent:
   m_ObjectHideFlags: 0
