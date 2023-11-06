@@ -396,6 +396,7 @@ GameObject:
   m_Component:
   - component: {fileID: 418610423}
   - component: {fileID: 418610424}
+  - component: {fileID: 418610425}
   m_Layer: 0
   m_Name: Population
   m_TagString: Untagged
@@ -431,7 +432,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 922cd29a42a9e33479eea3a8ad995ae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AddIndividual: 0
   populationSize: 6
+--- !u!114 &418610425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418610422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e84e9a07a63b9c246989a2fe4632e11c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &450370159 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7429087965407764492, guid: 8cb3e27495f32d2498f5ec907ecf6628, type: 3}
@@ -849,7 +863,6 @@ MonoBehaviour:
   characterSize: 1.8
   scale: 0.5
   width: 0.2
-  individual: {fileID: 761815405}
 --- !u!114 &761815405
 MonoBehaviour:
   m_ObjectHideFlags: 0
