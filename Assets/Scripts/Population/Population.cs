@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Population : MonoBehaviour
 {
-
+    public bool AddIndividual = false;
     public int populationSize = 6;
     private CharacterGenerator CharacterGeneratorScript; 
 
@@ -30,7 +30,25 @@ public class Population : MonoBehaviour
 
     private void Update()
     {
+        if (AddIndividual){
+            AddNewIndividual();
+            AddIndividual = false;
+        }
     }
     // Update is called once per frame
+
+    void AddNewIndividual(){
+        populationSize++;
+        Individual individual = new Individual();
+        individual.GenerateGenome();
+        CharacterGeneratorScript.GenerateCharacter(populationSize, individual);
+        var navMeshAgentController = CharacterGeneratorScript.GetComponent<NavMeshAgentController>();
+        if (navMeshAgentController != null)
+        {
+            Vector3 destination = new Vector3(300,26,33);
+            navMeshAgentController.SetDestination(destination);
+        }
+    }
+
 
 }
