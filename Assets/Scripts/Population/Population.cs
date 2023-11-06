@@ -15,7 +15,9 @@ public class Population : MonoBehaviour
         if (CharacterGeneratorScript != null)
         {
             for (int i = 0; i < populationSize; i++){
-                CharacterGeneratorScript.GenerateCharacter(i);
+                Individual individual = new Individual();
+                individual.GenerateGenome();
+                CharacterGeneratorScript.GenerateCharacter(i, individual);
                 var navMeshAgentController = CharacterGeneratorScript.GetComponent<NavMeshAgentController>();
                 if (navMeshAgentController != null)
                 {

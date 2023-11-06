@@ -24,11 +24,8 @@ public class CharacterGenerator : MonoBehaviour
     public float scale = .5f;
     public float width = 0.2f;
 
-
-    public Individual individual;
-
     // Start is called before the first frame update
-    public void GenerateCharacter(int i)
+    public void GenerateCharacter(int i, Individual individual)
     {
         int[] adn_eye =  individual.genome.PartialGenome(0, 4);
         int[] adn_head =  individual.genome.PartialGenome(4, 4);

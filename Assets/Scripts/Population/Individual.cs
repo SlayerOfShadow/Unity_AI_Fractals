@@ -35,8 +35,7 @@ public class Individual : MonoBehaviour
     public Genome genome;
     public int fitness_score;
 
-    // Start is called before the first frame update
-    void Start()
+    public void GenerateGenome()
     {
         genome = new Genome(genome_size);
         for (int i = 0; i < genome_size; i++)
@@ -44,6 +43,11 @@ public class Individual : MonoBehaviour
             genome.SetByIndex(i,UnityEngine.Random.Range(0, 2)); // Remplir le genome avec des 0 ou des 1
         }
         Debug.Log("Le Génome de l'individu est : "+ string.Join(", ", genome.Get()));
+    }
+
+    void Start()
+    {
+        
     }
 
     // Update is called once per frame
