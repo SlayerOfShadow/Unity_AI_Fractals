@@ -15,7 +15,7 @@ public class NavMeshAgentController : MonoBehaviour
         if (navMeshAgent != null)
         {
             navMeshAgent.SetDestination(destination);
-            Debug.Log("Go to : " + destination);
+            // Debug.Log("Go to : " + destination);
         }
     }
 
