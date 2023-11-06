@@ -72,7 +72,11 @@ public class Population : MonoBehaviour
         }
         if (AddIndividual){
             Debug.Log("Add Individual");
-            PopulationGeneticAlgorithmScript.new_generation(populationSize, fitness_algorithm, wanted_properties, mutation_rate);
+            populationSize++;
+            Character.Individual individual = PopulationGeneticAlgorithmScript.new_generation(populationSize, fitness_algorithm, wanted_properties, mutation_rate);
+            PopulationGeneticAlgorithmScript.add_individual(individual);
+            CharacterGeneratorScript.GenerateCharacter(populationSize, individual);
+                
             AddIndividual = false;
             Debug.Log("individual added");
         }
