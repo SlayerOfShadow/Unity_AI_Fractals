@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c3735456144cc546a775a825ee8971a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  iterations: 4
+  iterations: 3
   scale: 0.7
   randomOffset: {x: 2, y: 2}
   randomAngle: {x: 45, y: 45}

@@ -8,7 +8,6 @@ public class GeneticAlgorithm : MonoBehaviour
     [SerializeField] int populationSize = 50;
     [SerializeField] float mutationRate = 0.1f;
     [SerializeField] int maxGenerations = 100;
-    [SerializeField] float simulationSpeed = 0.5f;
     [SerializeField] float maxTreeHeight = 5;
     [SerializeField] bool tournament = true;
     [SerializeField] int tournamentSize = 5;
@@ -31,10 +30,10 @@ public class GeneticAlgorithm : MonoBehaviour
 
         InitializePopulation();
 
-        StartCoroutine(RunGeneticAlgorithm());
+        RunGeneticAlgorithm();
     }
 
-    IEnumerator RunGeneticAlgorithm()
+    void RunGeneticAlgorithm()
     {
         int generation = 0;
         while (generation < maxGenerations)
@@ -78,7 +77,6 @@ public class GeneticAlgorithm : MonoBehaviour
             GeneratePopulation();
 
             generation++;
-            yield return new WaitForSeconds(simulationSpeed);
         }
     }
 
