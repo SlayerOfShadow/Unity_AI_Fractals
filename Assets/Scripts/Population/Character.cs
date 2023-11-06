@@ -42,14 +42,14 @@ public class Character : MonoBehaviour
         }
     }
 
-    public class Properties{
+    public class Capacities{
         public bool strength;
         public bool speed;
         public bool health;
         public bool vision;
         public bool smart;
         public bool resistance;
-        public Properties(bool _strength, bool _speed, bool _health, bool _vision, bool _smart, bool _resistance){
+        public Capacities(bool _strength, bool _speed, bool _health, bool _vision, bool _smart, bool _resistance){
             strength = _strength;
             speed = _speed;
             health = _health;
@@ -74,7 +74,7 @@ public class Character : MonoBehaviour
 
     public class Individual{
         public Genome genome;
-        public int fitness_score;
+        public int fitnessScore;
 
         public Individual(){
             GenerateGenome();
@@ -88,30 +88,30 @@ public class Character : MonoBehaviour
             return genome.Size();
         }
 
-        public void evaluate_fitness_score(Properties properties){
-            fitness_score=0;
-            if(properties.speed){
-                fitness_score+=genome.GetIndex(13)+genome.GetIndex(12);
-                fitness_score+=(genome.GetIndex(14)+genome.GetIndex(15)+genome.GetIndex(16)+genome.GetIndex(17))*2;
+        public void evaluate_fitness_score(Capacities Capacities){
+            fitnessScore=0;
+            if(Capacities.speed){
+                fitnessScore+=genome.GetIndex(13)+genome.GetIndex(12);
+                fitnessScore+=(genome.GetIndex(14)+genome.GetIndex(15)+genome.GetIndex(16)+genome.GetIndex(17))*2;
             }
-            if(properties.strength){
-                fitness_score+=genome.GetIndex(18)+genome.GetIndex(19);
-                fitness_score+=(genome.GetIndex(20)+genome.GetIndex(21))*2;
+            if(Capacities.strength){
+                fitnessScore+=genome.GetIndex(18)+genome.GetIndex(19);
+                fitnessScore+=(genome.GetIndex(20)+genome.GetIndex(21))*2;
             }
-            if(properties.health){
-                fitness_score+=genome.GetIndex(22)+genome.GetIndex(23)+genome.GetIndex(24)+genome.GetIndex(25);
+            if(Capacities.health){
+                fitnessScore+=genome.GetIndex(22)+genome.GetIndex(23)+genome.GetIndex(24)+genome.GetIndex(25);
             }
-            if(properties.resistance){
-                fitness_score+=genome.GetIndex(9)+genome.GetIndex(8);
-                fitness_score+=(genome.GetIndex(11)+genome.GetIndex(10))*2;
+            if(Capacities.resistance){
+                fitnessScore+=genome.GetIndex(9)+genome.GetIndex(8);
+                fitnessScore+=(genome.GetIndex(11)+genome.GetIndex(10))*2;
             }    
-            if(properties.smart){
-                fitness_score+=genome.GetIndex(4)+genome.GetIndex(5);
-                fitness_score+=(genome.GetIndex(7)+genome.GetIndex(6))*2;
+            if(Capacities.smart){
+                fitnessScore+=genome.GetIndex(4)+genome.GetIndex(5);
+                fitnessScore+=(genome.GetIndex(7)+genome.GetIndex(6))*2;
             }   
-            if(properties.vision){
-                fitness_score+=genome.GetIndex(0)+genome.GetIndex(1);
-                fitness_score+=(genome.GetIndex(2)+genome.GetIndex(3))*2;
+            if(Capacities.vision){
+                fitnessScore+=genome.GetIndex(0)+genome.GetIndex(1);
+                fitnessScore+=(genome.GetIndex(2)+genome.GetIndex(3))*2;
             }     
         }
 

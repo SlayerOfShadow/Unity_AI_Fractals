@@ -19,7 +19,7 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
 
     private void Sort()
     {
-        individualsSorted.Sort((individu1, individu2) => individu2.fitness_score.CompareTo(individu1.fitness_score));
+        individualsSorted.Sort((individu1, individu2) => individu2.fitnessScore.CompareTo(individu1.fitnessScore));
     }
 
     public void add_individual(Character.Individual individual)
@@ -33,7 +33,7 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
         individualsSorted.Remove(individualsSorted.Last());
     }
 
-    public void crossover(Character.Individual parent1, Character.Individual parent2, int population_length, Character.Properties properties, Character.MutationRate mutation_rate)
+    public void crossover(Character.Individual parent1, Character.Individual parent2, int population_length, Character.Capacities properties, Character.MutationRate mutation_rate)
     {            
         // Créer deux enfants en copiant les gènes des parents
         Character.Genome genome1 = new Character.Genome();
@@ -76,7 +76,7 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
         child2.evaluate_fitness_score(properties);
 
         // evolution 
-        if (child1.fitness_score >= child2.fitness_score)
+        if (child1.fitnessScore >= child2.fitnessScore)
         {
             evolve(child1, population_length);
             evolve(child2, population_length);
@@ -119,7 +119,7 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
         parent2 = individualsSorted[index_parent2];
     }
 
-    public void new_generation(int population_length, FitnessAlgorithm algorithm, Character.Properties properties, Character.MutationRate mutation_rate)
+    public void new_generation(int population_length, FitnessAlgorithm algorithm, Character.Capacities properties, Character.MutationRate mutation_rate)
     {
         Character.Individual parent1, parent2;
         choose_parent(out parent1, out parent2, algorithm);
@@ -129,7 +129,7 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
     public void roulette_wheel_selection(out int index_parent1, out int index_parent2)
     {
         // Calculer la somme des scores de fitness de tous les individus
-        int totalFitness = individualsSorted.Sum(individual => individual.fitness_score);
+        int totalFitness = individualsSorted.Sum(individual => individual.fitnessScore);
 
         // Générer un nombre aléatoire entre 0 et la somme des scores de fitness
         int random_number_1 = UnityEngine.Random.Range(0, totalFitness);
@@ -138,7 +138,7 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
         index_parent1 = select_index_by_roulette(random_number_1);
 
         // Calculer la somme des scores de fitness des individus restants (en excluant le premier parent)
-        int total_remaining_fitness = totalFitness - individualsSorted[index_parent1].fitness_score;
+        int total_remaining_fitness = totalFitness - individualsSorted[index_parent1].fitnessScore;
 
         // Générer un nombre aléatoire pour sélectionner le deuxième parent parmi les individus restants
         int random_number_2 = UnityEngine.Random.Range(0, total_remaining_fitness);
@@ -155,7 +155,7 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
         {
             if (i != excluded_index) // Exclure l'indice spécifié (si fourni)
             {
-                accumulated_fitness += individualsSorted[i].fitness_score;
+                accumulated_fitness += individualsSorted[i].fitnessScore;
                 if (accumulated_fitness >= random_number)
                 {
                     return i; // Retourner l'indice sélectionné

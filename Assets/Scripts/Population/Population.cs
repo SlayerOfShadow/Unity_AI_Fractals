@@ -36,7 +36,7 @@ public class Population : MonoBehaviour
             for (int i = 0; i < populationSize; i++){
                 Character.Individual individual = new Character.Individual();
                 individual.GenerateGenome();
-                Character.Properties wanted_properties = new Character.Properties(strength, speed, health, vision, smart, resistance);
+                Character.Capacities wanted_properties = new Character.Capacities(strength, speed, health, vision, smart, resistance);
                 individual.evaluate_fitness_score(wanted_properties);
                 PopulationGeneticAlgorithmScript.add_individual(individual);
                 CharacterGeneratorScript.GenerateCharacter(i, individual);
@@ -53,7 +53,7 @@ public class Population : MonoBehaviour
 
     private void Update()
     {
-        Character.Properties wanted_properties = new Character.Properties(strength, speed, health, vision, smart, resistance);
+        Character.Capacities wanted_properties = new Character.Capacities(strength, speed, health, vision, smart, resistance);
         Character.MutationRate mutation_rate = new Character.MutationRate(bit_mutation_rate, swap_mutation_rate, inversion_mutation_rate);
 
         foreach (Character.Individual individual in PopulationGeneticAlgorithmScript.individualsSorted){
@@ -79,7 +79,7 @@ public class Population : MonoBehaviour
         Character.Individual individual = new Character.Individual();
         individual.GenerateGenome();
         // attention si on change les properties il faut réévaluer tous les fitness score
-        Character.Properties wanted_properties = new Character.Properties(strength, speed, health, vision, smart, resistance);
+        Character.Capacities wanted_properties = new Character.Capacities(strength, speed, health, vision, smart, resistance);
         Character.MutationRate mutation_rate = new Character.MutationRate(bit_mutation_rate, swap_mutation_rate, inversion_mutation_rate);
         individual.evaluate_fitness_score(wanted_properties);
         PopulationGeneticAlgorithmScript.add_individual(individual);
