@@ -16,6 +16,7 @@ public class GeneticAlgorithm : MonoBehaviour
     GameObject[] treeObjects;
     Terrain terrain;
     Vector3 terrainSize;
+    [SerializeField] Vector2 randTreeScale = new Vector2(3, 5);
 
     void Start()
     {
@@ -26,6 +27,7 @@ public class GeneticAlgorithm : MonoBehaviour
         for (int i = 0; i < populationSize; i++)
         {
             treeObjects[i] = Instantiate(prefab, transform.position, Quaternion.identity, transform);
+            treeObjects[i].transform.localScale = Vector3.one * Random.Range(randTreeScale.x, randTreeScale.y);
         }
 
         InitializePopulation();
