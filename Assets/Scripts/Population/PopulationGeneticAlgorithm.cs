@@ -91,6 +91,7 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
     public void evolve(Character.Individual child, int population_length)
     {
         add_individual(child);
+        child.evaluate_statistics();
 
         // Si la taille de la population dépasse la taille souhaitée, supprimer le moins adapté
         if (individualsSorted.Count > population_length)

@@ -37,9 +37,12 @@ public class Population : MonoBehaviour
                 Character.Individual individual = new Character.Individual();
                 individual.GenerateGenome();
                 Character.Capacities wanted_properties = new Character.Capacities(strength, speed, health, vision, smart, resistance);
+                individual.evaluate_statistics();
                 individual.evaluate_fitness_score(wanted_properties);
                 PopulationGeneticAlgorithmScript.add_individual(individual);
                 CharacterGeneratorScript.GenerateCharacter(i, individual);
+                Debug.Log("Information de l'individu "+ i);
+                individual.DebugIndividual();
                 var navMeshAgentController = CharacterGeneratorScript.GetComponent<NavMeshAgentController>();
                 if (navMeshAgentController != null)
                 {
@@ -58,6 +61,8 @@ public class Population : MonoBehaviour
 
         foreach (Character.Individual individual in PopulationGeneticAlgorithmScript.individualsSorted){
             individual.evaluate_fitness_score(wanted_properties);
+            individual.UpdateRemainingLife();
+            // Détruire si le temps de vie restant est 0
         }
         var navMeshAgentController = CharacterGeneratorScript.GetComponent<NavMeshAgentController>();
         if (navMeshAgentController != null)
@@ -84,6 +89,8 @@ public class Population : MonoBehaviour
         individual.evaluate_fitness_score(wanted_properties);
         PopulationGeneticAlgorithmScript.add_individual(individual);
         CharacterGeneratorScript.GenerateCharacter(populationSize, individual);
+        Debug.Log("Information de l'individu "+ populationSize);
+        individual.DebugIndividual();
         var navMeshAgentController = CharacterGeneratorScript.GetComponent<NavMeshAgentController>();
         if (navMeshAgentController != null)
         {

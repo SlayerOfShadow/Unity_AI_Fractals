@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEditor.Rendering;
 using Unity.VisualScripting;
+using System;
 
 public class Character : MonoBehaviour
 {
@@ -59,6 +60,23 @@ public class Character : MonoBehaviour
         }
     }
 
+    public class CapacitiesStatistics{
+        public int strength;
+        public int speed;
+        public int health;
+        public int vision;
+        public int smart;
+        public int resistance;
+        public CapacitiesStatistics(){
+            strength = 0 ;
+            speed = 0 ;
+            health = 0 ;
+            vision = 0 ;
+            smart = 0 ;
+            resistance = 0 ;
+        }
+    }
+
     public class MutationRate
     {
         public double bit;
@@ -75,6 +93,8 @@ public class Character : MonoBehaviour
     public class Individual{
         public Genome genome;
         public int fitnessScore;
+        public int remainingLife = 180; // frame
+        public CapacitiesStatistics statistics = new CapacitiesStatistics(); // en fonction des gènes de l'individu il aura des stats de capacités différentes
 
         public Individual(){
             GenerateGenome();
@@ -86,6 +106,22 @@ public class Character : MonoBehaviour
 
         public int GenomeSize(){
             return genome.Size();
+        }
+
+        public void UpdateRemainingLife(){
+            remainingLife--;
+        }
+        public int GetRemainingLife(){
+            return remainingLife;
+        }
+
+        public void evaluate_statistics(){
+            statistics.speed = genome.GetIndex(13)+genome.GetIndex(12) + (genome.GetIndex(14)+genome.GetIndex(15)+genome.GetIndex(16)+genome.GetIndex(17))*2;
+            statistics.strength = genome.GetIndex(18)+genome.GetIndex(19) + (genome.GetIndex(20)+genome.GetIndex(21))*2;
+            statistics.health = genome.GetIndex(22)+genome.GetIndex(23)+genome.GetIndex(24)+genome.GetIndex(25);
+            statistics.resistance = genome.GetIndex(9)+genome.GetIndex(8) + (genome.GetIndex(11)+genome.GetIndex(10))*2;
+            statistics.smart = genome.GetIndex(4)+genome.GetIndex(5) + (genome.GetIndex(7)+genome.GetIndex(6))*2;
+            statistics.vision = genome.GetIndex(0)+genome.GetIndex(1) + (genome.GetIndex(2)+genome.GetIndex(3))*2;
         }
 
         public void evaluate_fitness_score(Capacities Capacities){
@@ -194,7 +230,21 @@ public class Character : MonoBehaviour
             swap_mutation(mutation_rate.swap);
             inversion_mutation(mutation_rate.inversion);
         }
+
+        public void DebugIndividual(){
+            Debug.Log("Génome :"+genome);
+            Debug.Log("Score de fitness : "+fitnessScore);
+            Debug.Log("Espérence de vie : "+remainingLife);
+            Debug.Log("Statistiques : ");
+            Debug.Log("Force : "+ statistics.strength);
+            Debug.Log("Vitesse : "+ statistics.speed);
+            Debug.Log("Vision : "+ statistics.vision);
+            Debug.Log("Santé : "+ statistics.health);
+            Debug.Log("Résistance : "+ statistics.resistance);
+            Debug.Log("Intelligence : "+ statistics.smart);
+        }
     }
+
 
     void Start()
     {
