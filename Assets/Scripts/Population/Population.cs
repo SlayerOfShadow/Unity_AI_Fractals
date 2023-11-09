@@ -61,7 +61,12 @@ public class Population : MonoBehaviour
         foreach (Character.Individual individual in PopulationGeneticAlgorithmScript.individualsSorted){
             individual.evaluate_fitness_score(wanted_properties);
             individual.UpdateRemainingLife();
-            // Détruire si le temps de vie restant est 0
+            if (individual.isDead()){
+                CharacterGeneratorScript.DestroyCharacter(individual.GetId());
+                Debug.Log("Individual"+individual.GetId()+" died");
+                // Retirer personnage de la liste triée
+                // Créer id pour décoréler l'id et la populatioSize 
+            }
         }
         var navMeshAgentController = CharacterGeneratorScript.GetComponent<NavMeshAgentController>();
         if (navMeshAgentController != null)

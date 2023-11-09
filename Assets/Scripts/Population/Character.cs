@@ -46,7 +46,7 @@ public class Character : MonoBehaviour
         public void SetByIndex(int i, int value){
             _value[i] = value;
         }
-        
+
         public int[] PartialGenome(int start, int number_of_elements){
             return Enumerable.Range(start, number_of_elements).Select(i => _value[i]).ToArray();
         }
@@ -104,7 +104,7 @@ public class Character : MonoBehaviour
     public class Individual{
         public Genome genome;
         public int fitnessScore;
-        public int remainingLife = 180; // frame
+        public int remainingLife = 9000; // frame
         public int individualId;
         public CapacitiesStatistics statistics = new CapacitiesStatistics(); // en fonction des gènes de l'individu il aura des stats de capacités différentes
 
@@ -114,6 +114,10 @@ public class Character : MonoBehaviour
 
         public Individual(Genome g){
             genome.Set(g);
+        }
+
+        public int GetId(){
+            return individualId;
         }
 
         public void SetId(int id){
@@ -126,6 +130,10 @@ public class Character : MonoBehaviour
 
         public void UpdateRemainingLife(){
             remainingLife--;
+        }
+
+        public bool isDead(){
+            return (remainingLife <= 0);
         }
 
         public int GetRemainingLife(){
