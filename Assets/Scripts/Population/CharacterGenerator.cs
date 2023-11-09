@@ -21,8 +21,12 @@ public class CharacterGenerator : MonoBehaviour
     public GameObject modelObject;
 
     public float characterSize = 1.8f;
-    public float scale = .5f;
-    public float width = 0.2f;
+    public float characterScale = .5f;
+    public float characterWidth = 0.2f;
+
+
+    // TODO : créer une classe qui a une position, un nom, une size, une liste de prefab, un nombre d'éléments, une rotation, etc
+    // TODO : créer un enum pour avoir les informations importantes sur le personnage comme sa taille, son épaisseur, etc
 
     // Start is called before the first frame update
     public void GenerateCharacter(int i, Character.Individual individual)
@@ -42,7 +46,8 @@ public class CharacterGenerator : MonoBehaviour
         GameObject individualObject = new GameObject("Individual" + i);
         individualObject.transform.parent = transform;
 
-        visualize_individual(adn_eye, adn_head, adn_chest, adn_legs, adn_arms, i + 4, individualObject.transform);
+        // TODO : changer l'offset en fonction de l'épaisseur du personnage 
+        GenerateIndividualModel(adn_eye, adn_head, adn_chest, adn_legs, adn_arms, i + 4, individualObject.transform);
     }
 
     public void DestroyCharacter(int individualId){           
@@ -56,176 +61,193 @@ public class CharacterGenerator : MonoBehaviour
         }
     }
 
-    private void GenerateEyes(int[] adnEye, int offset, Transform parent)
+    private void GenerateEyes(int[] adnEye, int offsetBetweenIndividual, Transform parent)
     {
         int bitSize = adnEye[0] + adnEye[1];
         int bitNumber = adnEye[2] + adnEye[3];
-        CreateEyes(bitSize, bitNumber, offset, parent);
+        CreateEyes(bitSize, bitNumber, offsetBetweenIndividual, parent);
     }
 
-    private void GenerateHead(int[] adnHead, int offset, Transform parent)
+    private void GenerateHead(int[] adnHead, int offsetBetweenIndividual, Transform parent)
     {
         int bitShape = adnHead[0] + adnHead[1];
         int bitDeformY = adnHead[2];
         int bitDeformZ = adnHead[3];
-        CreateHead(bitShape, bitDeformY, bitDeformZ, offset, parent);
+        CreateHead(bitShape, bitDeformY, bitDeformZ, offsetBetweenIndividual, parent);
     }
 
-    private void GenerateChest(int[] adnChest, int offset, Transform parent)
+    private void GenerateChest(int[] adnChest, int offsetBetweenIndividual, Transform parent)
     {
         int bitForm = adnChest[0] + adnChest[1];
         int bitSizeY = adnChest[2];
         int bitSizeZ = adnChest[3];
-        CreateChest(bitForm, bitSizeY, bitSizeZ, offset, parent);
+        CreateChest(bitForm, bitSizeY, bitSizeZ, offsetBetweenIndividual, parent);
     }
 
-    private void GenerateLegs(int[] adnLegs, int offset, Transform parent)
+    private void GenerateLegs(int[] adnLegs, int offsetBetweenIndividual, Transform parent)
     {
         int bitNumber = adnLegs[0] + adnLegs[1];
         int bitSize = adnLegs[2] + adnLegs[3] + adnLegs[4] + adnLegs[5];
-        CreateLegs(bitSize, bitNumber, offset, parent);
+        CreateLegs(bitSize, bitNumber, offsetBetweenIndividual, parent);
     }
 
-    private void GenerateArms(int[] adnArms, int offset, Transform parent)
+    private void GenerateArms(int[] adnArms, int offsetBetweenIndividual, Transform parent)
     {
         int bitNumber = adnArms[0] + adnArms[1];
         int bitSize = adnArms[2] + adnArms[3];
-        CreateArms(bitSize, bitNumber, offset, parent);
+        CreateArms(bitSize, bitNumber, offsetBetweenIndividual, parent);
     }
 
-    private void CreateEyes(int size, int number, int offset, Transform parent)
+    private void InstantiateObject(string name, GameObject prefab, Vector3 position, Vector3 localScale, Vector3 localRotation, Transform parent)
     {
-        float nSize = (size + 1) * 0.1f * scale;
-        GameObject eye = null;
-        for (int i = 0; i <= number; i++)
+        GameObject gameObject;
+        gameObject = Instantiate(prefab, position, Quaternion.identity);
+        gameObject.name = name;
+        gameObject.transform.localScale = localScale;
+        gameObject.transform.localRotation = Quaternion.Euler(localRotation);
+        gameObject.transform.SetParent(parent);
+    }
+
+    private void CreateEyes(int size, int numberOfEyes, int offsetBetweenIndividual, Transform parent)
+    {
+        float eyesHeight = characterSize - 0.3f;
+        float HeadSizeOffsetZ = -.4f;
+        Vector3 relativePosition = new Vector3((float)offsetBetweenIndividual, eyesHeight, HeadSizeOffsetZ);
+        Vector3 positionWithoutOffset = modelObject.transform.position + relativePosition;
+        float eyeScale = (size + 1) * 0.1f * characterScale; // size + 1 car size pout être égal à 0
+
+        for (int i = 0; i <= numberOfEyes; i++)
         {
-            if (number == 0)
+            Vector3 position = positionWithoutOffset;
+            if (numberOfEyes != 0)
             {
-                eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3(0f + (float)offset, characterSize - 0.3f, -.4f), Quaternion.identity);
+                position.x += 
+                    (numberOfEyes == 2 && i == 2) ?
+                        0 :
+                        ((i + 1) % 2) * characterWidth - (i % 2) * characterWidth;
+                position.y += 
+                        (i < 2) ?
+                            0 :
+                            characterWidth;
             }
-            if (number == 1)
-            {
-                eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3((i % 2) * (-width) + ((i + 1) % 2) * width + (float)offset, characterSize - 0.3f, -.4f), Quaternion.identity);
-            }
-            if (number == 2)
-            {
-                if (i < 2)
-                {
-                    eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3((i % 2) * (-width) + ((i + 1) % 2) * width + (float)offset, characterSize - 0.3f, -.4f), Quaternion.identity);
-                }
-                else
-                {
-                    eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3(0f + (float)offset, characterSize - 0.3f + width, -.4f), Quaternion.identity);
-                }
-            }
-            if (number == 3)
-            {
-                eye = Instantiate(eyePrefab, modelObject.transform.position + new Vector3((i * width - (i % 2) * width) - width + (float)offset, (i % 2f) * width + characterSize - 0.3f, -.4f), Quaternion.identity);
-            }
-            eye.transform.localScale = new Vector3(nSize, nSize, nSize);
-            eye.transform.SetParent(parent);
+            int n = i + 1;
+            InstantiateObject("Eye" + n, eyePrefab, position, new Vector3(eyeScale, eyeScale, eyeScale), new Vector3(0f, 0f, 0f), parent);
         }
     }
 
-    private void CreateHead(int Shape, int DeformY, int DeformZ, int offset, Transform parent)
+    private void CreateHead(int Shape, int DeformSphapeByX, int DeformSphapeByY, int offsetBetweenIndividual, Transform parent)
     {
-        GameObject head;
-        Vector3 relativePosition = new Vector3(0f + (float)offset, characterSize - 0.3f, 0f);
+        float headHeight = characterSize - 0.3f;
+        Vector3 relativePosition = new Vector3((float)offsetBetweenIndividual, headHeight, 0f);
         Vector3 position = modelObject.transform.position + relativePosition;
+        float headScale = characterScale * .3f;
+
+        GameObject prefab;
         switch (Shape)
         {
             case 0:
-                head = Instantiate(headPrefab1, position, Quaternion.identity);
+                prefab = headPrefab1;
                 break;
             case 1:
-                head = Instantiate(headPrefab2, position, Quaternion.identity);
+                prefab = headPrefab2;
                 break;
             case 2:
-                head = Instantiate(headPrefab3, position, Quaternion.identity);
+                prefab = headPrefab3;
                 break;
             case 3:
-                head = Instantiate(headPrefab4, position, Quaternion.identity);
+                prefab = headPrefab4;
                 break;
             default:
                 // Handle invalid Shape values or provide a default behavior
                 Debug.LogWarning("Invalid Shape value. Using default headPrefab1.");
-                head = Instantiate(headPrefab1, position, Quaternion.identity);
+                prefab = headPrefab1;
                 break;
         }
-        head.transform.localScale = new Vector3(scale + (float)DeformY, scale + (float)DeformZ, scale);
-        head.transform.SetParent(parent);
+        Vector3 localScale = new Vector3(headScale + (float)DeformSphapeByX, headScale + (float)DeformSphapeByY, headScale);
+        InstantiateObject("Head", prefab, position, localScale, new Vector3(0f, 0f, 0f), parent);
     }
 
-    private void CreateChest(int bitForm, int bitSizeY, int bitSizeZ, int offset, Transform parent)
+    // avoir l'épaisseur de la tête pour un placement optimal
+    private void CreateChest(int Shape, int DeformSphapeByX, int DeformSphapeByY, int offsetBetweenIndividual, Transform parent)
     {
-        GameObject chest;
-        Vector3 relativePosition = new Vector3(0f + (float)offset, characterSize - 0.9f, 0f);
+        float chestHeight = characterSize - 0.9f;
+        float headScale = characterScale * .3f;
+        Vector3 relativePosition = new Vector3((float)offsetBetweenIndividual, chestHeight - headScale / 2, 0f);
         Vector3 position = modelObject.transform.position + relativePosition;
-        switch (bitForm)
+        float chestScale = characterScale * .9f;
+
+        GameObject prefab;
+        switch (Shape)
         {
             case 0:
-                chest = Instantiate(chestPrefab1, position, Quaternion.identity);
+                prefab = chestPrefab1;
                 break;
             case 1:
-                chest = Instantiate(chestPrefab2, position, Quaternion.identity);
+                prefab = chestPrefab2;
                 break;
             case 2:
-                chest = Instantiate(chestPrefab3, position, Quaternion.identity);
+                prefab = chestPrefab3;
                 break;
             case 3:
-                chest = Instantiate(chestPrefab4, position, Quaternion.identity);
+                prefab = chestPrefab4;
                 break;
             default:
                 // Handle invalid Shape values or provide a default behavior
-                Debug.LogWarning("Invalid Shape value. Using default headPrefab1.");
-                chest = Instantiate(headPrefab1, position, Quaternion.identity);
+                Debug.LogWarning("Invalid Shape value. Using default chestPrefab1.");
+                prefab = chestPrefab1;
                 break;
         }
-        chest.transform.localScale = new Vector3(scale + bitSizeY, scale + bitSizeZ * 0.3f, scale);
-        chest.transform.SetParent(parent);
+        Vector3 localScale = new Vector3(chestScale + (float)DeformSphapeByX, chestScale + (float)DeformSphapeByY * 0.3f , chestScale);
+        InstantiateObject("Chest", prefab, position, localScale, new Vector3(0f, 0f, 0f), parent);
     }
 
-    private void CreateArms(int size, int number, int offset, Transform parent)
+    private void CreateMembers(GameObject memberPrefab, string memberType, int numberOfMembers, Vector3 position, Vector3 localScale, Vector3 localRotation, Transform parent)
     {
-        float nSize = 0.2f * scale;
-        GameObject arm; 
-        for (int i = 0; i <= number; i++)
+        for (int i = 0; i <= numberOfMembers; i++)
         {
-            arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(width + (float)offset, characterSize - .6f - ((float)size + 1f) * 0.7f, -.1f + (float)i * 0.2f), Quaternion.identity);
-            arm.transform.localScale = new Vector3(nSize, (float)size * 0.2f, nSize);
-            arm.transform.localRotation = Quaternion.Euler(new Vector3(0f, 15f, 5f));
-            arm.transform.SetParent(parent);
-
-            arm = Instantiate(armPrefab, modelObject.transform.position + new Vector3(-width + (float)offset, characterSize - .6f - ((float)size + 1f) * 0.7f, -.1f + (float)i * 0.2f), Quaternion.identity);
-            arm.transform.localScale = new Vector3(nSize, (float)size * 0.2f, nSize);
-            arm.transform.localRotation = Quaternion.Euler(new Vector3(0f, -15f, -5f));
-            arm.transform.SetParent(parent);
+            float offsetBetweenMembers = (float)i * 0.2f;
+            int n = i + 1;
+            InstantiateObject(memberType + n, memberPrefab, position + new Vector3(characterWidth, 0.0f, offsetBetweenMembers), localScale, localRotation, parent);
+            int j = numberOfMembers + n + 1;
+            InstantiateObject(memberType + j, memberPrefab, position + new Vector3(-characterWidth, 0.0f, offsetBetweenMembers), localScale, -localRotation, parent);
         }
     }
 
-    private void CreateLegs(int size, int number, int offset, Transform parent)
+    // avoir la position et la taille et l'épaissseur de la poitrine pour bien placer les bras au niveau 'd'épaules'
+    private void CreateArms(int length, int numberOfArms, int offsetBetweenIndividual, Transform parent)
     {
-        float nSize = 0.2f * scale;
-        GameObject leg;
-        for (int i = 0; i <= number; i++)
-        {
-            leg = Instantiate(legPrefab, modelObject.transform.position + new Vector3(width + (float)offset, characterSize -1.2f-(float)size * 0.2f - .5f, -.1f + (float)i * 0.2f), Quaternion.identity);
-            leg.transform.localScale = new Vector3(nSize, (float)size * 0.15f + 1f, nSize);
-            leg.transform.SetParent(parent);
+        float armHeight = characterSize - .6f;
+        float armThickness = 0.1f * characterScale;
+        float armLength = (float)(length + 1f) * 0.2f * characterSize;
+        float chestdSizeOffsetZ = -.1f;
+        Vector3 position = modelObject.transform.position + new Vector3((float)offsetBetweenIndividual, armHeight, chestdSizeOffsetZ) ;
+        Vector3 localScale = new Vector3(armThickness, armLength, armThickness);
+        Vector3 localRotation = new Vector3(0f, 15f, 5f);
 
-            leg = Instantiate(legPrefab, modelObject.transform.position + new Vector3(-width + (float)offset, characterSize -1.2f -(float)size * 0.2f - .5f, -.1f + (float)i * 0.2f), Quaternion.identity);
-            leg.transform.localScale = new Vector3(nSize, (float)size * 0.15f + 1f, nSize);
-            leg.transform.SetParent(parent);
-        }
+        CreateMembers(armPrefab, "Arm", numberOfArms, position, localScale, localRotation, parent);
     }
 
-    public void visualize_individual(int[] adnEye, int[] adnHead, int[] adnChest, int[] adnLegs, int[] adnArms, int offset, Transform parent)
+    // TODO : avoir la position et la taille et l'épaisseur en Z (pour l'offset entre les jambes) et en X (pour la séparation entre les groupes) de la poitrine pour bien placer les jambes en dessous
+    private void CreateLegs(int length, int numberOfLegs, int offsetBetweenIndividual, Transform parent)
     {
-        GenerateEyes(adnEye, offset, parent);
-        GenerateHead(adnHead, offset, parent);
-        GenerateChest(adnChest, offset, parent);
-        GenerateArms(adnArms, offset, parent);
-        GenerateLegs(adnLegs, offset, parent);
+        float legHeight = characterSize - 1.4f;
+        float legThickness = 0.2f * characterScale;
+        float legLength = (float)(length + 1f) * 0.05f * characterSize;
+        float chestdSizeOffsetZ = -.1f;
+        Vector3 position = modelObject.transform.position + new Vector3((float)offsetBetweenIndividual, legHeight, chestdSizeOffsetZ) ;
+        Vector3 localScale = new Vector3(legThickness, legLength, legThickness);
+        Vector3 localRotation = new Vector3(0f, 0f, 0f);
+
+        CreateMembers(legPrefab, "Leg", numberOfLegs, position, localScale, localRotation, parent);
+    }
+
+    public void GenerateIndividualModel(int[] adnEye, int[] adnHead, int[] adnChest, int[] adnLegs, int[] adnArms, int offsetBetweenIndividual, Transform parent)
+    {
+        GenerateEyes(adnEye, offsetBetweenIndividual, parent);
+        GenerateHead(adnHead, offsetBetweenIndividual, parent);
+        GenerateChest(adnChest, offsetBetweenIndividual, parent);
+        GenerateArms(adnArms, offsetBetweenIndividual, parent);
+        GenerateLegs(adnLegs, offsetBetweenIndividual, parent);
     }
 
 }
