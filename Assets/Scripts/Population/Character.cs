@@ -94,6 +94,7 @@ public class Character : MonoBehaviour
         public Genome genome;
         public int fitnessScore;
         public int remainingLife = 180; // frame
+        public int individualId;
         public CapacitiesStatistics statistics = new CapacitiesStatistics(); // en fonction des gènes de l'individu il aura des stats de capacités différentes
 
         public Individual(){
@@ -102,6 +103,10 @@ public class Character : MonoBehaviour
 
         public Individual(Genome g){
             genome.Set(g);
+        }
+
+        public void SetId(int id){
+            individualId = id;
         }
 
         public int GenomeSize(){

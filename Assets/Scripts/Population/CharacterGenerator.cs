@@ -45,8 +45,8 @@ public class CharacterGenerator : MonoBehaviour
         visualize_individual(adn_eye, adn_head, adn_chest, adn_legs, adn_arms, i + 4, individualObject.transform);
     }
 
-    void Destroy(int i){           
-        GameObject parentObject = GameObject.Find("Individual" + i);
+    void Destroy(int individualId){           
+        GameObject parentObject = GameObject.Find("Individual" + individualId);
         if (parentObject != null)
         {
             foreach (Transform child in parentObject.transform)
