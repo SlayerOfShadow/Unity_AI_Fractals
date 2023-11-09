@@ -11,33 +11,42 @@ public class Character : MonoBehaviour
     public class Genome{
         private int[] _value;
         private int _size = 26;
+
         public Genome(int[] value){
             _value = value;
         }
+
         public Genome(){
             _value = new int[_size];
         }
+
         public Genome(Genome g){
             _value = g.Get();
         }
+
         public void Set(Genome g){
             for (int i = 0; i < _size; i++)
             {
                 _value[i] = g.GetIndex(i);
             }
         }
+
         public int Size(){
             return _size;
         }
+
         public int[] Get(){
             return _value;
         }
+
         public int GetIndex(int i){
             return _value[i];
         }
+
         public void SetByIndex(int i, int value){
             _value[i] = value;
         }
+        
         public int[] PartialGenome(int start, int number_of_elements){
             return Enumerable.Range(start, number_of_elements).Select(i => _value[i]).ToArray();
         }
@@ -67,6 +76,7 @@ public class Character : MonoBehaviour
         public int vision;
         public int smart;
         public int resistance;
+
         public CapacitiesStatistics(){
             strength = 0 ;
             speed = 0 ;
@@ -82,6 +92,7 @@ public class Character : MonoBehaviour
         public double bit;
         public double swap;
         public double inversion;
+
         public MutationRate(double bit_mutation, double swap_mutation, double inversion_mutation)
         {
             bit = bit_mutation;
@@ -116,6 +127,7 @@ public class Character : MonoBehaviour
         public void UpdateRemainingLife(){
             remainingLife--;
         }
+
         public int GetRemainingLife(){
             return remainingLife;
         }
@@ -248,17 +260,5 @@ public class Character : MonoBehaviour
             Debug.Log("Résistance : "+ statistics.resistance);
             Debug.Log("Intelligence : "+ statistics.smart);
         }
-    }
-
-
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

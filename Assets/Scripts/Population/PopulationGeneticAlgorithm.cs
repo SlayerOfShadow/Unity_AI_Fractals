@@ -170,15 +170,4 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
             index_parent2 = UnityEngine.Random.Range(0, individualsSorted.Count - 1);
         }
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

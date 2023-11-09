@@ -27,10 +27,10 @@ public class CharacterGenerator : MonoBehaviour
     // Start is called before the first frame update
     public void GenerateCharacter(int i, Character.Individual individual)
     {
-        int[] adn_eye =  individual.genome.PartialGenome(0, 4);
-        int[] adn_head =  individual.genome.PartialGenome(4, 4);
-        int[] adn_chest =  individual.genome.PartialGenome(8, 4);
-        int[] adn_legs =  individual.genome.PartialGenome(12, 6);
+        int[] adn_eye = individual.genome.PartialGenome(0, 4);
+        int[] adn_head = individual.genome.PartialGenome(4, 4);
+        int[] adn_chest = individual.genome.PartialGenome(8, 4);
+        int[] adn_legs = individual.genome.PartialGenome(12, 6);
         int[] adn_arms = individual.genome.PartialGenome(18, 4);
         
         Debug.Log("Génome des yeux : " + string.Join(", ", adn_eye));
@@ -55,14 +55,6 @@ public class CharacterGenerator : MonoBehaviour
             }
         }
     }
-
-    void Start(){}
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
 
     private void GenerateEyes(int[] adnEye, int offset, Transform parent)
     {

@@ -23,7 +23,6 @@ public class Population : MonoBehaviour
     public bool smart = false;
     public bool resistance = false;
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +34,6 @@ public class Population : MonoBehaviour
         {
             for (int i = 0; i < populationSize; i++){
                 Character.Individual individual = new Character.Individual();
-                individual.GenerateGenome();
                 individual.SetId(i);
                 Character.Capacities wanted_properties = new Character.Capacities(strength, speed, health, vision, smart, resistance);
                 individual.evaluate_statistics();
@@ -86,8 +84,6 @@ public class Population : MonoBehaviour
 
     void AddNewIndividual(){
         Character.Individual individual = new Character.Individual();
-        individual.GenerateGenome();
-        // attention si on change les properties il faut réévaluer tous les fitness score
         individual.SetId(populationSize);
         Character.Capacities wanted_properties = new Character.Capacities(strength, speed, health, vision, smart, resistance);
         Character.MutationRate mutation_rate = new Character.MutationRate(bit_mutation_rate, swap_mutation_rate, inversion_mutation_rate);
@@ -104,6 +100,4 @@ public class Population : MonoBehaviour
             navMeshAgentController.SetDestination(destination);
         }
     }
-
-
 }
