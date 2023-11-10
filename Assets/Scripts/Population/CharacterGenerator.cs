@@ -20,15 +20,32 @@ public class CharacterGenerator : MonoBehaviour
 
     public GameObject modelObject;
 
-    public float characterSize = 1.8f;
-    public float characterScale = .5f;
-    public float characterWidth = 0.2f;
 
+
+    class CharacterDimension
+    {
+        public float size = 1.8f;
+        public float width = 1f;
+    }
+
+
+    CharacterDimension characterDimension = new CharacterDimension();
+
+    float eyeProportion = 0.03f;
+    float headProportion = 0.3f; 
+    float chestProportion = 0.5f; 
+
+    float armLengthProportion = 0.1f; 
+    float legLengthProportion = 0.2f;
+
+    float armWidthProportion = 0.05f;
+    float legWidthProportion = 0.08f;
+
+    float eyeOffsetProportion = 0.4f;
+    float memberOffset = 0.6f;
 
     // TODO : créer une classe qui a une position, un nom, une size, une liste de prefab, un nombre d'éléments, une rotation, etc
-    // TODO : créer un enum pour avoir les informations importantes sur le personnage comme sa taille, son épaisseur, etc
 
-    // Start is called before the first frame update
     public void GenerateCharacter(int i, Character.Individual individual)
     {
         int[] adn_eye = individual.genome.PartialGenome(0, 4);
@@ -47,7 +64,7 @@ public class CharacterGenerator : MonoBehaviour
         individualObject.transform.parent = transform;
 
         // TODO : changer l'offset en fonction de l'épaisseur du personnage 
-        GenerateIndividualModel(adn_eye, adn_head, adn_chest, adn_legs, adn_arms, i + 4, individualObject.transform);
+        GenerateIndividualModel(adn_eye, adn_head, adn_chest, adn_legs, adn_arms, i, individualObject.transform);
     }
 
     public void DestroyCharacter(int individualId){           
@@ -110,11 +127,15 @@ public class CharacterGenerator : MonoBehaviour
 
     private void CreateEyes(int size, int numberOfEyes, int offsetBetweenIndividual, Transform parent)
     {
-        float eyesHeight = characterSize - 0.3f;
-        float HeadSizeOffsetZ = -.4f;
-        Vector3 relativePosition = new Vector3((float)offsetBetweenIndividual, eyesHeight, HeadSizeOffsetZ);
+        float headLength = characterDimension.size * headProportion;
+        float headWidth = characterDimension.width * headProportion;
+        Vector3 relativePosition = new Vector3(
+            (float)offsetBetweenIndividual,
+            characterDimension.size - headLength / 2.0f,
+            - headWidth / 2.0f);
         Vector3 positionWithoutOffset = modelObject.transform.position + relativePosition;
-        float eyeScale = (size + 1) * 0.1f * characterScale; // size + 1 car size pout être égal à 0
+        float eyeGenScale = (size + 1) * characterDimension.size * eyeProportion; // size + 1 car size peut être égal à 0
+        float eyeOffset = headWidth * eyeOffsetProportion;
 
         for (int i = 0; i <= numberOfEyes; i++)
         {
@@ -124,23 +145,31 @@ public class CharacterGenerator : MonoBehaviour
                 position.x += 
                     (numberOfEyes == 2 && i == 2) ?
                         0 :
-                        ((i + 1) % 2) * characterWidth - (i % 2) * characterWidth;
+                        ((i + 1) % 2) * eyeOffset - (i % 2) * eyeOffset;
                 position.y += 
                         (i < 2) ?
                             0 :
-                            characterWidth;
+                            eyeOffset;
             }
             int n = i + 1;
-            InstantiateObject("Eye" + n, eyePrefab, position, new Vector3(eyeScale, eyeScale, eyeScale), new Vector3(0f, 0f, 0f), parent);
+            InstantiateObject(
+                "Eye" + n,
+                eyePrefab,
+                position,
+                new Vector3(eyeGenScale, eyeGenScale, eyeGenScale),
+                new Vector3(0f, 0f, 0f),
+                parent);
         }
     }
 
     private void CreateHead(int Shape, int DeformSphapeByX, int DeformSphapeByY, int offsetBetweenIndividual, Transform parent)
     {
-        float headHeight = characterSize - 0.3f;
-        Vector3 relativePosition = new Vector3((float)offsetBetweenIndividual, headHeight, 0f);
+        float headLength = characterDimension.size * headProportion;
+        Vector3 relativePosition = new Vector3(
+            (float)offsetBetweenIndividual,
+            characterDimension.size - headLength / 2.0f,
+            0f);
         Vector3 position = modelObject.transform.position + relativePosition;
-        float headScale = characterScale * .3f;
 
         GameObject prefab;
         switch (Shape)
@@ -163,18 +192,25 @@ public class CharacterGenerator : MonoBehaviour
                 prefab = headPrefab1;
                 break;
         }
-        Vector3 localScale = new Vector3(headScale + (float)DeformSphapeByX, headScale + (float)DeformSphapeByY, headScale);
+
+        float headWidth = characterDimension.width * headProportion;
+        Vector3 localScale = new Vector3(
+            headWidth + (float)DeformSphapeByX * headProportion,
+            headLength + (float)DeformSphapeByY * headProportion,
+            headWidth);
+        
         InstantiateObject("Head", prefab, position, localScale, new Vector3(0f, 0f, 0f), parent);
     }
 
-    // avoir l'épaisseur de la tête pour un placement optimal
     private void CreateChest(int Shape, int DeformSphapeByX, int DeformSphapeByY, int offsetBetweenIndividual, Transform parent)
     {
-        float chestHeight = characterSize - 0.9f;
-        float headScale = characterScale * .3f;
-        Vector3 relativePosition = new Vector3((float)offsetBetweenIndividual, chestHeight - headScale / 2, 0f);
+        float headLength = characterDimension.size * headProportion;
+        float chestLength = characterDimension.size * chestProportion;
+        Vector3 relativePosition = new Vector3(
+            (float)offsetBetweenIndividual,
+            characterDimension.size - headLength - chestLength / 2f,
+            0f);
         Vector3 position = modelObject.transform.position + relativePosition;
-        float chestScale = characterScale * .9f;
 
         GameObject prefab;
         switch (Shape)
@@ -197,48 +233,94 @@ public class CharacterGenerator : MonoBehaviour
                 prefab = chestPrefab1;
                 break;
         }
-        Vector3 localScale = new Vector3(chestScale + (float)DeformSphapeByX, chestScale + (float)DeformSphapeByY * 0.3f , chestScale);
+        float chestWidth = characterDimension.width * chestProportion;
+        Vector3 localScale = new Vector3(
+            chestWidth + (float)DeformSphapeByX * chestProportion,
+            chestLength + (float)DeformSphapeByY * chestProportion,
+            chestWidth);
         InstantiateObject("Chest", prefab, position, localScale, new Vector3(0f, 0f, 0f), parent);
     }
 
-    private void CreateMembers(GameObject memberPrefab, string memberType, int numberOfMembers, Vector3 position, Vector3 localScale, Vector3 localRotation, Transform parent)
+    private void CreateMembers(GameObject memberPrefab, string memberType, int numberOfMembers, float memberWidth, Vector3 position, Vector3 localScale, Vector3 localRotation, Transform parent)
     {
+        float chestWidth = characterDimension.width * chestProportion;
+        float offsetBestweenGroupMembers = chestWidth * memberOffset - memberWidth;
+        float miniOffset;
+        switch(numberOfMembers)
+        {
+            case 0 :
+                miniOffset = 0f;
+                break;
+            case 1 :
+                miniOffset = 0.5f; 
+                break;
+            case 2 :
+                miniOffset = 0.33f;
+                break;
+            default :
+                Debug.Log("Invalid number of members, set miniOffset to 0f");
+                miniOffset = 0f;
+                break;
+        }
+        float offsetBetweenMembers = (chestWidth - memberWidth) * miniOffset;
         for (int i = 0; i <= numberOfMembers; i++)
         {
-            float offsetBetweenMembers = (float)i * 0.2f;
+            float positionMemberInZ = 
+                (numberOfMembers == 1 && i == 0) ?
+                - offsetBetweenMembers : 
+                offsetBetweenMembers * ((float)i - (float)numberOfMembers + 1f);
             int n = i + 1;
-            InstantiateObject(memberType + n, memberPrefab, position + new Vector3(characterWidth, 0.0f, offsetBetweenMembers), localScale, localRotation, parent);
+            InstantiateObject(
+                memberType + n,
+                memberPrefab,
+                position + new Vector3(offsetBestweenGroupMembers, 0.0f, positionMemberInZ),
+                localScale,
+                localRotation,
+                parent);
             int j = numberOfMembers + n + 1;
-            InstantiateObject(memberType + j, memberPrefab, position + new Vector3(-characterWidth, 0.0f, offsetBetweenMembers), localScale, -localRotation, parent);
+            InstantiateObject(
+                memberType + j,
+                memberPrefab,
+                position + new Vector3(- offsetBestweenGroupMembers, 0.0f, positionMemberInZ),
+                localScale,
+                - localRotation,
+                parent);
         }
     }
 
-    // avoir la position et la taille et l'épaissseur de la poitrine pour bien placer les bras au niveau 'd'épaules'
     private void CreateArms(int length, int numberOfArms, int offsetBetweenIndividual, Transform parent)
     {
-        float armHeight = characterSize - .6f;
-        float armThickness = 0.1f * characterScale;
-        float armLength = (float)(length + 1f) * 0.2f * characterSize;
-        float chestdSizeOffsetZ = -.1f;
-        Vector3 position = modelObject.transform.position + new Vector3((float)offsetBetweenIndividual, armHeight, chestdSizeOffsetZ) ;
-        Vector3 localScale = new Vector3(armThickness, armLength, armThickness);
+        float headLength = characterDimension.size * headProportion;
+        float armLength = characterDimension.size * armLengthProportion;
+        float armGenLength = (float)(length + 1f) * armLength;
+        Vector3 relativePosition = new Vector3(
+            (float)offsetBetweenIndividual,
+            characterDimension.size - headLength - armGenLength / 2f,
+            0f);
+        Vector3 position = modelObject.transform.position + relativePosition;
+        float armWidth = characterDimension.width * armWidthProportion;
+        Vector3 localScale = new Vector3(armWidth, armGenLength, armWidth);
         Vector3 localRotation = new Vector3(0f, 15f, 5f);
 
-        CreateMembers(armPrefab, "Arm", numberOfArms, position, localScale, localRotation, parent);
+        CreateMembers(armPrefab, "Arm", numberOfArms, armWidth, position, localScale, localRotation, parent);
     }
 
-    // TODO : avoir la position et la taille et l'épaisseur en Z (pour l'offset entre les jambes) et en X (pour la séparation entre les groupes) de la poitrine pour bien placer les jambes en dessous
     private void CreateLegs(int length, int numberOfLegs, int offsetBetweenIndividual, Transform parent)
     {
-        float legHeight = characterSize - 1.4f;
-        float legThickness = 0.2f * characterScale;
-        float legLength = (float)(length + 1f) * 0.05f * characterSize;
-        float chestdSizeOffsetZ = -.1f;
-        Vector3 position = modelObject.transform.position + new Vector3((float)offsetBetweenIndividual, legHeight, chestdSizeOffsetZ) ;
-        Vector3 localScale = new Vector3(legThickness, legLength, legThickness);
+        float chestLength = characterDimension.size * chestProportion;
+        float headLength = characterDimension.size * headProportion;
+        float legLength = characterDimension.size * legLengthProportion;
+        float legGenLength = (float)(length + 1f) * legLength;
+        Vector3 relativePosition = new Vector3(
+            (float)offsetBetweenIndividual,
+            characterDimension.size - headLength - chestLength - legGenLength / 2f,
+            0f);
+        Vector3 position = modelObject.transform.position + relativePosition;
+        float legWidth = characterDimension.width * legWidthProportion;
+        Vector3 localScale = new Vector3(legWidth, legGenLength, legWidth);
         Vector3 localRotation = new Vector3(0f, 0f, 0f);
 
-        CreateMembers(legPrefab, "Leg", numberOfLegs, position, localScale, localRotation, parent);
+        CreateMembers(legPrefab, "Leg", numberOfLegs, legWidth, position, localScale, localRotation, parent);
     }
 
     public void GenerateIndividualModel(int[] adnEye, int[] adnHead, int[] adnChest, int[] adnLegs, int[] adnArms, int offsetBetweenIndividual, Transform parent)
