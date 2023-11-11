@@ -96,11 +96,10 @@ public class CharacterGenerator : MonoBehaviour
         GameObject individualObject = new GameObject("Individual" + i);
         individualObject.transform.parent = transform;
 
-        // TODO : changer l'offset en fonction de l'épaisseur du personnage 
-        GenerateIndividualModel(individual.genome, i, individualObject.transform);
+        GenerateIndividualModel(individual.genome, (float)i * characterDimension.width, individualObject.transform);
     }
 
-    public void GenerateIndividualModel(Character.Genome genome, int offsetBetweenIndividual, Transform parent)
+    public void GenerateIndividualModel(Character.Genome genome, float offsetBetweenIndividual, Transform parent)
     {
         CreateEyes(
             genome.GetIndex(Population.GenomeInformations.eyeSize1) + genome.GetIndex(Population.GenomeInformations.eyeSize2),
@@ -131,12 +130,12 @@ public class CharacterGenerator : MonoBehaviour
             parent);
     }
 
-    private void CreateEyes(int size, int numberOfEyes, int offsetBetweenIndividual, Transform parent)
+    private void CreateEyes(int size, int numberOfEyes, float offsetBetweenIndividual, Transform parent)
     {
         float headLength = characterDimension.size * characterDimension.headProportion;
         float headWidth = characterDimension.width * characterDimension.headProportion;
         Vector3 relativePosition = new Vector3(
-            (float)offsetBetweenIndividual,
+            offsetBetweenIndividual,
             characterDimension.size - headLength / 2.0f,
             - headWidth / 2.0f);
         Vector3 positionWithoutOffset = modelObject.transform.position + relativePosition;
@@ -169,11 +168,11 @@ public class CharacterGenerator : MonoBehaviour
         }
     }
 
-    private void CreateHead(int Shape, int DeformSphapeByX, int DeformSphapeByY, int offsetBetweenIndividual, Transform parent)
+    private void CreateHead(int Shape, int DeformSphapeByX, int DeformSphapeByY, float offsetBetweenIndividual, Transform parent)
     {
         float headLength = characterDimension.size * characterDimension.headProportion;
         Vector3 relativePosition = new Vector3(
-            (float)offsetBetweenIndividual,
+            offsetBetweenIndividual,
             characterDimension.size - headLength / 2.0f,
             0f);
         Vector3 position = modelObject.transform.position + relativePosition;
@@ -210,12 +209,12 @@ public class CharacterGenerator : MonoBehaviour
         head.InstantiateObject();
     }
 
-    private void CreateChest(int Shape, int DeformSphapeByX, int DeformSphapeByY, int offsetBetweenIndividual, Transform parent)
+    private void CreateChest(int Shape, int DeformSphapeByX, int DeformSphapeByY, float offsetBetweenIndividual, Transform parent)
     {
         float headLength = characterDimension.size * characterDimension.headProportion;
         float chestLength = characterDimension.size * characterDimension.chestProportion;
         Vector3 relativePosition = new Vector3(
-            (float)offsetBetweenIndividual,
+            offsetBetweenIndividual,
             characterDimension.size - headLength - chestLength / 2f,
             0f);
         Vector3 position = modelObject.transform.position + relativePosition;
@@ -302,13 +301,13 @@ public class CharacterGenerator : MonoBehaviour
         }
     }
 
-    private void CreateArms(int length, int numberOfArms, int offsetBetweenIndividual, Transform parent)
+    private void CreateArms(int length, int numberOfArms, float offsetBetweenIndividual, Transform parent)
     {
         float headLength = characterDimension.size * characterDimension.headProportion;
         float armLength = characterDimension.size * characterDimension.armLengthProportion;
         float armGenLength = (float)(length + 1f) * armLength;
         Vector3 relativePosition = new Vector3(
-            (float)offsetBetweenIndividual,
+            offsetBetweenIndividual,
             characterDimension.size - headLength - armGenLength / 2f,
             0f);
         Vector3 position = modelObject.transform.position + relativePosition;
@@ -319,14 +318,14 @@ public class CharacterGenerator : MonoBehaviour
         CreateMembers(armPrefab, "Arm", numberOfArms, armWidth, position, localScale, localRotation, parent);
     }
 
-    private void CreateLegs(int length, int numberOfLegs, int offsetBetweenIndividual, Transform parent)
+    private void CreateLegs(int length, int numberOfLegs, float offsetBetweenIndividual, Transform parent)
     {
         float chestLength = characterDimension.size * characterDimension.chestProportion;
         float headLength = characterDimension.size * characterDimension.headProportion;
         float legLength = characterDimension.size * characterDimension.legLengthProportion;
         float legGenLength = (float)(length + 1f) * legLength;
         Vector3 relativePosition = new Vector3(
-            (float)offsetBetweenIndividual,
+            offsetBetweenIndividual,
             characterDimension.size - headLength - chestLength - legGenLength / 2f,
             0f);
         Vector3 position = modelObject.transform.position + relativePosition;
