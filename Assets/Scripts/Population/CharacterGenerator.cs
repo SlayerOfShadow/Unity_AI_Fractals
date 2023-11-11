@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class CharacterGenerator : MonoBehaviour
 {
-
     public GameObject eyePrefab; 
     public GameObject headPrefab1; 
     public GameObject headPrefab2; 
@@ -19,8 +18,6 @@ public class CharacterGenerator : MonoBehaviour
     public GameObject armPrefab;
 
     public GameObject modelObject;
-
-
 
     class CharacterDimension
     {
@@ -47,23 +44,11 @@ public class CharacterGenerator : MonoBehaviour
 
     public void GenerateCharacter(int i, Character.Individual individual)
     {
-        int[] adn_eye = individual.genome.PartialGenome(0, 4);
-        int[] adn_head = individual.genome.PartialGenome(4, 4);
-        int[] adn_chest = individual.genome.PartialGenome(8, 4);
-        int[] adn_legs = individual.genome.PartialGenome(12, 6);
-        int[] adn_arms = individual.genome.PartialGenome(18, 4);
-        
-        Debug.Log("Génome des yeux : " + string.Join(", ", adn_eye));
-        Debug.Log("Génome de la tête : " + string.Join(", ", adn_head));
-        Debug.Log("Génome du torse : " + string.Join(", ", adn_chest));
-        Debug.Log("Génome des jambes : " + string.Join(", ", adn_legs));
-        Debug.Log("Génome des bras : " + string.Join(", ", adn_arms));
-
         GameObject individualObject = new GameObject("Individual" + i);
         individualObject.transform.parent = transform;
 
         // TODO : changer l'offset en fonction de l'épaisseur du personnage 
-        GenerateIndividualModel(adn_eye, adn_head, adn_chest, adn_legs, adn_arms, i, individualObject.transform);
+        GenerateIndividualModel(individual.genome, i, individualObject.transform);
     }
 
     public void DestroyCharacter(int individualId){           
@@ -75,43 +60,6 @@ public class CharacterGenerator : MonoBehaviour
                 GameObject.Destroy(child.gameObject);
             }
         }
-    }
-
-    private void GenerateEyes(int[] adnEye, int offsetBetweenIndividual, Transform parent)
-    {
-        int bitSize = adnEye[0] + adnEye[1];
-        int bitNumber = adnEye[2] + adnEye[3];
-        CreateEyes(bitSize, bitNumber, offsetBetweenIndividual, parent);
-    }
-
-    private void GenerateHead(int[] adnHead, int offsetBetweenIndividual, Transform parent)
-    {
-        int bitShape = adnHead[0] + adnHead[1];
-        int bitDeformY = adnHead[2];
-        int bitDeformZ = adnHead[3];
-        CreateHead(bitShape, bitDeformY, bitDeformZ, offsetBetweenIndividual, parent);
-    }
-
-    private void GenerateChest(int[] adnChest, int offsetBetweenIndividual, Transform parent)
-    {
-        int bitForm = adnChest[0] + adnChest[1];
-        int bitSizeY = adnChest[2];
-        int bitSizeZ = adnChest[3];
-        CreateChest(bitForm, bitSizeY, bitSizeZ, offsetBetweenIndividual, parent);
-    }
-
-    private void GenerateLegs(int[] adnLegs, int offsetBetweenIndividual, Transform parent)
-    {
-        int bitNumber = adnLegs[0] + adnLegs[1];
-        int bitSize = adnLegs[2] + adnLegs[3] + adnLegs[4] + adnLegs[5];
-        CreateLegs(bitSize, bitNumber, offsetBetweenIndividual, parent);
-    }
-
-    private void GenerateArms(int[] adnArms, int offsetBetweenIndividual, Transform parent)
-    {
-        int bitNumber = adnArms[0] + adnArms[1];
-        int bitSize = adnArms[2] + adnArms[3];
-        CreateArms(bitSize, bitNumber, offsetBetweenIndividual, parent);
     }
 
     private void InstantiateObject(string name, GameObject prefab, Vector3 position, Vector3 localScale, Vector3 localRotation, Transform parent)
@@ -322,14 +270,35 @@ public class CharacterGenerator : MonoBehaviour
         CreateMembers(legPrefab, "Leg", numberOfLegs, legWidth, position, localScale, localRotation, parent);
     }
 
-    public void GenerateIndividualModel(int[] adnEye, int[] adnHead, int[] adnChest, int[] adnLegs, int[] adnArms, int offsetBetweenIndividual, Transform parent)
+    public void GenerateIndividualModel(Character.Genome genome, int offsetBetweenIndividual, Transform parent)
     {
-        GenerateEyes(adnEye, offsetBetweenIndividual, parent);
-        GenerateHead(adnHead, offsetBetweenIndividual, parent);
-        GenerateChest(adnChest, offsetBetweenIndividual, parent);
-        GenerateArms(adnArms, offsetBetweenIndividual, parent);
-        GenerateLegs(adnLegs, offsetBetweenIndividual, parent);
+        CreateEyes(
+            genome.GetIndex(Population.GenomeInformations.eyeSize1) + genome.GetIndex(Population.GenomeInformations.eyeSize2),
+            genome.GetIndex(Population.GenomeInformations.eyeNumber1) + genome.GetIndex(Population.GenomeInformations.eyeNumber2),
+            offsetBetweenIndividual,
+            parent);
+        CreateHead(
+            genome.GetIndex(Population.GenomeInformations.headShape1) + genome.GetIndex(Population.GenomeInformations.headShape2),
+            genome.GetIndex(Population.GenomeInformations.headDeformByY),
+            genome.GetIndex(Population.GenomeInformations.headDeformByZ),
+            offsetBetweenIndividual,
+            parent);
+        CreateChest(
+            genome.GetIndex(Population.GenomeInformations.chestShape1) + genome.GetIndex(Population.GenomeInformations.chestShape2),
+            genome.GetIndex(Population.GenomeInformations.chestDeformByY),
+            genome.GetIndex(Population.GenomeInformations.chestDeformByZ),
+            offsetBetweenIndividual,
+            parent);
+        CreateArms(
+            genome.GetIndex(Population.GenomeInformations.armSize1) + genome.GetIndex(Population.GenomeInformations.armSize2),
+            genome.GetIndex(Population.GenomeInformations.armNumber1) + genome.GetIndex(Population.GenomeInformations.armNumber2),
+            offsetBetweenIndividual,
+            parent);
+        CreateLegs(
+            genome.GetIndex(Population.GenomeInformations.legSize1) + genome.GetIndex(Population.GenomeInformations.legSize2),
+            genome.GetIndex(Population.GenomeInformations.legNumber1) + genome.GetIndex(Population.GenomeInformations.legNumber2),
+            offsetBetweenIndividual,
+            parent);
     }
-
 }
 

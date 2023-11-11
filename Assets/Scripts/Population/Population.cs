@@ -23,6 +23,30 @@ public class Population : MonoBehaviour
     public bool smart = false;
     public bool resistance = false;
 
+    public enum GenomeInformations
+    {
+        eyeSize1 = 0,
+        eyeSize2 = 1,
+        eyeNumber1 = 2,
+        eyeNumber2 = 3,
+        headShape1 = 4,
+        headShape2 = 5,
+        headDeformByY = 6,
+        headDeformByZ = 7,
+        chestShape1 = 8,
+        chestShape2 = 9,
+        chestDeformByY = 10,
+        chestDeformByZ = 11,
+        armSize1 = 11,
+        armSize2 = 12,
+        armNumber1 = 13,
+        armNumber2 = 14,
+        legSize1 = 16,
+        legSize2 = 17,
+        legNumber1 = 18,
+        legNumber2 = 19,
+    }
+
     // Start is called before the first frame update
     void Start()
     {

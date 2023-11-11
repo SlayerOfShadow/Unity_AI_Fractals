@@ -43,6 +43,10 @@ public class Character : MonoBehaviour
             return _value[i];
         }
 
+        public int GetIndex(Population.GenomeInformations i){
+            return _value[(int)i];
+        }
+
         public void SetByIndex(int i, int value){
             _value[i] = value;
         }
@@ -59,6 +63,7 @@ public class Character : MonoBehaviour
         public bool vision;
         public bool smart;
         public bool resistance;
+
         public Capacities(bool _strength, bool _speed, bool _health, bool _vision, bool _smart, bool _resistance){
             strength = _strength;
             speed = _speed;
