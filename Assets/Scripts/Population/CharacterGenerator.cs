@@ -41,8 +41,6 @@ public class CharacterGenerator : MonoBehaviour
 
     CharacterInformations characterInformations = new CharacterInformations();
 
-    // TODO : endroit où ranger parent offset et Position genre une IndividualBody et là tu peux mettre geenrateIndiv dedans
-
     class BodyPart
     {
         private string _name;
@@ -120,13 +118,6 @@ public class CharacterGenerator : MonoBehaviour
         public void SetScale(Vector3 scale)
         {
             _scale = scale;
-        }
-
-        public void MultiplyScale(Vector3 scalar)
-        {
-            _scale.x *= scalar.x;
-            _scale.y *= scalar.y;
-            _scale.z *= scalar.z;
         }
         
         public void SetRotation(Vector3 rotation)

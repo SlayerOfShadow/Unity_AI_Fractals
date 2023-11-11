@@ -428,7 +428,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AddIndividual: 0
-  populationSize: 6
+  populationSize: 3
   fitness_algorithm: 1
   bit_mutation_rate: 0.1
   swap_mutation_rate: 0.01

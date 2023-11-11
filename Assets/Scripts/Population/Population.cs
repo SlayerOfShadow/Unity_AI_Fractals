@@ -5,10 +5,7 @@ using UnityEngine;
 public class Population : MonoBehaviour
 {
     public bool AddIndividual = false;
-    public int populationSize = 6;
-    private CharacterGenerator CharacterGeneratorScript; 
-    private PopulationGeneticAlgorithm PopulationGeneticAlgorithmScript; 
-    private Character CharacterScript; 
+    public int populationSize = 3;
 
     public PopulationGeneticAlgorithm.FitnessAlgorithm fitness_algorithm = PopulationGeneticAlgorithm.FitnessAlgorithm.roulette_wheel;
 
@@ -22,6 +19,10 @@ public class Population : MonoBehaviour
     public bool vision = false;
     public bool smart = false;
     public bool resistance = false;
+
+    private CharacterGenerator CharacterGeneratorScript; 
+    private PopulationGeneticAlgorithm PopulationGeneticAlgorithmScript; 
+    private Character CharacterScript; 
 
     public enum GenomeInformations
     {
