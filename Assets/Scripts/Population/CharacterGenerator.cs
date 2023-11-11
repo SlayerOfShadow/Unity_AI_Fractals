@@ -22,8 +22,8 @@ public class CharacterGenerator : MonoBehaviour
 
     class CharacterInformations
     {
-        public float size = 1.8f;
-        public float width = 1f;
+        public float size = 2f;
+        public float width = .7f;
 
         public float eyeProportion = 0.03f;
         public float headProportion = 0.3f; 
@@ -36,7 +36,6 @@ public class CharacterGenerator : MonoBehaviour
         public float legWidthProportion = 0.08f;
 
         public float eyeOffsetProportion = 0.4f;
-        public float memberOffset = 0.6f;
     }
 
     CharacterInformations characterInformations = new CharacterInformations();
@@ -166,30 +165,55 @@ public class CharacterGenerator : MonoBehaviour
             "Individual" + i,
             transform,
             modelObject.transform.position,
-            (float)i * characterInformations.width);
+            (float)i * (1f + characterInformations.width)
+        );
 
         InstantiateIndividualModel(individual.genome, individualBody);
     }
 
     public void InstantiateIndividualModel(Character.Genome genome, IndividualBody individualBody)
     {
-        float headLength = characterInformations.size * characterInformations.headProportion;
+        float armGenLength = GenSize(
+            genome.GetIndex(Population.GenomeInformations.armSize1) + genome.GetIndex(Population.GenomeInformations.armSize2),
+            characterInformations.size,
+            characterInformations.armLengthProportion);
+        float armWidth = characterInformations.width * characterInformations.armWidthProportion;
+        float legGenLength = GenSize(
+            genome.GetIndex(Population.GenomeInformations.legSize1) + genome.GetIndex(Population.GenomeInformations.legSize2),
+            characterInformations.size,
+            characterInformations.legLengthProportion);
+        float legWidth = characterInformations.width * characterInformations.legWidthProportion;
+
         float headWidth = characterInformations.width * characterInformations.headProportion;
-        float chestLength = characterInformations.size * characterInformations.chestProportion;
+        Vector3 genHeadScale = GenDeformScale(
+            characterInformations.size * characterInformations.headProportion,
+            headWidth,
+            genome.GetIndex(Population.GenomeInformations.headDeformByY),
+            genome.GetIndex(Population.GenomeInformations.headDeformByZ),
+            characterInformations.headProportion
+        );
         float chestWidth = characterInformations.width * characterInformations.chestProportion;
+        Vector3 genChestScale = GenDeformScale(
+            characterInformations.size * characterInformations.chestProportion,
+            chestWidth,
+            genome.GetIndex(Population.GenomeInformations.chestDeformByY),
+            genome.GetIndex(Population.GenomeInformations.chestDeformByZ),
+            characterInformations.chestProportion
+        );
 
         // Eyes
         float eyeGenScale = GenSize(
             genome.GetIndex(Population.GenomeInformations.eyeSize1) + genome.GetIndex(Population.GenomeInformations.eyeSize2),
             characterInformations.size,
             characterInformations.eyeProportion); 
-        BodyPart standardEye = new BodyPart( "Eye",
+        BodyPart standardEye = new BodyPart(
+            "Eye",
             eyePrefab,
-            individualBody.GetPosition() + RelativePosition(- headLength / 2.0f, - headWidth / 2.0f), // set an eye standard position then instantiation will take care of offsets
+            individualBody.GetPosition() + RelativePosition(legGenLength + genChestScale.y + genHeadScale.y / 2f, - headWidth / 2f), // set an eye standard position then instantiation will take care of offsets
             new Vector3(eyeGenScale, eyeGenScale, eyeGenScale),
             new Vector3(0f, 0f, 0f),
             individualBody.GetTransform()
-            );
+        );
 
         float eyeOffset = headWidth * characterInformations.eyeOffsetProportion;
         InstantiateEyes(
@@ -207,14 +231,8 @@ public class CharacterGenerator : MonoBehaviour
                 headPrefab2,
                 headPrefab3,
                 headPrefab4),
-            individualBody.GetPosition() + RelativePosition(- headLength / 2f),
-            GenDeformScale(
-                headLength,
-                headWidth,
-                genome.GetIndex(Population.GenomeInformations.headDeformByY),
-                genome.GetIndex(Population.GenomeInformations.headDeformByZ),
-                characterInformations.headProportion
-            ),
+            individualBody.GetPosition() + RelativePosition(legGenLength + genChestScale.y + genHeadScale.y / 2f),
+            genHeadScale,
             new Vector3(0f, 0f, 0f),
             individualBody.GetTransform()
         );
@@ -229,30 +247,18 @@ public class CharacterGenerator : MonoBehaviour
                 chestPrefab2,
                 chestPrefab3,
                 chestPrefab4),
-            individualBody.GetPosition() + RelativePosition(- headLength - chestLength / 2f),
-            GenDeformScale(
-                chestLength,
-                chestWidth,
-                genome.GetIndex(Population.GenomeInformations.chestDeformByY),
-                genome.GetIndex(Population.GenomeInformations.chestDeformByZ),
-                characterInformations.chestProportion
-            ),
+            individualBody.GetPosition() + RelativePosition(legGenLength + genChestScale.y / 2f),
+            genChestScale,
             new Vector3(0f, 0f, 0f),
             individualBody.GetTransform()
         );
         chest.InstantiateObject();
 
         // Arms
-        float armGenLength = GenSize(
-            genome.GetIndex(Population.GenomeInformations.armSize1) + genome.GetIndex(Population.GenomeInformations.armSize2),
-            characterInformations.size,
-            characterInformations.armLengthProportion);
-        float armWidth = characterInformations.width * characterInformations.armWidthProportion;
-
         BodyPart rightArm = new BodyPart(
             "Arm",
             armPrefab,
-            individualBody.GetPosition() + RelativePosition(- headLength - armGenLength / 2f),
+            individualBody.GetPosition() + RelativePosition(legGenLength + genChestScale.y / 2f),
             MemberScale(armGenLength, armWidth),
             new Vector3(0f, 15f, 5f),
             individualBody.GetTransform()
@@ -261,19 +267,14 @@ public class CharacterGenerator : MonoBehaviour
             rightArm,
             genome.GetIndex(Population.GenomeInformations.armNumber1) + genome.GetIndex(Population.GenomeInformations.armNumber2),
             armWidth,
-            chestWidth);
+            chestWidth
+        );
 
         // Legs
-        float legGenLength = GenSize(
-            genome.GetIndex(Population.GenomeInformations.legSize1) + genome.GetIndex(Population.GenomeInformations.legSize2),
-            characterInformations.size,
-            characterInformations.legLengthProportion);
-        float legWidth = characterInformations.width * characterInformations.legWidthProportion;
-
         BodyPart rightLeg = new BodyPart(
             "Leg",
             legPrefab,
-            individualBody.GetPosition() + RelativePosition(- headLength - chestLength - legGenLength / 2f),
+            individualBody.GetPosition() + RelativePosition(legGenLength / 2f),
             MemberScale(legGenLength, legWidth),
             new Vector3(0f, 0f, 0f),
             individualBody.GetTransform()
@@ -281,7 +282,8 @@ public class CharacterGenerator : MonoBehaviour
         InstantiateMembers(rightLeg,
             genome.GetIndex(Population.GenomeInformations.legNumber1) + genome.GetIndex(Population.GenomeInformations.legNumber2),
             legWidth,
-            chestWidth);
+            chestWidth * 0.8f
+        );
     }
 
     private GameObject GenPrefab(int Shape, GameObject prefab0, GameObject prefab1, GameObject prefab2, GameObject prefab3)
@@ -330,16 +332,14 @@ public class CharacterGenerator : MonoBehaviour
 
     private Vector3 RelativePosition(float yOffset, float zOffset = 0f)
     {
-        return new Vector3(
-            0f,
-            characterInformations.size + yOffset,
-            zOffset);
+        return new Vector3(0f, yOffset, zOffset);
     }
 
-    private void InstantiateEyes(BodyPart eye, int numberOfEyes, float eyeOffset)
+    private void InstantiateEyes(BodyPart standardEye, int numberOfEyes, float eyeOffset)
     {
         for (int i = 0; i <= numberOfEyes; i++)
         {
+            BodyPart eye = new BodyPart(standardEye);
             if (numberOfEyes != 0)
             {
                 Vector3 offsetPosition = new Vector3();
@@ -360,9 +360,9 @@ public class CharacterGenerator : MonoBehaviour
     } 
 
     // The left body part is made with the right one
-    private void InstantiateMembers(BodyPart rightModel, int numberOfMembers, float memberWidth, float chestWidth)
+    private void InstantiateMembers(BodyPart rightModel, int numberOfMembers, float memberWidth,  float offset)
     {
-        float offsetBestweenGroupMembers = chestWidth * characterInformations.memberOffset - memberWidth;
+        float offsetBestweenGroupMembers = offset - 2f * memberWidth;
         float miniOffset;
         switch(numberOfMembers)
         {
@@ -380,7 +380,7 @@ public class CharacterGenerator : MonoBehaviour
                 miniOffset = 0f;
                 break;
         }
-        float offsetBetweenMembers = (chestWidth - memberWidth) * miniOffset;
+        float offsetBetweenMembers = offsetBestweenGroupMembers * miniOffset;
         for (int i = 0; i <= numberOfMembers; i++)
         {
             float positionMemberInZ = 
