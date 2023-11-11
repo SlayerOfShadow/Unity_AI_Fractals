@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 
@@ -40,7 +41,55 @@ public class CharacterGenerator : MonoBehaviour
 
     CharacterDimension characterDimension = new CharacterDimension();
 
-    // TODO : créer une classe qui a une position, un nom, une size, une liste de prefab, un nombre d'éléments, une rotation, etc
+    class BodyPart
+    {
+        private string _name;
+        private GameObject _prefab;
+        private Vector3 _position;
+        private Vector3 _scale;
+        private Vector3 _rotation;
+        private Transform _parent;
+
+        public BodyPart(string name, GameObject prefab, Vector3 position, Vector3 scale, Vector3 rotation, Transform parent)
+        {
+            _name = name;
+            _prefab = prefab;
+            _position = position;
+            _scale = scale;
+            _rotation = rotation;
+            _parent = parent;
+        }
+
+        public void SetName(string name)
+        {
+            _name = name;
+        }
+
+        public void SetPosition(Vector3 position)
+        {
+            _position = position;
+        }
+
+        public void OffsetPosition(Vector3 offset)
+        {
+            _position += offset;
+        }
+
+        public void SetScale(Vector3 scale)
+        {
+            _scale = scale;
+        }
+
+        public void InstantiateObject()
+        {
+            GameObject gameObject;
+            gameObject = Instantiate(_prefab, _position, Quaternion.identity);
+            gameObject.name = _name;
+            gameObject.transform.localScale = _scale;
+            gameObject.transform.localRotation = Quaternion.Euler(_rotation);
+            gameObject.transform.SetParent(_parent);
+        }
+    }
 
     public void GenerateCharacter(int i, Character.Individual individual)
     {
@@ -51,25 +100,35 @@ public class CharacterGenerator : MonoBehaviour
         GenerateIndividualModel(individual.genome, i, individualObject.transform);
     }
 
-    public void DestroyCharacter(int individualId){           
-        GameObject parentObject = GameObject.Find("Individual" + individualId);
-        if (parentObject != null)
-        {
-            foreach (Transform child in parentObject.transform)
-            {
-                GameObject.Destroy(child.gameObject);
-            }
-        }
-    }
-
-    private void InstantiateObject(string name, GameObject prefab, Vector3 position, Vector3 localScale, Vector3 localRotation, Transform parent)
+    public void GenerateIndividualModel(Character.Genome genome, int offsetBetweenIndividual, Transform parent)
     {
-        GameObject gameObject;
-        gameObject = Instantiate(prefab, position, Quaternion.identity);
-        gameObject.name = name;
-        gameObject.transform.localScale = localScale;
-        gameObject.transform.localRotation = Quaternion.Euler(localRotation);
-        gameObject.transform.SetParent(parent);
+        CreateEyes(
+            genome.GetIndex(Population.GenomeInformations.eyeSize1) + genome.GetIndex(Population.GenomeInformations.eyeSize2),
+            genome.GetIndex(Population.GenomeInformations.eyeNumber1) + genome.GetIndex(Population.GenomeInformations.eyeNumber2),
+            offsetBetweenIndividual,
+            parent);
+        CreateHead(
+            genome.GetIndex(Population.GenomeInformations.headShape1) + genome.GetIndex(Population.GenomeInformations.headShape2),
+            genome.GetIndex(Population.GenomeInformations.headDeformByY),
+            genome.GetIndex(Population.GenomeInformations.headDeformByZ),
+            offsetBetweenIndividual,
+            parent);
+        CreateChest(
+            genome.GetIndex(Population.GenomeInformations.chestShape1) + genome.GetIndex(Population.GenomeInformations.chestShape2),
+            genome.GetIndex(Population.GenomeInformations.chestDeformByY),
+            genome.GetIndex(Population.GenomeInformations.chestDeformByZ),
+            offsetBetweenIndividual,
+            parent);
+        CreateArms(
+            genome.GetIndex(Population.GenomeInformations.armSize1) + genome.GetIndex(Population.GenomeInformations.armSize2),
+            genome.GetIndex(Population.GenomeInformations.armNumber1) + genome.GetIndex(Population.GenomeInformations.armNumber2),
+            offsetBetweenIndividual,
+            parent);
+        CreateLegs(
+            genome.GetIndex(Population.GenomeInformations.legSize1) + genome.GetIndex(Population.GenomeInformations.legSize2),
+            genome.GetIndex(Population.GenomeInformations.legNumber1) + genome.GetIndex(Population.GenomeInformations.legNumber2),
+            offsetBetweenIndividual,
+            parent);
     }
 
     private void CreateEyes(int size, int numberOfEyes, int offsetBetweenIndividual, Transform parent)
@@ -99,13 +158,14 @@ public class CharacterGenerator : MonoBehaviour
                             eyeOffset;
             }
             int n = i + 1;
-            InstantiateObject(
-                "Eye" + n,
+            BodyPart eye = new BodyPart( "Eye" + n,
                 eyePrefab,
                 position,
                 new Vector3(eyeGenScale, eyeGenScale, eyeGenScale),
                 new Vector3(0f, 0f, 0f),
                 parent);
+
+            eye.InstantiateObject();
         }
     }
 
@@ -145,8 +205,9 @@ public class CharacterGenerator : MonoBehaviour
             headWidth + (float)DeformSphapeByX * characterDimension.headProportion,
             headLength + (float)DeformSphapeByY * characterDimension.headProportion,
             headWidth);
-        
-        InstantiateObject("Head", prefab, position, localScale, new Vector3(0f, 0f, 0f), parent);
+
+        BodyPart head = new BodyPart("Head", prefab, position, localScale, new Vector3(0f, 0f, 0f), parent);
+        head.InstantiateObject();
     }
 
     private void CreateChest(int Shape, int DeformSphapeByX, int DeformSphapeByY, int offsetBetweenIndividual, Transform parent)
@@ -185,7 +246,9 @@ public class CharacterGenerator : MonoBehaviour
             chestWidth + (float)DeformSphapeByX * characterDimension.chestProportion,
             chestLength + (float)DeformSphapeByY * characterDimension.chestProportion,
             chestWidth);
-        InstantiateObject("Chest", prefab, position, localScale, new Vector3(0f, 0f, 0f), parent);
+
+        BodyPart chest = new BodyPart("Chest", prefab, position, localScale, new Vector3(0f, 0f, 0f), parent);
+        chest.InstantiateObject();
     }
 
     private void CreateMembers(GameObject memberPrefab, string memberType, int numberOfMembers, float memberWidth, Vector3 position, Vector3 localScale, Vector3 localRotation, Transform parent)
@@ -216,22 +279,26 @@ public class CharacterGenerator : MonoBehaviour
                 (numberOfMembers == 1 && i == 0) ?
                 - offsetBetweenMembers : 
                 offsetBetweenMembers * ((float)i - (float)numberOfMembers + 1f);
+            
             int n = i + 1;
-            InstantiateObject(
+            BodyPart rightLeg = new BodyPart(
                 memberType + n,
                 memberPrefab,
                 position + new Vector3(offsetBestweenGroupMembers, 0.0f, positionMemberInZ),
                 localScale,
                 localRotation,
                 parent);
+            rightLeg.InstantiateObject();
+
             int j = numberOfMembers + n + 1;
-            InstantiateObject(
+            BodyPart leftLeg = new BodyPart(
                 memberType + j,
                 memberPrefab,
                 position + new Vector3(- offsetBestweenGroupMembers, 0.0f, positionMemberInZ),
                 localScale,
                 - localRotation,
                 parent);
+            leftLeg.InstantiateObject();
         }
     }
 
@@ -270,35 +337,14 @@ public class CharacterGenerator : MonoBehaviour
         CreateMembers(legPrefab, "Leg", numberOfLegs, legWidth, position, localScale, localRotation, parent);
     }
 
-    public void GenerateIndividualModel(Character.Genome genome, int offsetBetweenIndividual, Transform parent)
-    {
-        CreateEyes(
-            genome.GetIndex(Population.GenomeInformations.eyeSize1) + genome.GetIndex(Population.GenomeInformations.eyeSize2),
-            genome.GetIndex(Population.GenomeInformations.eyeNumber1) + genome.GetIndex(Population.GenomeInformations.eyeNumber2),
-            offsetBetweenIndividual,
-            parent);
-        CreateHead(
-            genome.GetIndex(Population.GenomeInformations.headShape1) + genome.GetIndex(Population.GenomeInformations.headShape2),
-            genome.GetIndex(Population.GenomeInformations.headDeformByY),
-            genome.GetIndex(Population.GenomeInformations.headDeformByZ),
-            offsetBetweenIndividual,
-            parent);
-        CreateChest(
-            genome.GetIndex(Population.GenomeInformations.chestShape1) + genome.GetIndex(Population.GenomeInformations.chestShape2),
-            genome.GetIndex(Population.GenomeInformations.chestDeformByY),
-            genome.GetIndex(Population.GenomeInformations.chestDeformByZ),
-            offsetBetweenIndividual,
-            parent);
-        CreateArms(
-            genome.GetIndex(Population.GenomeInformations.armSize1) + genome.GetIndex(Population.GenomeInformations.armSize2),
-            genome.GetIndex(Population.GenomeInformations.armNumber1) + genome.GetIndex(Population.GenomeInformations.armNumber2),
-            offsetBetweenIndividual,
-            parent);
-        CreateLegs(
-            genome.GetIndex(Population.GenomeInformations.legSize1) + genome.GetIndex(Population.GenomeInformations.legSize2),
-            genome.GetIndex(Population.GenomeInformations.legNumber1) + genome.GetIndex(Population.GenomeInformations.legNumber2),
-            offsetBetweenIndividual,
-            parent);
+    public void DestroyCharacter(int individualId){           
+        GameObject parentObject = GameObject.Find("Individual" + individualId);
+        if (parentObject != null)
+        {
+            foreach (Transform child in parentObject.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+        }
     }
 }
-
