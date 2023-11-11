@@ -20,7 +20,7 @@ public class CharacterGenerator : MonoBehaviour
 
     public GameObject modelObject;
 
-    class CharacterDimension
+    class CharacterInformations
     {
         public float size = 1.8f;
         public float width = 1f;
@@ -39,7 +39,9 @@ public class CharacterGenerator : MonoBehaviour
         public float memberOffset = 0.6f;
     }
 
-    CharacterDimension characterDimension = new CharacterDimension();
+    CharacterInformations characterInformations = new CharacterInformations();
+
+    // TODO : endroit où ranger parent offset et Position genre une IndividualBody et là tu peux mettre geenrateIndiv dedans
 
     class BodyPart
     {
@@ -58,6 +60,46 @@ public class CharacterGenerator : MonoBehaviour
             _scale = scale;
             _rotation = rotation;
             _parent = parent;
+        }
+
+        public BodyPart(BodyPart bodyPart)
+        {
+            _name = bodyPart.GetName();
+            _prefab = bodyPart.GetPrefab();
+            _position = bodyPart.GetPosition();
+            _scale = bodyPart.GetScale();
+            _rotation = bodyPart.GetRotation();
+            _parent = bodyPart.GetParent();           
+        }
+
+        public string GetName()
+        {
+            return _name;
+        }
+
+        public GameObject GetPrefab()
+        {
+            return _prefab;
+        }
+
+        public Vector3 GetPosition()
+        {
+            return _position;
+        }
+
+        public Vector3 GetScale()
+        {
+            return _scale;
+        }
+
+        public Vector3 GetRotation()
+        {
+            return _rotation;
+        }
+
+        public Transform GetParent()
+        {
+            return _parent;
         }
 
         public void SetName(string name)
@@ -80,6 +122,18 @@ public class CharacterGenerator : MonoBehaviour
             _scale = scale;
         }
 
+        public void MultiplyScale(Vector3 scalar)
+        {
+            _scale.x *= scalar.x;
+            _scale.y *= scalar.y;
+            _scale.z *= scalar.z;
+        }
+        
+        public void SetRotation(Vector3 rotation)
+        {
+            _rotation = rotation;
+        }
+
         public void InstantiateObject()
         {
             GameObject gameObject;
@@ -91,169 +145,233 @@ public class CharacterGenerator : MonoBehaviour
         }
     }
 
+    public class IndividualBody
+    {
+        private GameObject _gameObject;
+        private Vector3 _position;
+
+        public IndividualBody(string name, Transform transform, Vector3 modelPosition, float offset)
+        {
+            _gameObject = new GameObject(name);
+            _gameObject.transform.parent = transform;
+
+            _position = modelPosition + new Vector3(offset, 0f, 0f);
+        }
+
+        public Vector3 GetPosition()
+        {
+            return _position;
+        }
+
+        public Transform GetTransform()
+        {
+            return _gameObject.transform;
+        }
+    }
+
     public void GenerateCharacter(int i, Character.Individual individual)
     {
-        GameObject individualObject = new GameObject("Individual" + i);
-        individualObject.transform.parent = transform;
+        IndividualBody individualBody = new IndividualBody(
+            "Individual" + i,
+            transform,
+            modelObject.transform.position,
+            (float)i * characterInformations.width);
 
-        GenerateIndividualModel(individual.genome, (float)i * characterDimension.width, individualObject.transform);
+        InstantiateIndividualModel(individual.genome, individualBody);
     }
 
-    public void GenerateIndividualModel(Character.Genome genome, float offsetBetweenIndividual, Transform parent)
+    public void InstantiateIndividualModel(Character.Genome genome, IndividualBody individualBody)
     {
-        CreateEyes(
+        float headLength = characterInformations.size * characterInformations.headProportion;
+        float headWidth = characterInformations.width * characterInformations.headProportion;
+        float chestLength = characterInformations.size * characterInformations.chestProportion;
+        float chestWidth = characterInformations.width * characterInformations.chestProportion;
+
+        // Eyes
+        float eyeGenScale = GenSize(
             genome.GetIndex(Population.GenomeInformations.eyeSize1) + genome.GetIndex(Population.GenomeInformations.eyeSize2),
+            characterInformations.size,
+            characterInformations.eyeProportion); 
+        BodyPart standardEye = new BodyPart( "Eye",
+            eyePrefab,
+            individualBody.GetPosition() + RelativePosition(- headLength / 2.0f, - headWidth / 2.0f), // set an eye standard position then instantiation will take care of offsets
+            new Vector3(eyeGenScale, eyeGenScale, eyeGenScale),
+            new Vector3(0f, 0f, 0f),
+            individualBody.GetTransform()
+            );
+
+        float eyeOffset = headWidth * characterInformations.eyeOffsetProportion;
+        InstantiateEyes(
+            standardEye,
             genome.GetIndex(Population.GenomeInformations.eyeNumber1) + genome.GetIndex(Population.GenomeInformations.eyeNumber2),
-            offsetBetweenIndividual,
-            parent);
-        CreateHead(
-            genome.GetIndex(Population.GenomeInformations.headShape1) + genome.GetIndex(Population.GenomeInformations.headShape2),
-            genome.GetIndex(Population.GenomeInformations.headDeformByY),
-            genome.GetIndex(Population.GenomeInformations.headDeformByZ),
-            offsetBetweenIndividual,
-            parent);
-        CreateChest(
-            genome.GetIndex(Population.GenomeInformations.chestShape1) + genome.GetIndex(Population.GenomeInformations.chestShape2),
-            genome.GetIndex(Population.GenomeInformations.chestDeformByY),
-            genome.GetIndex(Population.GenomeInformations.chestDeformByZ),
-            offsetBetweenIndividual,
-            parent);
-        CreateArms(
+            eyeOffset
+        );
+
+        // Head
+        BodyPart head = new BodyPart(
+            "Head",
+            GenPrefab(
+                genome.GetIndex(Population.GenomeInformations.headShape1) + genome.GetIndex(Population.GenomeInformations.headShape2),
+                headPrefab1,
+                headPrefab2,
+                headPrefab3,
+                headPrefab4),
+            individualBody.GetPosition() + RelativePosition(- headLength / 2f),
+            GenDeformScale(
+                headLength,
+                headWidth,
+                genome.GetIndex(Population.GenomeInformations.headDeformByY),
+                genome.GetIndex(Population.GenomeInformations.headDeformByZ),
+                characterInformations.headProportion
+            ),
+            new Vector3(0f, 0f, 0f),
+            individualBody.GetTransform()
+        );
+        head.InstantiateObject();
+
+        // Chest
+        BodyPart chest = new BodyPart(
+            "Chest",
+            GenPrefab(
+                genome.GetIndex(Population.GenomeInformations.chestShape1) + genome.GetIndex(Population.GenomeInformations.chestShape2),
+                chestPrefab1,
+                chestPrefab2,
+                chestPrefab3,
+                chestPrefab4),
+            individualBody.GetPosition() + RelativePosition(- headLength - chestLength / 2f),
+            GenDeformScale(
+                chestLength,
+                chestWidth,
+                genome.GetIndex(Population.GenomeInformations.chestDeformByY),
+                genome.GetIndex(Population.GenomeInformations.chestDeformByZ),
+                characterInformations.chestProportion
+            ),
+            new Vector3(0f, 0f, 0f),
+            individualBody.GetTransform()
+        );
+        chest.InstantiateObject();
+
+        // Arms
+        float armGenLength = GenSize(
             genome.GetIndex(Population.GenomeInformations.armSize1) + genome.GetIndex(Population.GenomeInformations.armSize2),
+            characterInformations.size,
+            characterInformations.armLengthProportion);
+        float armWidth = characterInformations.width * characterInformations.armWidthProportion;
+
+        BodyPart rightArm = new BodyPart(
+            "Arm",
+            armPrefab,
+            individualBody.GetPosition() + RelativePosition(- headLength - armGenLength / 2f),
+            MemberScale(armGenLength, armWidth),
+            new Vector3(0f, 15f, 5f),
+            individualBody.GetTransform()
+        );
+        InstantiateMembers(
+            rightArm,
             genome.GetIndex(Population.GenomeInformations.armNumber1) + genome.GetIndex(Population.GenomeInformations.armNumber2),
-            offsetBetweenIndividual,
-            parent);
-        CreateLegs(
+            armWidth,
+            chestWidth);
+
+        // Legs
+        float legGenLength = GenSize(
             genome.GetIndex(Population.GenomeInformations.legSize1) + genome.GetIndex(Population.GenomeInformations.legSize2),
+            characterInformations.size,
+            characterInformations.legLengthProportion);
+        float legWidth = characterInformations.width * characterInformations.legWidthProportion;
+
+        BodyPart rightLeg = new BodyPart(
+            "Leg",
+            legPrefab,
+            individualBody.GetPosition() + RelativePosition(- headLength - chestLength - legGenLength / 2f),
+            MemberScale(legGenLength, legWidth),
+            new Vector3(0f, 0f, 0f),
+            individualBody.GetTransform()
+        );
+        InstantiateMembers(rightLeg,
             genome.GetIndex(Population.GenomeInformations.legNumber1) + genome.GetIndex(Population.GenomeInformations.legNumber2),
-            offsetBetweenIndividual,
-            parent);
+            legWidth,
+            chestWidth);
     }
 
-    private void CreateEyes(int size, int numberOfEyes, float offsetBetweenIndividual, Transform parent)
+    private GameObject GenPrefab(int Shape, GameObject prefab0, GameObject prefab1, GameObject prefab2, GameObject prefab3)
     {
-        float headLength = characterDimension.size * characterDimension.headProportion;
-        float headWidth = characterDimension.width * characterDimension.headProportion;
-        Vector3 relativePosition = new Vector3(
-            offsetBetweenIndividual,
-            characterDimension.size - headLength / 2.0f,
-            - headWidth / 2.0f);
-        Vector3 positionWithoutOffset = modelObject.transform.position + relativePosition;
-        float eyeGenScale = (size + 1) * characterDimension.size * characterDimension.eyeProportion; // size + 1 car size peut être égal à 0
-        float eyeOffset = headWidth * characterDimension.eyeOffsetProportion;
+        GameObject prefab;
+        switch (Shape)
+        {
+            case 0:
+                prefab = prefab0;
+                break;
+            case 1:
+                prefab = prefab1;
+                break;
+            case 2:
+                prefab = prefab2;
+                break;
+            case 3:
+                prefab = prefab3;
+                break;
+            default:
+                // Handle invalid Shape values or provide a default behavior
+                Debug.LogWarning("Invalid Shape value. Using default prefab0.");
+                prefab = prefab0;
+                break;
+        }
+        return prefab;
+    }
 
+    private Vector3 GenDeformScale(float length, float width, int deformSphapeByX, int deformSphapeByY, float proportion)
+    {
+        return new Vector3(
+            width + (float)deformSphapeByX * proportion,
+            length + (float)deformSphapeByY * proportion,
+            width);
+    }
+
+    private float GenSize(int size, float characterSize, float proportion)
+    {
+        return (float)(size + 1f) * characterSize * proportion; // size + 1 car size peut être égal à 0
+    }
+
+    private Vector3 MemberScale(float length, float width)
+    {
+        return new Vector3(width, length, width);
+    }
+
+    private Vector3 RelativePosition(float yOffset, float zOffset = 0f)
+    {
+        return new Vector3(
+            0f,
+            characterInformations.size + yOffset,
+            zOffset);
+    }
+
+    private void InstantiateEyes(BodyPart eye, int numberOfEyes, float eyeOffset)
+    {
         for (int i = 0; i <= numberOfEyes; i++)
         {
-            Vector3 position = positionWithoutOffset;
             if (numberOfEyes != 0)
             {
-                position.x += 
+                Vector3 offsetPosition = new Vector3();
+                offsetPosition.x = 
                     (numberOfEyes == 2 && i == 2) ?
                         0 :
                         ((i + 1) % 2) * eyeOffset - (i % 2) * eyeOffset;
-                position.y += 
+                offsetPosition.y = 
                         (i < 2) ?
                             0 :
                             eyeOffset;
+                eye.OffsetPosition(offsetPosition);
+                int n = i + 1;
+                eye.SetName("Eye" + n);
             }
-            int n = i + 1;
-            BodyPart eye = new BodyPart( "Eye" + n,
-                eyePrefab,
-                position,
-                new Vector3(eyeGenScale, eyeGenScale, eyeGenScale),
-                new Vector3(0f, 0f, 0f),
-                parent);
-
             eye.InstantiateObject();
         }
-    }
+    } 
 
-    private void CreateHead(int Shape, int DeformSphapeByX, int DeformSphapeByY, float offsetBetweenIndividual, Transform parent)
+    // The left body part is made with the right one
+    private void InstantiateMembers(BodyPart right, int numberOfMembers, float memberWidth, float chestWidth)
     {
-        float headLength = characterDimension.size * characterDimension.headProportion;
-        Vector3 relativePosition = new Vector3(
-            offsetBetweenIndividual,
-            characterDimension.size - headLength / 2.0f,
-            0f);
-        Vector3 position = modelObject.transform.position + relativePosition;
-
-        GameObject prefab;
-        switch (Shape)
-        {
-            case 0:
-                prefab = headPrefab1;
-                break;
-            case 1:
-                prefab = headPrefab2;
-                break;
-            case 2:
-                prefab = headPrefab3;
-                break;
-            case 3:
-                prefab = headPrefab4;
-                break;
-            default:
-                // Handle invalid Shape values or provide a default behavior
-                Debug.LogWarning("Invalid Shape value. Using default headPrefab1.");
-                prefab = headPrefab1;
-                break;
-        }
-
-        float headWidth = characterDimension.width * characterDimension.headProportion;
-        Vector3 localScale = new Vector3(
-            headWidth + (float)DeformSphapeByX * characterDimension.headProportion,
-            headLength + (float)DeformSphapeByY * characterDimension.headProportion,
-            headWidth);
-
-        BodyPart head = new BodyPart("Head", prefab, position, localScale, new Vector3(0f, 0f, 0f), parent);
-        head.InstantiateObject();
-    }
-
-    private void CreateChest(int Shape, int DeformSphapeByX, int DeformSphapeByY, float offsetBetweenIndividual, Transform parent)
-    {
-        float headLength = characterDimension.size * characterDimension.headProportion;
-        float chestLength = characterDimension.size * characterDimension.chestProportion;
-        Vector3 relativePosition = new Vector3(
-            offsetBetweenIndividual,
-            characterDimension.size - headLength - chestLength / 2f,
-            0f);
-        Vector3 position = modelObject.transform.position + relativePosition;
-
-        GameObject prefab;
-        switch (Shape)
-        {
-            case 0:
-                prefab = chestPrefab1;
-                break;
-            case 1:
-                prefab = chestPrefab2;
-                break;
-            case 2:
-                prefab = chestPrefab3;
-                break;
-            case 3:
-                prefab = chestPrefab4;
-                break;
-            default:
-                // Handle invalid Shape values or provide a default behavior
-                Debug.LogWarning("Invalid Shape value. Using default chestPrefab1.");
-                prefab = chestPrefab1;
-                break;
-        }
-        float chestWidth = characterDimension.width * characterDimension.chestProportion;
-        Vector3 localScale = new Vector3(
-            chestWidth + (float)DeformSphapeByX * characterDimension.chestProportion,
-            chestLength + (float)DeformSphapeByY * characterDimension.chestProportion,
-            chestWidth);
-
-        BodyPart chest = new BodyPart("Chest", prefab, position, localScale, new Vector3(0f, 0f, 0f), parent);
-        chest.InstantiateObject();
-    }
-
-    private void CreateMembers(GameObject memberPrefab, string memberType, int numberOfMembers, float memberWidth, Vector3 position, Vector3 localScale, Vector3 localRotation, Transform parent)
-    {
-        float chestWidth = characterDimension.width * characterDimension.chestProportion;
-        float offsetBestweenGroupMembers = chestWidth * characterDimension.memberOffset - memberWidth;
+        float offsetBestweenGroupMembers = chestWidth * characterInformations.memberOffset - memberWidth;
         float miniOffset;
         switch(numberOfMembers)
         {
@@ -279,61 +397,21 @@ public class CharacterGenerator : MonoBehaviour
                 - offsetBetweenMembers : 
                 offsetBetweenMembers * ((float)i - (float)numberOfMembers + 1f);
             
+            BodyPart left = new BodyPart(right);
+
+            // Instantiate right member
             int n = i + 1;
-            BodyPart rightLeg = new BodyPart(
-                memberType + n,
-                memberPrefab,
-                position + new Vector3(offsetBestweenGroupMembers, 0.0f, positionMemberInZ),
-                localScale,
-                localRotation,
-                parent);
-            rightLeg.InstantiateObject();
+            right.SetName(right.GetName() + n);
+            right.OffsetPosition(new Vector3(offsetBestweenGroupMembers, 0.0f, positionMemberInZ));
+            right.InstantiateObject();
 
+            // Instantiate left member
             int j = numberOfMembers + n + 1;
-            BodyPart leftLeg = new BodyPart(
-                memberType + j,
-                memberPrefab,
-                position + new Vector3(- offsetBestweenGroupMembers, 0.0f, positionMemberInZ),
-                localScale,
-                - localRotation,
-                parent);
-            leftLeg.InstantiateObject();
+            left.SetName(right.GetName() + j);
+            left.OffsetPosition(new Vector3(- offsetBestweenGroupMembers, 0.0f, positionMemberInZ));
+            left.SetRotation(- right.GetRotation());
+            left.InstantiateObject();
         }
-    }
-
-    private void CreateArms(int length, int numberOfArms, float offsetBetweenIndividual, Transform parent)
-    {
-        float headLength = characterDimension.size * characterDimension.headProportion;
-        float armLength = characterDimension.size * characterDimension.armLengthProportion;
-        float armGenLength = (float)(length + 1f) * armLength;
-        Vector3 relativePosition = new Vector3(
-            offsetBetweenIndividual,
-            characterDimension.size - headLength - armGenLength / 2f,
-            0f);
-        Vector3 position = modelObject.transform.position + relativePosition;
-        float armWidth = characterDimension.width * characterDimension.armWidthProportion;
-        Vector3 localScale = new Vector3(armWidth, armGenLength, armWidth);
-        Vector3 localRotation = new Vector3(0f, 15f, 5f);
-
-        CreateMembers(armPrefab, "Arm", numberOfArms, armWidth, position, localScale, localRotation, parent);
-    }
-
-    private void CreateLegs(int length, int numberOfLegs, float offsetBetweenIndividual, Transform parent)
-    {
-        float chestLength = characterDimension.size * characterDimension.chestProportion;
-        float headLength = characterDimension.size * characterDimension.headProportion;
-        float legLength = characterDimension.size * characterDimension.legLengthProportion;
-        float legGenLength = (float)(length + 1f) * legLength;
-        Vector3 relativePosition = new Vector3(
-            offsetBetweenIndividual,
-            characterDimension.size - headLength - chestLength - legGenLength / 2f,
-            0f);
-        Vector3 position = modelObject.transform.position + relativePosition;
-        float legWidth = characterDimension.width * characterDimension.legWidthProportion;
-        Vector3 localScale = new Vector3(legWidth, legGenLength, legWidth);
-        Vector3 localRotation = new Vector3(0f, 0f, 0f);
-
-        CreateMembers(legPrefab, "Leg", numberOfLegs, legWidth, position, localScale, localRotation, parent);
     }
 
     public void DestroyCharacter(int individualId){           
