@@ -369,7 +369,7 @@ public class CharacterGenerator : MonoBehaviour
     } 
 
     // The left body part is made with the right one
-    private void InstantiateMembers(BodyPart right, int numberOfMembers, float memberWidth, float chestWidth)
+    private void InstantiateMembers(BodyPart rightModel, int numberOfMembers, float memberWidth, float chestWidth)
     {
         float offsetBestweenGroupMembers = chestWidth * characterInformations.memberOffset - memberWidth;
         float miniOffset;
@@ -397,20 +397,21 @@ public class CharacterGenerator : MonoBehaviour
                 - offsetBetweenMembers : 
                 offsetBetweenMembers * ((float)i - (float)numberOfMembers + 1f);
             
-            BodyPart left = new BodyPart(right);
+            BodyPart leftMember = new BodyPart(rightModel);
+            BodyPart rightMember = new BodyPart(rightModel);
 
             // Instantiate right member
             int n = i + 1;
-            right.SetName(right.GetName() + n);
-            right.OffsetPosition(new Vector3(offsetBestweenGroupMembers, 0.0f, positionMemberInZ));
-            right.InstantiateObject();
+            rightMember.SetName(rightModel.GetName() + n);
+            rightMember.OffsetPosition(new Vector3(offsetBestweenGroupMembers, 0.0f, positionMemberInZ));
+            rightMember.InstantiateObject();
 
             // Instantiate left member
             int j = numberOfMembers + n + 1;
-            left.SetName(right.GetName() + j);
-            left.OffsetPosition(new Vector3(- offsetBestweenGroupMembers, 0.0f, positionMemberInZ));
-            left.SetRotation(- right.GetRotation());
-            left.InstantiateObject();
+            leftMember.SetName(rightModel.GetName() + j);
+            leftMember.OffsetPosition(new Vector3(- offsetBestweenGroupMembers, 0.0f, positionMemberInZ));
+            leftMember.SetRotation(- rightModel.GetRotation());
+            leftMember.InstantiateObject();
         }
     }
 
