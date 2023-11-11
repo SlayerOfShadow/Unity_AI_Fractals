@@ -267,7 +267,7 @@ public class CharacterGenerator : MonoBehaviour
                 miniOffset = 0.33f;
                 break;
             default :
-                Debug.Log("Invalid number of members, set miniOffset to 0f");
+                Debug.LogWarning("Invalid number of members, set miniOffset to 0f");
                 miniOffset = 0f;
                 break;
         }
