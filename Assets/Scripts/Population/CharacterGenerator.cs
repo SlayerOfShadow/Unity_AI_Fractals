@@ -26,23 +26,22 @@ public class CharacterGenerator : MonoBehaviour
     {
         public float size = 1.8f;
         public float width = 1f;
+
+        public float eyeProportion = 0.03f;
+        public float headProportion = 0.3f; 
+        public float chestProportion = 0.5f; 
+
+        public float armLengthProportion = 0.1f; 
+        public float legLengthProportion = 0.2f;
+
+        public float armWidthProportion = 0.05f;
+        public float legWidthProportion = 0.08f;
+
+        public float eyeOffsetProportion = 0.4f;
+        public float memberOffset = 0.6f;
     }
 
-
     CharacterDimension characterDimension = new CharacterDimension();
-
-    float eyeProportion = 0.03f;
-    float headProportion = 0.3f; 
-    float chestProportion = 0.5f; 
-
-    float armLengthProportion = 0.1f; 
-    float legLengthProportion = 0.2f;
-
-    float armWidthProportion = 0.05f;
-    float legWidthProportion = 0.08f;
-
-    float eyeOffsetProportion = 0.4f;
-    float memberOffset = 0.6f;
 
     // TODO : créer une classe qui a une position, un nom, une size, une liste de prefab, un nombre d'éléments, une rotation, etc
 
@@ -127,15 +126,15 @@ public class CharacterGenerator : MonoBehaviour
 
     private void CreateEyes(int size, int numberOfEyes, int offsetBetweenIndividual, Transform parent)
     {
-        float headLength = characterDimension.size * headProportion;
-        float headWidth = characterDimension.width * headProportion;
+        float headLength = characterDimension.size * characterDimension.headProportion;
+        float headWidth = characterDimension.width * characterDimension.headProportion;
         Vector3 relativePosition = new Vector3(
             (float)offsetBetweenIndividual,
             characterDimension.size - headLength / 2.0f,
             - headWidth / 2.0f);
         Vector3 positionWithoutOffset = modelObject.transform.position + relativePosition;
-        float eyeGenScale = (size + 1) * characterDimension.size * eyeProportion; // size + 1 car size peut être égal à 0
-        float eyeOffset = headWidth * eyeOffsetProportion;
+        float eyeGenScale = (size + 1) * characterDimension.size * characterDimension.eyeProportion; // size + 1 car size peut être égal à 0
+        float eyeOffset = headWidth * characterDimension.eyeOffsetProportion;
 
         for (int i = 0; i <= numberOfEyes; i++)
         {
@@ -164,7 +163,7 @@ public class CharacterGenerator : MonoBehaviour
 
     private void CreateHead(int Shape, int DeformSphapeByX, int DeformSphapeByY, int offsetBetweenIndividual, Transform parent)
     {
-        float headLength = characterDimension.size * headProportion;
+        float headLength = characterDimension.size * characterDimension.headProportion;
         Vector3 relativePosition = new Vector3(
             (float)offsetBetweenIndividual,
             characterDimension.size - headLength / 2.0f,
@@ -193,10 +192,10 @@ public class CharacterGenerator : MonoBehaviour
                 break;
         }
 
-        float headWidth = characterDimension.width * headProportion;
+        float headWidth = characterDimension.width * characterDimension.headProportion;
         Vector3 localScale = new Vector3(
-            headWidth + (float)DeformSphapeByX * headProportion,
-            headLength + (float)DeformSphapeByY * headProportion,
+            headWidth + (float)DeformSphapeByX * characterDimension.headProportion,
+            headLength + (float)DeformSphapeByY * characterDimension.headProportion,
             headWidth);
         
         InstantiateObject("Head", prefab, position, localScale, new Vector3(0f, 0f, 0f), parent);
@@ -204,8 +203,8 @@ public class CharacterGenerator : MonoBehaviour
 
     private void CreateChest(int Shape, int DeformSphapeByX, int DeformSphapeByY, int offsetBetweenIndividual, Transform parent)
     {
-        float headLength = characterDimension.size * headProportion;
-        float chestLength = characterDimension.size * chestProportion;
+        float headLength = characterDimension.size * characterDimension.headProportion;
+        float chestLength = characterDimension.size * characterDimension.chestProportion;
         Vector3 relativePosition = new Vector3(
             (float)offsetBetweenIndividual,
             characterDimension.size - headLength - chestLength / 2f,
@@ -233,18 +232,18 @@ public class CharacterGenerator : MonoBehaviour
                 prefab = chestPrefab1;
                 break;
         }
-        float chestWidth = characterDimension.width * chestProportion;
+        float chestWidth = characterDimension.width * characterDimension.chestProportion;
         Vector3 localScale = new Vector3(
-            chestWidth + (float)DeformSphapeByX * chestProportion,
-            chestLength + (float)DeformSphapeByY * chestProportion,
+            chestWidth + (float)DeformSphapeByX * characterDimension.chestProportion,
+            chestLength + (float)DeformSphapeByY * characterDimension.chestProportion,
             chestWidth);
         InstantiateObject("Chest", prefab, position, localScale, new Vector3(0f, 0f, 0f), parent);
     }
 
     private void CreateMembers(GameObject memberPrefab, string memberType, int numberOfMembers, float memberWidth, Vector3 position, Vector3 localScale, Vector3 localRotation, Transform parent)
     {
-        float chestWidth = characterDimension.width * chestProportion;
-        float offsetBestweenGroupMembers = chestWidth * memberOffset - memberWidth;
+        float chestWidth = characterDimension.width * characterDimension.chestProportion;
+        float offsetBestweenGroupMembers = chestWidth * characterDimension.memberOffset - memberWidth;
         float miniOffset;
         switch(numberOfMembers)
         {
@@ -290,15 +289,15 @@ public class CharacterGenerator : MonoBehaviour
 
     private void CreateArms(int length, int numberOfArms, int offsetBetweenIndividual, Transform parent)
     {
-        float headLength = characterDimension.size * headProportion;
-        float armLength = characterDimension.size * armLengthProportion;
+        float headLength = characterDimension.size * characterDimension.headProportion;
+        float armLength = characterDimension.size * characterDimension.armLengthProportion;
         float armGenLength = (float)(length + 1f) * armLength;
         Vector3 relativePosition = new Vector3(
             (float)offsetBetweenIndividual,
             characterDimension.size - headLength - armGenLength / 2f,
             0f);
         Vector3 position = modelObject.transform.position + relativePosition;
-        float armWidth = characterDimension.width * armWidthProportion;
+        float armWidth = characterDimension.width * characterDimension.armWidthProportion;
         Vector3 localScale = new Vector3(armWidth, armGenLength, armWidth);
         Vector3 localRotation = new Vector3(0f, 15f, 5f);
 
@@ -307,16 +306,16 @@ public class CharacterGenerator : MonoBehaviour
 
     private void CreateLegs(int length, int numberOfLegs, int offsetBetweenIndividual, Transform parent)
     {
-        float chestLength = characterDimension.size * chestProportion;
-        float headLength = characterDimension.size * headProportion;
-        float legLength = characterDimension.size * legLengthProportion;
+        float chestLength = characterDimension.size * characterDimension.chestProportion;
+        float headLength = characterDimension.size * characterDimension.headProportion;
+        float legLength = characterDimension.size * characterDimension.legLengthProportion;
         float legGenLength = (float)(length + 1f) * legLength;
         Vector3 relativePosition = new Vector3(
             (float)offsetBetweenIndividual,
             characterDimension.size - headLength - chestLength - legGenLength / 2f,
             0f);
         Vector3 position = modelObject.transform.position + relativePosition;
-        float legWidth = characterDimension.width * legWidthProportion;
+        float legWidth = characterDimension.width * characterDimension.legWidthProportion;
         Vector3 localScale = new Vector3(legWidth, legGenLength, legWidth);
         Vector3 localRotation = new Vector3(0f, 0f, 0f);
 
