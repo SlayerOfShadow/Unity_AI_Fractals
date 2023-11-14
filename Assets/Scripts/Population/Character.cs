@@ -1,80 +1,150 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using UnityEditor.Rendering;
-using Unity.VisualScripting;
-using System;
 
 public class Character : MonoBehaviour
 {
-    public class Genome{
+    public class Genome
+    {
         private int[] _value;
-        private int _size = 26;
+        private int _size = 20;
 
-        public Genome(int[] value){
+        public Genome(int[] value)
+        {
             _value = value;
         }
 
-        public Genome(){
+        public Genome()
+        {
             _value = new int[_size];
         }
 
-        public Genome(Genome g){
+        public Genome(Genome g)
+        {
             _value = g.Get();
         }
 
-        public void Set(Genome g){
+        public void Set(Genome g)
+        {
             for (int i = 0; i < _size; i++)
             {
                 _value[i] = g.GetIndex(i);
             }
         }
 
-        public int Size(){
+        public int Size()
+        {
             return _size;
         }
 
-        public int[] Get(){
+        public int[] Get()
+        {
             return _value;
         }
 
-        public int GetIndex(int i){
+        public int GetIndex(int i)
+        {
             return _value[i];
         }
 
-        public int GetIndex(Population.GenomeInformations i){
+        public int GetIndex(Population.GenomeInformations i)
+        {
             return _value[(int)i];
         }
 
-        public void SetByIndex(int i, int value){
+        public void SetByIndex(int i, int value)
+        {
             _value[i] = value;
         }
 
-        public int[] PartialGenome(int start, int number_of_elements){
+        public int[] PartialGenome(int start, int number_of_elements)
+        {
             return Enumerable.Range(start, number_of_elements).Select(i => _value[i]).ToArray();
+        }
+
+        /*    
+        Mutation non codées :
+        - Mutation de valeur : Modifier la valeur d'un gène à un autre aléatoire dans une certaine plage. 
+            Par exemple, ajouter ou soustraire une petite valeur à un gène.
+            -> intérêt si gène pas que entre 0 et 1
+        - Mutation par insertion ou suppression : Ajoutez ou supprimez un gène du génome.
+            -> là on a des génome fixe donc peu pratique
+        */
+
+        // Mutation par permutation : Permute l'emplacement de deux gènes dans le génome.
+        public void SwapMutation(double mutationRate)
+        {
+            for (int i = 0; i < _size; i++)
+            {
+                if (UnityEngine.Random.Range(0f, 1f) < mutationRate)
+                {
+                    int index1 = UnityEngine.Random.Range(0, _size);
+                    int index2 = UnityEngine.Random.Range(0, _size);
+
+                    // Échanger les valeurs des bits à index1 et index2
+                    int temp = _value[index1];
+                    _value[index1] = _value[index2];
+                    _value[index2] = temp;
+                }
+            }
+        }
+
+        // Mutation par inversion : Inverse l'ordre des gènes dans une partie du génome.
+        public void InversionMutation(double mutationRate)
+        {
+            for (int i = 0; i < _size; i++)
+            {
+                if (UnityEngine.Random.Range(0f, 1f) < mutationRate)
+                {
+                    int start = UnityEngine.Random.Range(0, _size);
+                    int end = UnityEngine.Random.Range(start, _size);
+
+                    // Inverse l'ordre des bits entre start et end inclus
+                    while (start < end)
+                    {
+                        int temp = _value[start];
+                        _value[start] = _value[end];
+                        _value[end] = temp;
+                        start++;
+                        end--;
+                    }
+                }
+            }
+        }
+
+        // Mutation de bit : Inverse le bit(0 devient 1, et vice versa) à un emplacement aléatoire du génome.
+        public void BitMutation(double mutationRate)
+        {
+            for (int i = 0; i < _size; i++)
+            {
+                if (UnityEngine.Random.Range(0f, 1f) < mutationRate)
+                {
+                    // Inverser le bit (0 devient 1, 1 devient 0)
+                    _value[i] = 1 - _value[i];
+                }
+            }
         }
     }
 
-    public class Capacities{
-        public bool strength;
-        public bool speed;
-        public bool health;
+    public class Capacities
+    {
         public bool vision;
         public bool smart;
         public bool resistance;
+        public bool strength;
+        public bool speed;
 
-        public Capacities(bool _strength, bool _speed, bool _health, bool _vision, bool _smart, bool _resistance){
-            strength = _strength;
-            speed = _speed;
-            health = _health;
+        public Capacities(bool _vision, bool _smart, bool _resistance, bool _strength, bool _speed)
+        {
             vision = _vision;
             smart = _smart;
             resistance = _resistance;
+            strength = _strength;
+            speed = _speed;
         }
     }
 
-    public class CapacitiesStatistics{
+    public class CapacitiesStatistics
+    {
         public int strength;
         public int speed;
         public int health;
@@ -82,7 +152,8 @@ public class Character : MonoBehaviour
         public int smart;
         public int resistance;
 
-        public CapacitiesStatistics(){
+        public CapacitiesStatistics()
+        {
             strength = 0 ;
             speed = 0 ;
             health = 0 ;
@@ -98,180 +169,161 @@ public class Character : MonoBehaviour
         public double swap;
         public double inversion;
 
-        public MutationRate(double bit_mutation, double swap_mutation, double inversion_mutation)
+        public MutationRate(double bitMutation, double swapMutation, double inversionMutation)
         {
-            bit = bit_mutation;
-            swap = swap_mutation;
-            inversion = inversion_mutation;
+            bit = bitMutation;
+            swap = swapMutation;
+            inversion = inversionMutation;
         }
     }
 
-    public class Individual{
-        public Genome genome;
-        public int fitnessScore;
-        public int remainingLife = 9000; // frame
-        public int individualId;
-        public CapacitiesStatistics statistics = new CapacitiesStatistics(); // en fonction des gènes de l'individu il aura des stats de capacités différentes
+    public class Individual
+    {
+        private Genome _genome;
+        private int _individualId;
+        private int _fitnessScore;
+        private int _remainingLife = 9000; // frame
+        private CapacitiesStatistics _statistics = new CapacitiesStatistics(); // en fonction des gènes de l'individu il aura des stats de capacités différentes
 
-        public Individual(){
+        public Individual()
+        {
             GenerateGenome();
+            EvaluateStatistics();
         }
 
-        public Individual(Genome g){
-            genome.Set(g);
+        public Individual(Genome g)
+        {
+            _genome = new Genome();
+            _genome.Set(g);
         }
 
-        public int GetId(){
-            return individualId;
+        public Genome GetGenome()
+        {
+            return _genome;
         }
 
-        public void SetId(int id){
-            individualId = id;
+        public int GetGenomeByIndex(int i)
+        {
+            return _genome.GetIndex(i);
         }
 
-        public int GenomeSize(){
-            return genome.Size();
+        public void SetGenomeByIndex(int i, int value)
+        {
+            _genome.SetByIndex(i, value);
         }
 
-        public void UpdateRemainingLife(){
-            remainingLife--;
+        public int GenomeSize()
+        {
+            return _genome.Size();
         }
 
-        public bool isDead(){
-            return (remainingLife <= 0);
+        public int GetId()
+        {
+            return _individualId;
         }
 
-        public int GetRemainingLife(){
-            return remainingLife;
+        public void SetId(int id)
+        {
+            _individualId = id;
         }
 
-        public void evaluate_statistics(){
-            statistics.speed = genome.GetIndex(13)+genome.GetIndex(12) + (genome.GetIndex(14)+genome.GetIndex(15)+genome.GetIndex(16)+genome.GetIndex(17))*2;
-            statistics.strength = genome.GetIndex(18)+genome.GetIndex(19) + (genome.GetIndex(20)+genome.GetIndex(21))*2;
-            statistics.health = genome.GetIndex(22)+genome.GetIndex(23)+genome.GetIndex(24)+genome.GetIndex(25);
-            statistics.resistance = genome.GetIndex(9)+genome.GetIndex(8) + (genome.GetIndex(11)+genome.GetIndex(10))*2;
-            statistics.smart = genome.GetIndex(4)+genome.GetIndex(5) + (genome.GetIndex(7)+genome.GetIndex(6))*2;
-            statistics.vision = genome.GetIndex(0)+genome.GetIndex(1) + (genome.GetIndex(2)+genome.GetIndex(3))*2;
+        public int GetFitnessScore()
+        {
+            return _fitnessScore;
         }
 
-        public void evaluate_fitness_score(Capacities Capacities){
-            fitnessScore=0;
-            if(Capacities.speed){
-                fitnessScore+=genome.GetIndex(13)+genome.GetIndex(12);
-                fitnessScore+=(genome.GetIndex(14)+genome.GetIndex(15)+genome.GetIndex(16)+genome.GetIndex(17))*2;
-            }
-            if(Capacities.strength){
-                fitnessScore+=genome.GetIndex(18)+genome.GetIndex(19);
-                fitnessScore+=(genome.GetIndex(20)+genome.GetIndex(21))*2;
-            }
-            if(Capacities.health){
-                fitnessScore+=genome.GetIndex(22)+genome.GetIndex(23)+genome.GetIndex(24)+genome.GetIndex(25);
-            }
-            if(Capacities.resistance){
-                fitnessScore+=genome.GetIndex(9)+genome.GetIndex(8);
-                fitnessScore+=(genome.GetIndex(11)+genome.GetIndex(10))*2;
-            }    
-            if(Capacities.smart){
-                fitnessScore+=genome.GetIndex(4)+genome.GetIndex(5);
-                fitnessScore+=(genome.GetIndex(7)+genome.GetIndex(6))*2;
-            }   
-            if(Capacities.vision){
-                fitnessScore+=genome.GetIndex(0)+genome.GetIndex(1);
-                fitnessScore+=(genome.GetIndex(2)+genome.GetIndex(3))*2;
+        public int GetRemainingLife()
+        {
+            return _remainingLife;
+        }
+
+        public void UpdateRemainingLife()
+        {
+            _remainingLife--;
+        }
+
+        public bool isDead()
+        {
+            return (_remainingLife <= 0);
+        }
+
+        private void EvaluateStatistics()
+        {
+            _statistics.vision = 
+                _genome.GetIndex(Population.GenomeInformations.eyeSize1)
+                + _genome.GetIndex(Population.GenomeInformations.eyeSize2)
+                + (_genome.GetIndex(Population.GenomeInformations.eyeNumber1)
+                    + _genome.GetIndex(Population.GenomeInformations.eyeNumber2)) * 2;
+            _statistics.smart = 
+                _genome.GetIndex(Population.GenomeInformations.headShape1)
+                + _genome.GetIndex(Population.GenomeInformations.headShape2)
+                + _genome.GetIndex(Population.GenomeInformations.headDeformByY)
+                + _genome.GetIndex(Population.GenomeInformations.headDeformByZ);
+            _statistics.resistance = 
+                _genome.GetIndex(Population.GenomeInformations.chestShape1)
+                + _genome.GetIndex(Population.GenomeInformations.chestShape2)
+                + _genome.GetIndex(Population.GenomeInformations.chestDeformByY)
+                + _genome.GetIndex(Population.GenomeInformations.chestDeformByZ);
+            _statistics.strength = 
+                (_genome.GetIndex(Population.GenomeInformations.armSize1)
+                    + _genome.GetIndex(Population.GenomeInformations.armSize2)) * 2
+                + _genome.GetIndex(Population.GenomeInformations.armNumber1)
+                + _genome.GetIndex(Population.GenomeInformations.armNumber2);
+            _statistics.speed = 
+                (_genome.GetIndex(Population.GenomeInformations.legSize1)
+                    + _genome.GetIndex(Population.GenomeInformations.legSize2)) * 2
+                + _genome.GetIndex(Population.GenomeInformations.legNumber1)
+                + _genome.GetIndex(Population.GenomeInformations.legNumber2);
+        }
+
+        public void EvaluateFitnessScore(Capacities capacitiesWanted){
+            _fitnessScore = 0;
+            if(capacitiesWanted.vision)
+            {
+                _fitnessScore += _statistics.vision;
             }     
-        }
-
-        /*    
-        Mutation non codées :
-        - Mutation de valeur : Modifier la valeur d'un gène à un autre aléatoire dans une certaine plage. 
-            Par exemple, ajouter ou soustraire une petite valeur à un gène.
-            -> intérêt si gène pas que entre 0 et 1
-        - Mutation par insertion ou suppression : Ajoutez ou supprimez un gène du génome.
-            -> là on a des génome fixe donc peu pratique
-        */
-
-        // Mutation par permutation : Permute l'emplacement de deux gènes dans le génome.
-        public void swap_mutation(double mutation_rate)
-        {
-            for (int i = 0; i < GenomeSize(); i++)
-            {
-                if (UnityEngine.Random.Range(0f, 1f) < mutation_rate)
-                {
-                    int index1 = UnityEngine.Random.Range(0, GenomeSize());
-                    int index2 = UnityEngine.Random.Range(0, GenomeSize());
-
-                    // Échanger les valeurs des bits à index1 et index2
-                    int temp = genome.GetIndex(index1);
-                    genome.SetByIndex(index1, genome.GetIndex(index2));
-                    genome.SetByIndex(index2, temp);
-                }
+            if(capacitiesWanted.smart){
+                _fitnessScore += _statistics.smart;
+            }   
+            if(capacitiesWanted.resistance){
+                _fitnessScore += _statistics.resistance;
+            }    
+            if(capacitiesWanted.strength){
+                _fitnessScore += _statistics.strength;
             }
-        }
-
-        //Mutation par inversion : Inverse l'ordre des gènes dans une partie du génome.
-        public void inversion_mutation(double mutation_rate)
-        {
-            for (int i = 0; i < GenomeSize(); i++)
+            if(capacitiesWanted.speed)
             {
-                if (UnityEngine.Random.Range(0f, 1f) < mutation_rate)
-                {
-                    int start = UnityEngine.Random.Range(0, GenomeSize());
-                    int end = UnityEngine.Random.Range(start, GenomeSize());
-
-                    // Inverse l'ordre des bits entre start et end inclus
-                    while (start < end)
-                    {
-                        int temp = genome.GetIndex(start);
-                        genome.SetByIndex(start, genome.GetIndex(end));
-                        genome.SetByIndex(end, temp);
-                        start++;
-                        end--;
-                    }
-                }
-            }
-        }
-
-        // Mutation de bit : Inverse le bit(0 devient 1, et vice versa) à un emplacement aléatoire du génome.
-        public void bit_mutation(double mutation_rate)
-        {
-            for (int i = 0; i < GenomeSize(); i++)
-            {
-                if (UnityEngine.Random.Range(0f, 1f) < mutation_rate)
-                {
-                    // Inverser le bit (0 devient 1, 1 devient 0)
-                    genome.SetByIndex(i, 1 - genome.GetIndex(i));
-                }
+                _fitnessScore += _statistics.speed;
             }
         }
 
         public void GenerateGenome()
         {
-            genome = new Genome();
-            for (int i = 0; i < genome.Size(); i++)
+            _genome = new Genome();
+            for (int i = 0; i < _genome.Size(); i++)
             {
-                genome.SetByIndex(i, UnityEngine.Random.Range(0, 2)); // Remplir le genome avec des 0 ou des 1
+                _genome.SetByIndex(i, UnityEngine.Random.Range(0, 2)); // Remplir le genome avec des 0 ou des 1
             }
-            Debug.Log("Le Génome de l'individu est : "+ string.Join(", ", genome.Get()));
+            Debug.Log("Le Génome de l'individu est : "+ string.Join(", ", _genome.Get()));
         }
 
-        public void mutation(MutationRate mutation_rate)
+        public void Mutation(MutationRate mutationRate)
         {
-            bit_mutation(mutation_rate.bit);
-            swap_mutation(mutation_rate.swap);
-            inversion_mutation(mutation_rate.inversion);
+            _genome.BitMutation(mutationRate.bit);
+            _genome.SwapMutation(mutationRate.swap);
+            _genome.InversionMutation(mutationRate.inversion);
         }
 
         public void DebugIndividual(){
-            Debug.Log("Génome :"+genome);
-            Debug.Log("Score de fitness : "+fitnessScore);
-            Debug.Log("Espérence de vie : "+remainingLife);
+            Debug.Log("Génome :" + _genome);
+            Debug.Log("Score de fitness : " + _fitnessScore);
+            Debug.Log("Espérence de vie : " + _remainingLife);
             Debug.Log("Statistiques : ");
-            Debug.Log("Force : "+ statistics.strength);
-            Debug.Log("Vitesse : "+ statistics.speed);
-            Debug.Log("Vision : "+ statistics.vision);
-            Debug.Log("Santé : "+ statistics.health);
-            Debug.Log("Résistance : "+ statistics.resistance);
-            Debug.Log("Intelligence : "+ statistics.smart);
+            Debug.Log("Vision : " + _statistics.vision);
+            Debug.Log("Intelligence : " + _statistics.smart);
+            Debug.Log("Résistance : " + _statistics.resistance);
+            Debug.Log("Force : " + _statistics.strength);
+            Debug.Log("Vitesse : " + _statistics.speed);
         }
     }
 }

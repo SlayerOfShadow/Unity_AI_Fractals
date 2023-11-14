@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 
@@ -18,7 +15,7 @@ public class CharacterGenerator : MonoBehaviour
     public GameObject legPrefab;
     public GameObject armPrefab;
 
-    public GameObject modelObject;
+    public GameObject modelCharacter;
 
     class CharacterInformations
     {
@@ -164,11 +161,11 @@ public class CharacterGenerator : MonoBehaviour
         IndividualBody individualBody = new IndividualBody(
             "Individual" + i,
             transform,
-            modelObject.transform.position,
+            modelCharacter.transform.position,
             (float)i * (1f + characterInformations.width)
         );
 
-        InstantiateIndividualModel(individual.genome, individualBody);
+        InstantiateIndividualModel(individual.GetGenome(), individualBody);
     }
 
     public void InstantiateIndividualModel(Character.Genome genome, IndividualBody individualBody)

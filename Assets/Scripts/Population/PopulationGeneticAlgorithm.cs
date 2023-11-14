@@ -1,14 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEngine.TextCore.Text;
 
 public class PopulationGeneticAlgorithm : MonoBehaviour
 {
-    private Character CharacterScript; 
-
     public enum FitnessAlgorithm
     {
         random,
@@ -19,21 +14,22 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
 
     private void Sort()
     {
-        individualsSorted.Sort((individu1, individu2) => individu2.fitnessScore.CompareTo(individu1.fitnessScore));
+        individualsSorted.Sort((individu1, individu2) => individu2.GetFitnessScore().CompareTo(individu1.GetFitnessScore()));
     }
 
-    public void add_individual(Character.Individual individual)
+    public void AddIndividual(Character.Individual individual)
     {
         individualsSorted.Add(individual);
         Sort();
     }
 
-    public void pop_individual()
+    // les individus disparaissent quand ils meurent soit quand ils n'ont plus de temps de vie
+    public void PopIndividual()
     {
         individualsSorted.Remove(individualsSorted.Last());
     }
 
-    public Character.Individual crossover(Character.Individual parent1, Character.Individual parent2, int population_length, Character.Capacities properties, Character.MutationRate mutation_rate)
+    public Character.Individual Crossover(Character.Individual parent1, Character.Individual parent2, int populationLength, Character.Capacities properties, Character.MutationRate mutationRate)
     {            
         // Créer deux enfants en copiant les gènes des parents
         Character.Genome genome1 = new Character.Genome();
@@ -49,108 +45,98 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
 
         // Crossover
         int crossover = UnityEngine.Random.Range(0, genomeSize); // Point de croisement aléatoire
-        Character.Individual child1 = new Character.Individual();
-        Character.Individual child2 = new Character.Individual();
-        
-        child1.genome.Set(genome1);
-        child2.genome.Set(genome2);
+        Character.Individual child1 = new Character.Individual(genome1);
+        Character.Individual child2 = new Character.Individual(genome2);
 
         for (int i = 0; i < crossover; i++)
         {
-            child1.genome.SetByIndex(i, parent1.genome.GetIndex(i));
-            child2.genome.SetByIndex(i, parent2.genome.GetIndex(i));
+            child1.SetGenomeByIndex(i, parent1.GetGenomeByIndex(i));
+            child2.SetGenomeByIndex(i, parent2.GetGenomeByIndex(i));
         }
 
-        for (int i = crossover; i < parent1.genome.Get().Length; i++)
+        for (int i = crossover; i < genomeSize; i++)
         {
-            child1.genome.SetByIndex(i, parent2.genome.GetIndex(i));
-            child2.genome.SetByIndex(i, parent1.genome.GetIndex(i));
+            child1.SetGenomeByIndex(i, parent2.GetGenomeByIndex(i));
+            child2.SetGenomeByIndex(i, parent1.GetGenomeByIndex(i));
         }
 
         // mutation
-        child1.mutation(mutation_rate);
-        child2.mutation(mutation_rate);
+        child1.Mutation(mutationRate);
+        child2.Mutation(mutationRate);
 
         // Réévaluer les enfants
-        child1.evaluate_fitness_score(properties);
-        child2.evaluate_fitness_score(properties);
+        child1.EvaluateFitnessScore(properties);
+        child2.EvaluateFitnessScore(properties);
 
         // evolution 
-        if (child1.fitnessScore >= child2.fitnessScore)
+        if (child1.GetFitnessScore() >= child2.GetFitnessScore())
         {
-            return evolve(child1, population_length);
+            return child1;
         }
         else
         {
-            return evolve(child2, population_length);
+            return child2;
         }
     }
 
-    public Character.Individual evolve(Character.Individual child, int population_length)
+    public void ChooseParent(out Character.Individual parent1, out Character.Individual parent2, FitnessAlgorithm algorithm)
     {
-        add_individual(child);
-        child.evaluate_statistics();
-        return child;
-    }
-
-    public void choose_parent(out Character.Individual parent1, out Character.Individual parent2, FitnessAlgorithm algorithm)
-    {
-        int index_parent1 = -1;
-        int index_parent2 = -1;
+        int indexParent1 = -1;
+        int indexParent2 = -1;
         switch (algorithm)
         {
             case FitnessAlgorithm.random:
-                random_selection(out index_parent1, out index_parent2);
+                RandomSelection(out indexParent1, out indexParent2);
                 break;
             case FitnessAlgorithm.roulette_wheel:
-                roulette_wheel_selection(out index_parent1, out index_parent2);
+                RouletteWheelSelection(out indexParent1, out indexParent2);
                 break;
             default:
                 Debug.LogError("Algorithme non pris en charge.");
                 break;
         }
-        parent1 = individualsSorted[index_parent1];
-        parent2 = individualsSorted[index_parent2];
+        parent1 = individualsSorted[indexParent1];
+        parent2 = individualsSorted[indexParent2];
     }
 
-    public Character.Individual new_generation(int population_length, FitnessAlgorithm algorithm, Character.Capacities properties, Character.MutationRate mutation_rate)
+    public Character.Individual NewGeneration(int populationLength, FitnessAlgorithm algorithm, Character.Capacities properties, Character.MutationRate mutationRate)
     {
         Character.Individual parent1, parent2;
-        choose_parent(out parent1, out parent2, algorithm);
-        return crossover(parent1, parent2, population_length, properties, mutation_rate);
+        ChooseParent(out parent1, out parent2, algorithm);
+        return Crossover(parent1, parent2, populationLength, properties, mutationRate);
     }
 
-    public void roulette_wheel_selection(out int index_parent1, out int index_parent2)
+    public void RouletteWheelSelection(out int indexParent1, out int indexParent2)
     {
         // Calculer la somme des scores de fitness de tous les individus
-        int totalFitness = individualsSorted.Sum(individual => individual.fitnessScore);
+        int totalFitness = individualsSorted.Sum(individual => individual.GetFitnessScore());
 
         // Générer un nombre aléatoire entre 0 et la somme des scores de fitness
-        int random_number_1 = UnityEngine.Random.Range(0, totalFitness);
+        int randomNumber1 = UnityEngine.Random.Range(0, totalFitness);
 
         // Sélectionner le premier parent
-        index_parent1 = select_index_by_roulette(random_number_1);
+        indexParent1 = SelectIndexByRoulette(randomNumber1);
 
         // Calculer la somme des scores de fitness des individus restants (en excluant le premier parent)
-        int total_remaining_fitness = totalFitness - individualsSorted[index_parent1].fitnessScore;
+        int totalRemainingFitness = totalFitness - individualsSorted[indexParent1].GetFitnessScore();
 
         // Générer un nombre aléatoire pour sélectionner le deuxième parent parmi les individus restants
-        int random_number_2 = UnityEngine.Random.Range(0, total_remaining_fitness);
+        int randomNumber2 = UnityEngine.Random.Range(0, totalRemainingFitness);
 
         // Sélectionner le deuxième parent
-        index_parent2 = select_index_by_roulette(random_number_2, index_parent1);
+        indexParent2 = SelectIndexByRoulette(randomNumber2, indexParent1);
     }
 
     // Fonction de sélection par roulette pour obtenir un indice
-    private int select_index_by_roulette(int random_number, int excluded_index = -1)
+    private int SelectIndexByRoulette(int randomNumber, int excludedIndex = -1)
     {
-        int accumulated_fitness = 0;
+        int accumulatedFitness = 0;
         for (int i = 0; i < individualsSorted.Count; i++)
         {
-            if (i != excluded_index) // Exclure l'indice spécifié (si fourni)
+            if (i != excludedIndex) // Exclure l'indice spécifié (si fourni)
             {
-                accumulated_fitness += individualsSorted[i].fitnessScore;
-                if (accumulated_fitness >= random_number)
+                accumulatedFitness += individualsSorted[i].GetFitnessScore();
+                if (accumulatedFitness >= randomNumber)
                 {
                     return i; // Retourner l'indice sélectionné
                 }
@@ -161,13 +147,13 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
         return -1;
     }
 
-    public void random_selection(out int index_parent1, out int index_parent2)
+    public void RandomSelection(out int indexParent1, out int indexParent2)
     {
-        index_parent1 = UnityEngine.Random.Range(0, individualsSorted.Count - 1);
-        index_parent2 = UnityEngine.Random.Range(0, individualsSorted.Count - 1);
-        while (index_parent1 == index_parent2)
+        indexParent1 = UnityEngine.Random.Range(0, individualsSorted.Count - 1);
+        indexParent2 = UnityEngine.Random.Range(0, individualsSorted.Count - 1);
+        while (indexParent1 == indexParent2)
         {
-            index_parent2 = UnityEngine.Random.Range(0, individualsSorted.Count - 1);
+            indexParent2 = UnityEngine.Random.Range(0, individualsSorted.Count - 1);
         }
     }
 }

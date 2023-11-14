@@ -1,17 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Population : MonoBehaviour
 {
-    public bool AddIndividual = false;
+    public bool addIndividual = false;
     public int populationSize = 3;
 
-    public PopulationGeneticAlgorithm.FitnessAlgorithm fitness_algorithm = PopulationGeneticAlgorithm.FitnessAlgorithm.roulette_wheel;
+    public PopulationGeneticAlgorithm.FitnessAlgorithm fitnessAlgorithm = PopulationGeneticAlgorithm.FitnessAlgorithm.roulette_wheel;
 
-    public double bit_mutation_rate = 0.1;
-    public double swap_mutation_rate = 0.01;
-    public double inversion_mutation_rate = 0.001;
+    public double bitMutationRate = 0.1;
+    public double swapMutationRate = 0.01;
+    public double inversionMutationRate = 0.001;
 
     public bool strength = false;
     public bool speed = false;
@@ -22,7 +20,6 @@ public class Population : MonoBehaviour
 
     private CharacterGenerator CharacterGeneratorScript; 
     private PopulationGeneticAlgorithm PopulationGeneticAlgorithmScript; 
-    private Character CharacterScript; 
 
     public enum GenomeInformations
     {
@@ -53,24 +50,22 @@ public class Population : MonoBehaviour
     {
         Debug.Log("Create population");
         CharacterGeneratorScript = GetComponentInChildren<CharacterGenerator>();
-        CharacterScript = GetComponentInChildren<Character>();
         PopulationGeneticAlgorithmScript = GetComponent<PopulationGeneticAlgorithm>();
         if (CharacterGeneratorScript != null)
         {
             for (int i = 0; i < populationSize; i++){
                 Character.Individual individual = new Character.Individual();
                 individual.SetId(i);
-                Character.Capacities wanted_properties = new Character.Capacities(strength, speed, health, vision, smart, resistance);
-                individual.evaluate_statistics();
-                individual.evaluate_fitness_score(wanted_properties);
-                PopulationGeneticAlgorithmScript.add_individual(individual);
+                Character.Capacities wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
+                individual.EvaluateFitnessScore(wantedProperties);
+                PopulationGeneticAlgorithmScript.AddIndividual(individual);
                 CharacterGeneratorScript.GenerateCharacter(i, individual);
                 Debug.Log("Information de l'individu "+ i);
                 individual.DebugIndividual();
                 var navMeshAgentController = CharacterGeneratorScript.GetComponent<NavMeshAgentController>();
                 if (navMeshAgentController != null)
                 {
-                    Vector3 destination = new Vector3(300, 26, 33 + i*3.5f);
+                    Vector3 destination = new Vector3(300, 26, 33 + i * 3.5f);
                     navMeshAgentController.SetDestination(destination);
                 }
             }
@@ -80,54 +75,30 @@ public class Population : MonoBehaviour
 
     private void Update()
     {
-        Character.Capacities wanted_properties = new Character.Capacities(strength, speed, health, vision, smart, resistance);
-        Character.MutationRate mutation_rate = new Character.MutationRate(bit_mutation_rate, swap_mutation_rate, inversion_mutation_rate);
+        Character.Capacities wantedProperties = new Character.Capacities( vision, smart, resistance, strength, speed);
+        Character.MutationRate mutationRate = new Character.MutationRate(bitMutationRate, swapMutationRate, inversionMutationRate);
 
         foreach (Character.Individual individual in PopulationGeneticAlgorithmScript.individualsSorted){
-            individual.evaluate_fitness_score(wanted_properties);
+            individual.EvaluateFitnessScore(wantedProperties);
             individual.UpdateRemainingLife();
-            if (individual.isDead()){
+            if (individual.isDead())
+            {
                 CharacterGeneratorScript.DestroyCharacter(individual.GetId());
-                Debug.Log("Individual"+individual.GetId()+" died");
+                Debug.Log("Individual" + individual.GetId() + " died");
                 // Retirer personnage de la liste triée
                 // Créer id pour décoréler l'id et la populatioSize 
             }
         }
-        var navMeshAgentController = CharacterGeneratorScript.GetComponent<NavMeshAgentController>();
-        if (navMeshAgentController != null)
+        if (addIndividual)
         {
-            Vector3 destination = new Vector3(300,26,33);
-            navMeshAgentController.SetDestination(destination);
-        }
-        if (AddIndividual){
             Debug.Log("Add Individual");
             populationSize++;
-            Character.Individual individual = PopulationGeneticAlgorithmScript.new_generation(populationSize, fitness_algorithm, wanted_properties, mutation_rate);
-            PopulationGeneticAlgorithmScript.add_individual(individual);
+            Character.Individual individual = PopulationGeneticAlgorithmScript.NewGeneration(populationSize, fitnessAlgorithm, wantedProperties, mutationRate);
+            PopulationGeneticAlgorithmScript.AddIndividual(individual);
             CharacterGeneratorScript.GenerateCharacter(populationSize, individual);
                 
-            AddIndividual = false;
+            addIndividual = false;
             Debug.Log("individual added");
-        }
-    }
-    // Update is called once per frame
-
-    void AddNewIndividual(){
-        Character.Individual individual = new Character.Individual();
-        individual.SetId(populationSize);
-        Character.Capacities wanted_properties = new Character.Capacities(strength, speed, health, vision, smart, resistance);
-        Character.MutationRate mutation_rate = new Character.MutationRate(bit_mutation_rate, swap_mutation_rate, inversion_mutation_rate);
-        individual.evaluate_fitness_score(wanted_properties);
-        PopulationGeneticAlgorithmScript.add_individual(individual);
-        CharacterGeneratorScript.GenerateCharacter(populationSize, individual);
-        Debug.Log("Information de l'individu "+ populationSize);
-        populationSize++;
-        individual.DebugIndividual();
-        var navMeshAgentController = CharacterGeneratorScript.GetComponent<NavMeshAgentController>();
-        if (navMeshAgentController != null)
-        {
-            Vector3 destination = new Vector3(300,26,33);
-            navMeshAgentController.SetDestination(destination);
         }
     }
 }

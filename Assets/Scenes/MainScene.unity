@@ -427,12 +427,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 922cd29a42a9e33479eea3a8ad995ae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AddIndividual: 0
+  addIndividual: 0
   populationSize: 3
-  fitness_algorithm: 1
-  bit_mutation_rate: 0.1
-  swap_mutation_rate: 0.01
-  inversion_mutation_rate: 0.001
+  fitnessAlgorithm: 1
+  bitMutationRate: 0.1
+  swapMutationRate: 0.01
+  inversionMutationRate: 0.001
   strength: 0
   speed: 0
   health: 0
@@ -864,7 +864,7 @@ MonoBehaviour:
   chestPrefab4: {fileID: 2481697378108714724, guid: c5ade943bb553d2408516ab8fd7a44da, type: 3}
   legPrefab: {fileID: 7370123494247621927, guid: 35c28608ec2868b4fb700f0306db72a0, type: 3}
   armPrefab: {fileID: 7370123494247621927, guid: 35c28608ec2868b4fb700f0306db72a0, type: 3}
-  modelObject: {fileID: 761815402}
+  modelCharacter: {fileID: 761815402}
 --- !u!114 &761815405
 MonoBehaviour:
   m_ObjectHideFlags: 0
