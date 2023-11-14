@@ -312,6 +312,7 @@ public class Character : MonoBehaviour
             _genome.BitMutation(mutationRate.bit);
             _genome.SwapMutation(mutationRate.swap);
             _genome.InversionMutation(mutationRate.inversion);
+            EvaluateStatistics();
         }
 
         public void DebugIndividual(){
