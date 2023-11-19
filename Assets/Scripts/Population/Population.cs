@@ -62,12 +62,6 @@ public class Population : MonoBehaviour
                 CharacterGeneratorScript.GenerateCharacter(i, individual);
                 Debug.Log("Information de l'individu "+ i);
                 individual.DebugIndividual();
-                var navMeshAgentController = CharacterGeneratorScript.GetComponent<NavMeshAgentController>();
-                if (navMeshAgentController != null)
-                {
-                    Vector3 destination = new Vector3(300, 26, 33 + i * 3.5f);
-                    navMeshAgentController.SetDestination(destination);
-                }
             }
         }
         Debug.Log("Population created");
@@ -81,7 +75,7 @@ public class Population : MonoBehaviour
         foreach (Character.Individual individual in PopulationGeneticAlgorithmScript.individualsSorted){
             individual.EvaluateFitnessScore(wantedProperties);
             individual.UpdateRemainingLife();
-            if (individual.isDead())
+            if (individual.IsDead())
             {
                 CharacterGeneratorScript.DestroyCharacter(individual.GetId());
                 Debug.Log("Individual" + individual.GetId() + " died");

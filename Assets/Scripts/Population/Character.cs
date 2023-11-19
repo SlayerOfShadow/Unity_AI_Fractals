@@ -242,7 +242,7 @@ public class Character : MonoBehaviour
             _remainingLife--;
         }
 
-        public bool isDead()
+        public bool IsDead()
         {
             return (_remainingLife <= 0);
         }
@@ -325,6 +325,26 @@ public class Character : MonoBehaviour
             Debug.Log("Résistance : " + _statistics.resistance);
             Debug.Log("Force : " + _statistics.strength);
             Debug.Log("Vitesse : " + _statistics.speed);
+        }
+    }
+
+    void Start()
+    {
+        var navMeshAgentController = GetComponent<NavMeshAgentController>();
+        if (navMeshAgentController != null)
+        {
+            Vector3 destination = transform.position;
+            navMeshAgentController.SetDestination(destination);
+        }
+    }
+
+    void Update()
+    {
+        var navMeshAgentController = GetComponent<NavMeshAgentController>();
+        if (navMeshAgentController != null)
+        {
+            Vector3 destination = transform.position * Time.deltaTime;
+            navMeshAgentController.SetDestination(destination);
         }
     }
 }
