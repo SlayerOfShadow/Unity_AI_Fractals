@@ -167,7 +167,6 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
             if (individual.IsFertile())
             {
                 fertileIndividualsSortedByFitnessScore.Add(individual);
-                Debug.Log("Add fertile individual");
             }
         }
     }

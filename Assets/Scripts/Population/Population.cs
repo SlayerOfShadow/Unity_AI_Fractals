@@ -97,10 +97,6 @@ public class Population : MonoBehaviour
     // Vérifie si des individus peuvent faire des enfants
     public bool CanAddIndividual()
     {
-        if (PopulationGeneticAlgorithmScript.fertileIndividualsSortedByFitnessScore.Count >= 2)
-        {
-            Debug.Log("Have enough individuals to make a baby");
-        }
         return PopulationGeneticAlgorithmScript.fertileIndividualsSortedByFitnessScore.Count >= 2;
     }
 
