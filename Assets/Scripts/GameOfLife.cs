@@ -1,13 +1,13 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GameOfLife : MonoBehaviour
 {
     [SerializeField] GameObject prefab;
     [SerializeField] float size = 1;
-    [SerializeField] int iterations = 5;
+    [SerializeField] int maxIterations = 5;
     [SerializeField] int columns = 20;
     [SerializeField] int rows = 20;
-    [SerializeField] float speed = 5;
     GameObject[,] cubes;
     int[,] cells;
     int[,] cells2;
@@ -98,32 +98,30 @@ public class GameOfLife : MonoBehaviour
         }
     }
 
-    void Update()
-{
-    if (count < iterations && Time.time - lastFrameTime > 1f / speed)
+    public void Build()
     {
-        lastFrameTime = Time.time;
-
-        Evolution();
-
-        for (int i = 0; i < columns; i++)
+        if (count < maxIterations)
         {
-            for (int j = 0; j < rows; j++)
+            Evolution();
+
+            for (int i = 0; i < columns; i++)
             {
-                if (cells2[i, j] == 1)
+                for (int j = 0; j < rows; j++)
                 {
-                    GameObject obj = Instantiate(prefab, new Vector3(-count * size + startPosition.x, j * size + startPosition.y, i * size + startPosition.z), Quaternion.identity, gameObject.transform);
-                    obj.transform.localScale = new Vector3(size, size, size);
-                    cubes[i, j] = obj;
+                    if (cells2[i, j] == 1)
+                    {
+                        GameObject obj = Instantiate(prefab, new Vector3(-count * size + startPosition.x, j * size + startPosition.y, i * size + startPosition.z), Quaternion.identity, gameObject.transform);
+                        obj.transform.localScale = new Vector3(size, size, size);
+                        cubes[i, j] = obj;
+                    }
                 }
             }
+
+            int[,] temp = cells;
+            cells = cells2;
+            cells2 = temp;
+            count++;
         }
-
-        int[,] temp = cells;
-        cells = cells2;
-        cells2 = temp;
-        count++;
+        
     }
-}
-
 }

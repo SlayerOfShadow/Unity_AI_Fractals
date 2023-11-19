@@ -8,7 +8,6 @@ public class GeneticAlgorithm : MonoBehaviour
     [SerializeField] int populationSize = 50;
     [SerializeField] float mutationRate = 0.1f;
     [SerializeField] int maxGenerations = 100;
-    [SerializeField] float simulationSpeed = 0.5f;
     [SerializeField] float maxTreeHeight = 5;
     [SerializeField] bool tournament = true;
     [SerializeField] int tournamentSize = 5;
@@ -17,6 +16,7 @@ public class GeneticAlgorithm : MonoBehaviour
     GameObject[] treeObjects;
     Terrain terrain;
     Vector3 terrainSize;
+    [SerializeField] Vector2 randTreeScale = new Vector2(3, 5);
 
     void Start()
     {
@@ -27,14 +27,15 @@ public class GeneticAlgorithm : MonoBehaviour
         for (int i = 0; i < populationSize; i++)
         {
             treeObjects[i] = Instantiate(prefab, transform.position, Quaternion.identity, transform);
+            treeObjects[i].transform.localScale = Vector3.one * Random.Range(randTreeScale.x, randTreeScale.y);
         }
 
         InitializePopulation();
 
-        StartCoroutine(RunGeneticAlgorithm());
+        RunGeneticAlgorithm();
     }
 
-    IEnumerator RunGeneticAlgorithm()
+    void RunGeneticAlgorithm()
     {
         int generation = 0;
         while (generation < maxGenerations)
@@ -78,7 +79,6 @@ public class GeneticAlgorithm : MonoBehaviour
             GeneratePopulation();
 
             generation++;
-            yield return new WaitForSeconds(simulationSpeed);
         }
     }
 
