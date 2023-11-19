@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Population : MonoBehaviour
 {
-    public bool addIndividual = false;
+    public float makeABabyProbability = 0.01f;
     public int populationSize = 3;
 
     public PopulationGeneticAlgorithm.FitnessAlgorithm fitnessAlgorithm = PopulationGeneticAlgorithm.FitnessAlgorithm.roulette_wheel;
@@ -72,7 +72,7 @@ public class Population : MonoBehaviour
         Character.Capacities wantedProperties = new Character.Capacities( vision, smart, resistance, strength, speed);
         Character.MutationRate mutationRate = new Character.MutationRate(bitMutationRate, swapMutationRate, inversionMutationRate);
 
-        foreach (Character.Individual individual in PopulationGeneticAlgorithmScript.individualsSorted){
+        foreach (Character.Individual individual in PopulationGeneticAlgorithmScript.individualsSortedByFitnessScore){
             individual.EvaluateFitnessScore(wantedProperties);
             individual.UpdateRemainingLife();
             if (individual.IsDead())
@@ -83,16 +83,30 @@ public class Population : MonoBehaviour
                 // Créer id pour décoréler l'id et la populatioSize 
             }
         }
-        if (addIndividual)
+        if (MakeABabyProbability() && CanAddIndividual())
         {
             Debug.Log("Add Individual");
             populationSize++;
             Character.Individual individual = PopulationGeneticAlgorithmScript.NewGeneration(populationSize, fitnessAlgorithm, wantedProperties, mutationRate);
             PopulationGeneticAlgorithmScript.AddIndividual(individual);
             CharacterGeneratorScript.GenerateCharacter(populationSize, individual);
-                
-            addIndividual = false;
-            Debug.Log("individual added");
+            Debug.Log("Individual added");
         }
+    }
+
+    // Vérifie si des individus peuvent faire des enfants
+    public bool CanAddIndividual()
+    {
+        if (PopulationGeneticAlgorithmScript.fertileIndividualsSortedByFitnessScore.Count >= 2)
+        {
+            Debug.Log("Have enough individuals to make a baby");
+        }
+        return PopulationGeneticAlgorithmScript.fertileIndividualsSortedByFitnessScore.Count >= 2;
+    }
+
+    public bool MakeABabyProbability()
+    {
+        float proba = UnityEngine.Random.Range(0, 100) / 100.0f;
+        return proba <= makeABabyProbability;
     }
 }

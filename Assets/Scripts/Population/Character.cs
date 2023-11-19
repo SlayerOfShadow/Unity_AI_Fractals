@@ -3,6 +3,8 @@ using System.Linq;
 
 public class Character : MonoBehaviour
 {
+    private const int lifeTime = 9000; // frame
+
     public class Genome
     {
         private int[] _value;
@@ -182,12 +184,13 @@ public class Character : MonoBehaviour
         private Genome _genome;
         private int _individualId;
         private int _fitnessScore;
-        private int _remainingLife = 9000; // frame
+        private int _remainingLife;
         private CapacitiesStatistics _statistics = new CapacitiesStatistics(); // en fonction des gènes de l'individu il aura des stats de capacités différentes
 
         public Individual()
         {
             GenerateGenome();
+            _remainingLife = lifeTime;
             EvaluateStatistics();
         }
 
@@ -245,6 +248,21 @@ public class Character : MonoBehaviour
         public bool IsDead()
         {
             return (_remainingLife <= 0);
+        }
+
+        public bool IsAChild()
+        {
+            return _remainingLife >= lifeTime * 0.75f;
+        }
+
+        public bool IsFertile()
+        {
+            return !IsAChild() && !IsOld();
+        }
+
+        public bool IsOld()
+        {
+            return _remainingLife <= lifeTime * 0.25f;
         }
 
         private void EvaluateStatistics()

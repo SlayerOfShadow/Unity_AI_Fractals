@@ -427,7 +427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 922cd29a42a9e33479eea3a8ad995ae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  addIndividual: 0
+  makeABabyProbability: 0.01
   populationSize: 3
   fitnessAlgorithm: 1
   bitMutationRate: 0.1
