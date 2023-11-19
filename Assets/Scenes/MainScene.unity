@@ -148,7 +148,7 @@ Transform:
   m_GameObject: {fileID: 36897243}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 228.65, y: 25.16, z: 22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -713,7 +713,7 @@ MonoBehaviour:
   chestPrefab4: {fileID: 2481697378108714724, guid: c5ade943bb553d2408516ab8fd7a44da, type: 3}
   legPrefab: {fileID: 7370123494247621927, guid: 35c28608ec2868b4fb700f0306db72a0, type: 3}
   armPrefab: {fileID: 7370123494247621927, guid: 35c28608ec2868b4fb700f0306db72a0, type: 3}
-  modelCharacter: {fileID: 0}
+  modelCharacter: {fileID: 779723885}
 --- !u!114 &761815405
 MonoBehaviour:
   m_ObjectHideFlags: 0
