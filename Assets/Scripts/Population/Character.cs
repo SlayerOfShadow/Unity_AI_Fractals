@@ -5,6 +5,8 @@ public class Character : MonoBehaviour
 {
     private const int lifeTime = 9000; // frame
 
+    public GameObject testDestination;
+
     public class Genome
     {
         private int[] _value;
@@ -361,7 +363,7 @@ public class Character : MonoBehaviour
         var navMeshAgentController = GetComponent<NavMeshAgentController>();
         if (navMeshAgentController != null)
         {
-            Vector3 destination = transform.position * Time.deltaTime;
+            Vector3 destination = testDestination.transform.position;
             navMeshAgentController.SetDestination(destination);
         }
     }

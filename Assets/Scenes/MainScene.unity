@@ -152,6 +152,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 222613714}
   - {fileID: 418610423}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -216,6 +217,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e127523bdb70cc42a7953e615016475, type: 3}
+--- !u!1 &222613713
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 222613714}
+  m_Layer: 0
+  m_Name: TestNavMeshDestination
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &222613714
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 222613713}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 45.5, y: -5.6, z: 55.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 36897244}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &305256454
 GameObject:
   m_ObjectHideFlags: 0
@@ -491,6 +523,7 @@ MonoBehaviour:
   vision: 0
   smart: 0
   resistance: 0
+  characterPrefab: {fileID: 779723885}
 --- !u!114 &418610425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -713,7 +746,6 @@ MonoBehaviour:
   chestPrefab4: {fileID: 2481697378108714724, guid: c5ade943bb553d2408516ab8fd7a44da, type: 3}
   legPrefab: {fileID: 7370123494247621927, guid: 35c28608ec2868b4fb700f0306db72a0, type: 3}
   armPrefab: {fileID: 7370123494247621927, guid: 35c28608ec2868b4fb700f0306db72a0, type: 3}
-  modelCharacter: {fileID: 779723885}
 --- !u!114 &761815405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -726,6 +758,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7393418625afe0747baef7eae4d497f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testDestination: {fileID: 222613713}
 --- !u!195 &761815406
 NavMeshAgent:
   m_ObjectHideFlags: 0

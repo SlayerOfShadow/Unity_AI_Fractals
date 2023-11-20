@@ -18,6 +18,8 @@ public class Population : MonoBehaviour
     public bool smart = false;
     public bool resistance = false;
 
+    public GameObject characterPrefab;
+
     private CharacterGenerator CharacterGeneratorScript; 
     private PopulationGeneticAlgorithm PopulationGeneticAlgorithmScript; 
 
@@ -53,13 +55,14 @@ public class Population : MonoBehaviour
         PopulationGeneticAlgorithmScript = GetComponent<PopulationGeneticAlgorithm>();
         if (CharacterGeneratorScript != null)
         {
-            for (int i = 0; i < populationSize; i++){
+            for (int i = 0; i < populationSize; i++)
+            {
                 Character.Individual individual = new Character.Individual();
                 individual.SetId(i);
                 Character.Capacities wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
                 individual.EvaluateFitnessScore(wantedProperties);
                 PopulationGeneticAlgorithmScript.AddIndividual(individual);
-                CharacterGeneratorScript.GenerateCharacter(i, individual);
+                CharacterGeneratorScript.GenerateCharacter(characterPrefab, i, individual);
                 Debug.Log("Information de l'individu "+ i);
                 individual.DebugIndividual();
             }
@@ -89,7 +92,7 @@ public class Population : MonoBehaviour
             populationSize++;
             Character.Individual individual = PopulationGeneticAlgorithmScript.NewGeneration(populationSize, fitnessAlgorithm, wantedProperties, mutationRate);
             PopulationGeneticAlgorithmScript.AddIndividual(individual);
-            CharacterGeneratorScript.GenerateCharacter(populationSize, individual);
+            CharacterGeneratorScript.GenerateCharacter(characterPrefab, populationSize, individual);
             Debug.Log("Individual added");
         }
     }

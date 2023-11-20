@@ -15,8 +15,6 @@ public class CharacterGenerator : MonoBehaviour
     public GameObject legPrefab;
     public GameObject armPrefab;
 
-    public GameObject modelCharacter;
-
     class CharacterInformations
     {
         public float size = 2f;
@@ -135,19 +133,18 @@ public class CharacterGenerator : MonoBehaviour
     public class IndividualBody
     {
         private GameObject _gameObject;
-        private Vector3 _position;
 
-        public IndividualBody(string name, Transform transform, Vector3 modelPosition, float offset)
+        public IndividualBody(GameObject prefab, string name, Transform transform)
         {
-            _gameObject = new GameObject(name);
-            _gameObject.transform.parent = transform;
+            _gameObject = Instantiate(prefab, prefab.transform.position, Quaternion.identity);
+            _gameObject.name = name;
+            _gameObject.transform.parent = transform.parent;
 
-            _position = modelPosition + new Vector3(offset, 0f, 0f);
         }
 
         public Vector3 GetPosition()
         {
-            return _position;
+            return _gameObject.transform.position;
         }
 
         public Transform GetTransform()
@@ -156,13 +153,12 @@ public class CharacterGenerator : MonoBehaviour
         }
     }
 
-    public void GenerateCharacter(int i, Character.Individual individual)
+    public void GenerateCharacter(GameObject characterPrefab, int i, Character.Individual individual)
     {
         IndividualBody individualBody = new IndividualBody(
+            characterPrefab,
             "Individual" + i,
-            transform,
-            modelCharacter.transform.position,
-            (float)i * (1f + characterInformations.width)
+            transform
         );
 
         InstantiateIndividualModel(individual.GetGenome(), individualBody);
