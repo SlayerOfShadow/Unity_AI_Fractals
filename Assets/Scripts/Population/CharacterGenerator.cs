@@ -20,17 +20,17 @@ public class CharacterGenerator : MonoBehaviour
     class CharacterInformations
     {
         public float size = 2f;
-        public float width = .7f;
+        public float width = 2f;
 
-        public float eyeProportion = 0.03f;
-        public float headProportion = 0.3f; 
-        public float chestProportion = 0.5f; 
+        public float eyeProportion = 0.06f;
+        public float headProportion = 0.4f; 
+        public float chestProportion = 0.2f; 
 
         public float armLengthProportion = 0.1f; 
         public float legLengthProportion = 0.2f;
 
-        public float armWidthProportion = 0.05f;
-        public float legWidthProportion = 0.08f;
+        public float armWidthProportion = 0.04f;
+        public float legWidthProportion = 0.07f;
 
         public float eyeOffsetProportion = 0.4f;
     }
