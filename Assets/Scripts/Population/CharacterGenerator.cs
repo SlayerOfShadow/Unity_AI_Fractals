@@ -399,7 +399,8 @@ public class CharacterGenerator : MonoBehaviour
         }
     }
 
-    public void DestroyCharacter(int individualId){           
+    public void DestroyCharacter(int individualId)
+    {           
         GameObject parentObject = GameObject.Find("Individual" + individualId);
         if (parentObject != null)
         {
@@ -408,5 +409,6 @@ public class CharacterGenerator : MonoBehaviour
                 GameObject.Destroy(child.gameObject);
             }
         }
+        Destroy(parentObject);
     }
 }

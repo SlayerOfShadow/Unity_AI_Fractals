@@ -3,7 +3,8 @@ using System.Linq;
 
 public class Character : MonoBehaviour
 {
-    private const int lifeTime = 9000; // frame
+    public const int ChildhoodTime = 3000; // frame
+    public const int OldTime = 9000; // frame
 
     public GameObject testDestination;
 
@@ -186,13 +187,12 @@ public class Character : MonoBehaviour
         private Genome _genome;
         private int _individualId;
         private int _fitnessScore;
-        private int _remainingLife;
+        private int _age; // frame
         private CapacitiesStatistics _statistics = new CapacitiesStatistics(); // en fonction des gènes de l'individu il aura des stats de capacités différentes
 
         public Individual()
         {
             GenerateGenome();
-            _remainingLife = lifeTime;
             EvaluateStatistics();
         }
 
@@ -239,22 +239,17 @@ public class Character : MonoBehaviour
 
         public int GetRemainingLife()
         {
-            return _remainingLife;
+            return _age;
         }
 
         public void UpdateRemainingLife()
         {
-            _remainingLife--;
-        }
-
-        public bool IsDead()
-        {
-            return (_remainingLife <= 0);
+            _age++;
         }
 
         public bool IsAChild()
         {
-            return _remainingLife >= lifeTime * 0.75f;
+            return _age <= ChildhoodTime;
         }
 
         public bool IsFertile()
@@ -264,7 +259,7 @@ public class Character : MonoBehaviour
 
         public bool IsOld()
         {
-            return _remainingLife <= lifeTime * 0.25f;
+            return _age >= OldTime;
         }
 
         private void EvaluateStatistics()
@@ -338,7 +333,7 @@ public class Character : MonoBehaviour
         public void DebugIndividual(){
             Debug.Log("Génome :" + _genome);
             Debug.Log("Score de fitness : " + _fitnessScore);
-            Debug.Log("Espérence de vie : " + _remainingLife);
+            Debug.Log("Age : " + _age);
             Debug.Log("Statistiques : ");
             Debug.Log("Vision : " + _statistics.vision);
             Debug.Log("Intelligence : " + _statistics.smart);

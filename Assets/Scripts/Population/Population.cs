@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Population : MonoBehaviour
@@ -59,6 +60,7 @@ public class Population : MonoBehaviour
             {
                 Character.Individual individual = new Character.Individual();
                 individual.SetId(i);
+                Debug.Log("Individual id : " + individual.GetId());
                 Character.Capacities wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
                 individual.EvaluateFitnessScore(wantedProperties);
                 PopulationGeneticAlgorithmScript.AddIndividual(individual);
@@ -78,19 +80,13 @@ public class Population : MonoBehaviour
         foreach (Character.Individual individual in PopulationGeneticAlgorithmScript.individualsSortedByFitnessScore){
             individual.EvaluateFitnessScore(wantedProperties);
             individual.UpdateRemainingLife();
-            if (individual.IsDead())
-            {
-                CharacterGeneratorScript.DestroyCharacter(individual.GetId());
-                Debug.Log("Individual" + individual.GetId() + " died");
-                // Retirer personnage de la liste triée
-                // Créer id pour décoréler l'id et la populatioSize 
-            }
         }
         if (MakeABabyProbability() && CanAddIndividual())
         {
             Debug.Log("Add Individual");
-            populationSize++;
             Character.Individual individual = PopulationGeneticAlgorithmScript.NewGeneration(populationSize, fitnessAlgorithm, wantedProperties, mutationRate);
+            individual.SetId(populationSize);
+            populationSize++;
             PopulationGeneticAlgorithmScript.AddIndividual(individual);
             CharacterGeneratorScript.GenerateCharacter(characterPrefab, populationSize, individual);
             Debug.Log("Individual added");
