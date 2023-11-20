@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Population : MonoBehaviour
 {
-    public float makeABabyProbability = 0.01f;
+    public float makeABabyProbability = 0.5f;
     public int populationSize = 3;
 
     public PopulationGeneticAlgorithm.FitnessAlgorithm fitnessAlgorithm = PopulationGeneticAlgorithm.FitnessAlgorithm.roulette_wheel;
@@ -21,6 +21,7 @@ public class Population : MonoBehaviour
 
     public GameObject characterPrefab;
 
+    private Character CharacterScript; 
     private CharacterGenerator CharacterGeneratorScript; 
     private PopulationGeneticAlgorithm PopulationGeneticAlgorithmScript; 
 
@@ -52,9 +53,10 @@ public class Population : MonoBehaviour
     void Start()
     {
         Debug.Log("Create population");
+        CharacterScript = GetComponentInChildren<Character>();
         CharacterGeneratorScript = GetComponentInChildren<CharacterGenerator>();
         PopulationGeneticAlgorithmScript = GetComponent<PopulationGeneticAlgorithm>();
-        if (CharacterGeneratorScript != null)
+        if (CharacterGeneratorScript != null && CharacterScript != null)
         {
             for (int i = 0; i < populationSize; i++)
             {
@@ -77,19 +79,53 @@ public class Population : MonoBehaviour
         Character.Capacities wantedProperties = new Character.Capacities( vision, smart, resistance, strength, speed);
         Character.MutationRate mutationRate = new Character.MutationRate(bitMutationRate, swapMutationRate, inversionMutationRate);
 
-        foreach (Character.Individual individual in PopulationGeneticAlgorithmScript.individualsSortedByFitnessScore){
-            individual.EvaluateFitnessScore(wantedProperties);
-            individual.UpdateRemainingLife();
-        }
-        if (MakeABabyProbability() && CanAddIndividual())
+        Character[] characters = GameObject.FindObjectsOfType<Character>();
+
+        foreach (Character character in characters)
         {
-            Debug.Log("Add Individual");
-            Character.Individual individual = PopulationGeneticAlgorithmScript.NewGeneration(populationSize, fitnessAlgorithm, wantedProperties, mutationRate);
-            individual.SetId(populationSize);
-            populationSize++;
-            PopulationGeneticAlgorithmScript.AddIndividual(individual);
-            CharacterGeneratorScript.GenerateCharacter(characterPrefab, populationSize, individual);
-            Debug.Log("Individual added");
+            Character.Individual individual = character.GetIndividual();
+            individual.EvaluateFitnessScore(wantedProperties);
+            individual.UpdateAge();
+            character.SetIndividual(individual);
+        }
+
+        foreach (Character character in characters)
+        {
+            Character.Individual parent1 = character.GetIndividual();
+            if (
+                parent1 != null &&
+                parent1.IsFertile() &&
+                MakeABabyProbability() &&
+                parent1.IsCoolDownEnded()
+                )
+            {
+                foreach (Character otherCharacter in characters)
+                {
+                    Character.Individual parent2 = otherCharacter.GetIndividual();
+                    if (
+                        otherCharacter != character &&
+                        parent2.IsFertile() &&
+                        parent2.IsCoolDownEnded()
+                        )
+                    {
+                        float distance = Vector3.Distance(character.transform.position, otherCharacter.transform.position);
+                        if (distance < Character.proximityDistance)
+                        {
+                            Debug.Log("Add Individual");
+                            Character.Individual child = PopulationGeneticAlgorithmScript.Crossover(parent1, parent2, populationSize, wantedProperties, mutationRate);
+                            child.SetId(populationSize);
+                            populationSize++;
+                            PopulationGeneticAlgorithmScript.AddIndividual(child);
+                            CharacterGeneratorScript.GenerateCharacter(characterPrefab, populationSize, child);
+                            Debug.Log("Individual added");
+                            parent1.TriggerCoolDown();
+                            parent2.TriggerCoolDown();
+                            otherCharacter.SetIndividual(parent2);
+                        }
+                    }
+                }
+            }
+            character.SetIndividual(parent1);
         }
     }
 

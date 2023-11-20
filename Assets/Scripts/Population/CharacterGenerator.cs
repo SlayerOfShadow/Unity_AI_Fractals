@@ -160,7 +160,6 @@ public class CharacterGenerator : MonoBehaviour
             "Individual" + i,
             transform
         );
-
         InstantiateIndividualModel(individual.GetGenome(), individualBody);
     }
 

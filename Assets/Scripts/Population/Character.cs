@@ -182,12 +182,36 @@ public class Character : MonoBehaviour
         }
     }
 
+    private Individual individual;
+
+    public Individual GetIndividual()
+    {
+        return individual;
+    }
+
+    public void SetIndividual(Individual indiv)
+    {
+        individual = new Individual();
+        individual = indiv;
+    }
+
+    public void InitializeIndividual()
+    {
+        individual = new Individual();
+    }
+
+    public const float proximityDistance = 2f;
+    public const float reproductionCooldown = 10f;
+
     public class Individual
     {
         private Genome _genome;
         private int _individualId;
         private int _fitnessScore;
         private int _age; // frame
+
+        private float _lastReproductionTime;
+        
         private CapacitiesStatistics _statistics = new CapacitiesStatistics(); // en fonction des gènes de l'individu il aura des stats de capacités différentes
 
         public Individual()
@@ -242,7 +266,7 @@ public class Character : MonoBehaviour
             return _age;
         }
 
-        public void UpdateRemainingLife()
+        public void UpdateAge()
         {
             _age++;
         }
@@ -260,6 +284,16 @@ public class Character : MonoBehaviour
         public bool IsOld()
         {
             return _age >= OldTime;
+        }
+
+        public bool IsCoolDownEnded()
+        {
+            return Time.time - _lastReproductionTime > reproductionCooldown;
+        }
+
+        public void TriggerCoolDown()
+        {
+            _lastReproductionTime = Time.time;
         }
 
         private void EvaluateStatistics()
@@ -334,6 +368,7 @@ public class Character : MonoBehaviour
             Debug.Log("Génome :" + _genome);
             Debug.Log("Score de fitness : " + _fitnessScore);
             Debug.Log("Age : " + _age);
+            Debug.Log("Dernière fois que le personnage s'est reproduit : " + _lastReproductionTime);
             Debug.Log("Statistiques : ");
             Debug.Log("Vision : " + _statistics.vision);
             Debug.Log("Intelligence : " + _statistics.smart);
@@ -345,6 +380,7 @@ public class Character : MonoBehaviour
 
     void Start()
     {
+        InitializeIndividual();
         var navMeshAgentController = GetComponent<NavMeshAgentController>();
         if (navMeshAgentController != null)
         {
