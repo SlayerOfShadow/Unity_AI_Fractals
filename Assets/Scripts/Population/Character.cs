@@ -359,24 +359,23 @@ public class Character : MonoBehaviour
         }
     }
 
-    void Start()
+    void MoveCharacterTo(Vector3 destination)
     {
-        InitializeIndividual();
         var navMeshAgentController = GetComponent<NavMeshAgentController>();
         if (navMeshAgentController != null)
         {
-            Vector3 destination = transform.position;
             navMeshAgentController.SetDestination(destination);
         }
     }
 
+    void Start()
+    {
+        InitializeIndividual();
+    }
+
     void Update()
     {
-        var navMeshAgentController = GetComponent<NavMeshAgentController>();
-        if (navMeshAgentController != null)
-        {
-            Vector3 destination = testDestination.transform.position;
-            navMeshAgentController.SetDestination(destination);
-        }
+        Vector3 destination = testDestination.transform.position;
+        MoveCharacterTo(destination);
     }
 }
