@@ -86,22 +86,22 @@ public class Population : MonoBehaviour
         wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
         Character.MutationRate mutationRate = new Character.MutationRate(bitMutationRate, swapMutationRate, inversionMutationRate);
 
-        Character[] characters = FindObjectsOfType<Character>();
-
-        if (MakeABabyProbability())
+        if (IsThereProbabbilityToMakeABaby())
         {    
-            TryToReproduceIndividual(characters, wantedProperties, mutationRate, fitnessAlgorithm);    
+            Character[] characters = FindObjectsOfType<Character>();
+            TryToReproduceIndividuals(characters, wantedProperties, mutationRate, fitnessAlgorithm);    
         }
     }
 
-    List<Character> FertileIndividualsAround(Character[] characters, Character parent1){
+    // Retourne la liste des individus fertiles suffisament proche du parent choisi pour se reproduire
+    // On s'assure aussi que le parent choisi ne se retrouve pas dans la liste
+    List<Character> FertileIndividualsAround(Character[] characters, Character parentChosen){
         var fertileIndividualsAround = new List<Character>();
-
         foreach (var character in characters)
         {
-            if (parent1 != character &&
+            if (parentChosen != character &&
                 character.CanMakeABaby() &&
-                character.CloseEnoughToMakeABaby(parent1))
+                character.CloseEnoughToMakeABaby(parentChosen))
             {
                 fertileIndividualsAround.Add(character);
             }
@@ -109,35 +109,36 @@ public class Population : MonoBehaviour
         return fertileIndividualsAround;
     }
 
-    void TryToReproduceIndividual(Character[] characters, Character.Capacities properties, Character.MutationRate mutation, PopulationGeneticAlgorithm.FitnessAlgorithm algorithm)
+    void TryToReproduceIndividuals(Character[] characters, Character.Capacities properties, Character.MutationRate mutation, PopulationGeneticAlgorithm.FitnessAlgorithm algorithm)
     {
         foreach (var character in characters)
         {
-            Character.Individual parent1 = character.GetIndividual();
             if (character.CanMakeABaby())
             {
                 List<Character> fertileIndividualsAround = FertileIndividualsAround(characters, character);
                 if (fertileIndividualsAround.Count > 0)
                 {
-                    Character parent2 = PopulationGeneticAlgorithmScript.ChooseSecondParent(algorithm, fertileIndividualsAround);
-                    MakeABaby(parent1, parent2.GetIndividual(), properties, mutation);
-                    character.TriggerCoolDown();
-                    parent2.TriggerCoolDown();
+                    MakeABaby(
+                        character,
+                        PopulationGeneticAlgorithmScript.ChooseSecondParent(algorithm, fertileIndividualsAround),
+                        properties,
+                        mutation);
                 }
             }
         }
     }
 
-    void MakeABaby(Character.Individual parent1, Character.Individual parent2, Character.Capacities properties, Character.MutationRate mutation)
+    void MakeABaby(Character parent1, Character parent2, Character.Capacities properties, Character.MutationRate mutation)
     {
-        Debug.Log("Add Individual");
-        Character.Individual child = PopulationGeneticAlgorithmScript.Crossover(parent1, parent2, properties, mutation);
+        Character.Individual child = PopulationGeneticAlgorithmScript.Crossover(parent1.GetIndividual(), parent2.GetIndividual(), properties, mutation);
         CharacterGeneratorScript.GenerateCharacter(child, characterPrefab, "Individual" + numberOfIndividuals);
+        parent1.TriggerCoolDown();
+        parent2.TriggerCoolDown();
         numberOfIndividuals++;
-        Debug.Log("Individual added");
+        Debug.Log("Baby made");
     }
 
-    bool MakeABabyProbability()
+    bool IsThereProbabbilityToMakeABaby()
     {
         float proba = UnityEngine.Random.Range(0, 100) / 100.0f;
         return proba <= makeABabyProbability;
