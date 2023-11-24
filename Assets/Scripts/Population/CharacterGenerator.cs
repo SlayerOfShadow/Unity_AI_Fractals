@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public class CharacterGenerator : MonoBehaviour
 {
     public GameObject eyePrefab; 
@@ -139,7 +138,6 @@ public class CharacterGenerator : MonoBehaviour
             _gameObject = Instantiate(prefab, prefab.transform.position, Quaternion.identity);
             _gameObject.name = name;
             _gameObject.transform.parent = transform.parent;
-
         }
 
         public Vector3 GetPosition()
@@ -155,7 +153,7 @@ public class CharacterGenerator : MonoBehaviour
 
     public void GenerateCharacter(Character.Individual individual, GameObject characterPrefab, string name)
     {
-        IndividualBody individualBody = new IndividualBody(
+        var individualBody = new IndividualBody(
             characterPrefab,
             name,
             transform
@@ -198,7 +196,7 @@ public class CharacterGenerator : MonoBehaviour
             genome.GetIndex(Population.GenomeInformations.eyeSize1) + genome.GetIndex(Population.GenomeInformations.eyeSize2),
             characterInformations.size,
             characterInformations.eyeProportion); 
-        BodyPart standardEye = new BodyPart(
+        var standardEye = new BodyPart(
             "Eye",
             eyePrefab,
             individualBody.GetPosition() + RelativePosition(legGenLength + genChestScale.y + genHeadScale.y / 2f, - headWidth / 2f), // set an eye standard position then instantiation will take care of offsets
@@ -215,7 +213,7 @@ public class CharacterGenerator : MonoBehaviour
         );
 
         // Head
-        BodyPart head = new BodyPart(
+        var head = new BodyPart(
             "Head",
             GenPrefab(
                 genome.GetIndex(Population.GenomeInformations.headShape1) + genome.GetIndex(Population.GenomeInformations.headShape2),
@@ -231,7 +229,7 @@ public class CharacterGenerator : MonoBehaviour
         head.InstantiateObject();
 
         // Chest
-        BodyPart chest = new BodyPart(
+        var chest = new BodyPart(
             "Chest",
             GenPrefab(
                 genome.GetIndex(Population.GenomeInformations.chestShape1) + genome.GetIndex(Population.GenomeInformations.chestShape2),
@@ -247,7 +245,7 @@ public class CharacterGenerator : MonoBehaviour
         chest.InstantiateObject();
 
         // Arms
-        BodyPart rightArm = new BodyPart(
+        var rightArm = new BodyPart(
             "Arm",
             armPrefab,
             individualBody.GetPosition() + RelativePosition(legGenLength + genChestScale.y / 2f),
@@ -263,7 +261,7 @@ public class CharacterGenerator : MonoBehaviour
         );
 
         // Legs
-        BodyPart rightLeg = new BodyPart(
+        var rightLeg = new BodyPart(
             "Leg",
             legPrefab,
             individualBody.GetPosition() + RelativePosition(legGenLength / 2f),
@@ -331,18 +329,20 @@ public class CharacterGenerator : MonoBehaviour
     {
         for (int i = 0; i <= numberOfEyes; i++)
         {
-            BodyPart eye = new BodyPart(standardEye);
+            var eye = new BodyPart(standardEye);
             if (numberOfEyes != 0)
             {
-                Vector3 offsetPosition = new Vector3();
-                offsetPosition.x = 
-                    (numberOfEyes == 2 && i == 2) ?
+                var offsetPosition = 
+                    new Vector3(
+                    (
+                        numberOfEyes == 2 && i == 2) ?
                         0 :
-                        ((i + 1) % 2) * eyeOffset - (i % 2) * eyeOffset;
-                offsetPosition.y = 
+                        ((i + 1) % 2) * eyeOffset - (i % 2) * eyeOffset,
+
                         (i < 2) ?
                             0 :
-                            eyeOffset;
+                            eyeOffset
+                    );
                 eye.OffsetPosition(offsetPosition);
                 int n = i + 1;
                 eye.SetName("Eye" + n);
@@ -380,8 +380,8 @@ public class CharacterGenerator : MonoBehaviour
                 - offsetBetweenMembers : 
                 offsetBetweenMembers * ((float)i - (float)numberOfMembers + 1f);
             
-            BodyPart leftMember = new BodyPart(rightModel);
-            BodyPart rightMember = new BodyPart(rightModel);
+            var leftMember = new BodyPart(rightModel);
+            var rightMember = new BodyPart(rightModel);
 
             // Instantiate right member
             int n = i + 1;
@@ -405,7 +405,7 @@ public class CharacterGenerator : MonoBehaviour
         {
             foreach (Transform child in parentObject.transform)
             {
-                GameObject.Destroy(child.gameObject);
+                Destroy(child.gameObject);
             }
         }
         Destroy(parentObject);
