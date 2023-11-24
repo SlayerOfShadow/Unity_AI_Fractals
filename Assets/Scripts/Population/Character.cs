@@ -5,13 +5,16 @@ public class Character : MonoBehaviour
 {
     public const int ChildhoodTime = 3000; // frame
     public const int OldTime = 9000; // frame
+    public const int GenomeSize = 20;
 
     public GameObject testDestination;
+
+    private Individual individual;
 
     public class Genome
     {
         private int[] _value;
-        private int _size = 20;
+        private int _size = GenomeSize;
 
         public Genome(int[] value)
         {
@@ -65,15 +68,6 @@ public class Character : MonoBehaviour
         {
             return Enumerable.Range(start, number_of_elements).Select(i => _value[i]).ToArray();
         }
-
-        /*    
-        Mutation non codées :
-        - Mutation de valeur : Modifier la valeur d'un gène à un autre aléatoire dans une certaine plage. 
-            Par exemple, ajouter ou soustraire une petite valeur à un gène.
-            -> intérêt si gène pas que entre 0 et 1
-        - Mutation par insertion ou suppression : Ajoutez ou supprimez un gène du génome.
-            -> là on a des génome fixe donc peu pratique
-        */
 
         // Mutation par permutation : Permute l'emplacement de deux gènes dans le génome.
         public void SwapMutation(double mutationRate)
@@ -182,8 +176,6 @@ public class Character : MonoBehaviour
         }
     }
 
-    private Individual individual;
-
     public Individual GetIndividual()
     {
         return individual;
@@ -206,7 +198,6 @@ public class Character : MonoBehaviour
     public class Individual
     {
         private Genome _genome;
-        private int _individualId;
         private int _fitnessScore;
         private int _age; // frame
 
@@ -244,16 +235,6 @@ public class Character : MonoBehaviour
         public int GenomeSize()
         {
             return _genome.Size();
-        }
-
-        public int GetId()
-        {
-            return _individualId;
-        }
-
-        public void SetId(int id)
-        {
-            _individualId = id;
         }
 
         public int GetFitnessScore()

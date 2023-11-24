@@ -56,13 +56,11 @@ public class Population : MonoBehaviour
         CharacterScript = GetComponentInChildren<Character>();
         CharacterGeneratorScript = GetComponentInChildren<CharacterGenerator>();
         PopulationGeneticAlgorithmScript = GetComponent<PopulationGeneticAlgorithm>();
-        if (CharacterGeneratorScript != null && CharacterScript != null)
+        if (CharacterGeneratorScript != null && CharacterScript != null  && PopulationGeneticAlgorithmScript != null)
         {
             for (int i = 0; i < populationSize; i++)
             {
                 Character.Individual individual = new Character.Individual();
-                individual.SetId(i);
-                Debug.Log("Individual id : " + individual.GetId());
                 Character.Capacities wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
                 individual.EvaluateFitnessScore(wantedProperties);
                 PopulationGeneticAlgorithmScript.AddIndividual(individual);
@@ -113,7 +111,6 @@ public class Population : MonoBehaviour
                         {
                             Debug.Log("Add Individual");
                             Character.Individual child = PopulationGeneticAlgorithmScript.Crossover(parent1, parent2, populationSize, wantedProperties, mutationRate);
-                            child.SetId(populationSize);
                             populationSize++;
                             PopulationGeneticAlgorithmScript.AddIndividual(child);
                             CharacterGeneratorScript.GenerateCharacter(characterPrefab, populationSize, child);
