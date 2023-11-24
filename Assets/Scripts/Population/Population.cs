@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Population : MonoBehaviour
 {
@@ -94,28 +95,72 @@ public class Population : MonoBehaviour
 
         if (MakeABabyProbability())
         {    
-            TryToReproduceIndividual(characters, wantedProperties, mutationRate);    
+            TryToReproduceIndividual(characters, wantedProperties, mutationRate, fitnessAlgorithm);    
         }
     }
 
-    void TryToReproduceIndividual(Character[] characters, Character.Capacities properties, Character.MutationRate mutation)
+    List<Character> FertileIndividualsAround(Character[] characters, Character parent1){
+        var fertileIndividualsAround = new List<Character>();
+
+        foreach (var character in characters)
+        {
+            Character.Individual individual = character.GetIndividual();
+            if (parent1 != character &&
+                IndividualCanMakeABaby(individual) &&
+                CloseEnough(parent1, character))
+            {
+                fertileIndividualsAround.Add(character);
+            }
+        }
+        return fertileIndividualsAround;
+    }
+
+    Character ChooseSecondParent(PopulationGeneticAlgorithm.FitnessAlgorithm algorithm, List<Character> fertileIndividuals)
+    {
+        Character parent2 = new Character();
+        switch (algorithm)
+        {
+            case PopulationGeneticAlgorithm.FitnessAlgorithm.random:
+                parent2 = fertileIndividuals[UnityEngine.Random.Range(0, fertileIndividuals.Count - 1)];
+                break;
+            case PopulationGeneticAlgorithm.FitnessAlgorithm.roulette_wheel:
+                fertileIndividuals.Sort((individu1, individu2) => individu2.GetIndividual().GetFitnessScore().CompareTo(individu1.GetIndividual().GetFitnessScore()));
+                int totalFitness = fertileIndividuals.Sum(individual => individual.GetIndividual().GetFitnessScore());
+                int randomNumber = UnityEngine.Random.Range(0, totalFitness);
+                int accumulatedFitness = 0;
+                int index = 0;
+                for (int i = 0; i < fertileIndividuals.Count; i++)
+                {
+                    accumulatedFitness += fertileIndividuals[i].GetIndividual().GetFitnessScore();
+                    if (accumulatedFitness >= randomNumber)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+                parent2 = fertileIndividuals[index];
+                break;
+            default:
+                Debug.LogError("Algorithme non pris en charge.");
+                break;
+        }
+        return parent2;
+    }
+
+    void TryToReproduceIndividual(Character[] characters, Character.Capacities properties, Character.MutationRate mutation, PopulationGeneticAlgorithm.FitnessAlgorithm algorithm)
     {
         foreach (var character in characters)
         {
             Character.Individual parent1 = character.GetIndividual();
             if (IndividualCanMakeABaby(parent1))
             {
-                foreach (Character otherCharacter in characters)
+                List<Character> fertileIndividualsAround = FertileIndividualsAround(characters, character);
+                if (fertileIndividualsAround.Count > 0)
                 {
-                    Character.Individual parent2 = otherCharacter.GetIndividual();
-                    if (character != otherCharacter &&
-                        IndividualCanMakeABaby(parent2) &&
-                        CloseEnough(character, otherCharacter))
-                    {
-                        MakeABaby(parent1, parent2, properties, mutation);
-                        TriggerParentCoolDown(parent1, character);
-                        TriggerParentCoolDown(parent2, otherCharacter);
-                    }
+                    Character parent2 = ChooseSecondParent(algorithm, fertileIndividualsAround);
+                    MakeABaby(parent1, parent2.GetIndividual(), properties, mutation);
+                    TriggerParentCoolDown(parent1, character);
+                    TriggerParentCoolDown(parent2.GetIndividual(), parent2);
                 }
             }
         }
