@@ -153,11 +153,11 @@ public class CharacterGenerator : MonoBehaviour
         }
     }
 
-    public void GenerateCharacter(GameObject characterPrefab, int i, Character.Individual individual)
+    public void GenerateCharacter(Character.Individual individual, GameObject characterPrefab, string name)
     {
         IndividualBody individualBody = new IndividualBody(
             characterPrefab,
-            "Individual" + i,
+            name,
             transform
         );
         InstantiateIndividualModel(individual.GetGenome(), individualBody);

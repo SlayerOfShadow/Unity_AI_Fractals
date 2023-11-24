@@ -75,7 +75,8 @@ public class Population : MonoBehaviour
         Character.Individual individual = new Character.Individual();
         individual.EvaluateFitnessScore(properties);
         PopulationGeneticAlgorithmScript.AddIndividual(individual);
-        CharacterGeneratorScript.GenerateCharacter(prefab, i, individual);
+        string name = "Individual" + i;
+        CharacterGeneratorScript.GenerateCharacter(individual, prefab, name);
 
         // Debug
         Debug.Log("Information de l'individu " + i + " :");
@@ -148,7 +149,8 @@ public class Population : MonoBehaviour
         Character.Individual child = PopulationGeneticAlgorithmScript.Crossover(parent1, parent2, populationSize, properties, mutation);
         populationSize++;
         PopulationGeneticAlgorithmScript.AddIndividual(child);
-        CharacterGeneratorScript.GenerateCharacter(characterPrefab, populationSize, child);
+        string name = "Individual" + populationSize;
+        CharacterGeneratorScript.GenerateCharacter(child, characterPrefab, name);
         Debug.Log("Individual added");
     }
 
