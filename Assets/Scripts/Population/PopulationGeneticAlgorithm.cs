@@ -10,28 +10,14 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
         roulette_wheel,
     }
 
-    public List<Character.Individual> individualsSortedByFitnessScore = new List<Character.Individual>();
     public List<Character.Individual> fertileIndividualsSortedByFitnessScore = new List<Character.Individual>();
-
 
     private void Sort()
     {
-        individualsSortedByFitnessScore.Sort((individu1, individu2) => individu2.GetFitnessScore().CompareTo(individu1.GetFitnessScore()));
+        fertileIndividualsSortedByFitnessScore.Sort((individu1, individu2) => individu2.GetFitnessScore().CompareTo(individu1.GetFitnessScore()));
     }
 
-    public void AddIndividual(Character.Individual individual)
-    {
-        individualsSortedByFitnessScore.Add(individual);
-        Sort();
-    }
-
-    // les individus disparaissent quand ils meurent soit quand ils n'ont plus de temps de vie
-    public void PopIndividual()
-    {
-        individualsSortedByFitnessScore.Remove(individualsSortedByFitnessScore.Last());
-    }
-
-    public Character.Individual Crossover(Character.Individual parent1, Character.Individual parent2, int populationLength, Character.Capacities properties, Character.MutationRate mutationRate)
+    public Character.Individual Crossover(Character.Individual parent1, Character.Individual parent2, Character.Capacities properties, Character.MutationRate mutationRate)
     {            
         // Créer deux enfants en copiant les gènes des parents
         Character.Genome genome1 = new Character.Genome();
@@ -101,14 +87,14 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
         parent2 = fertileIndividualsSortedByFitnessScore[indexParent2];
     }
 
-    public Character.Individual NewGeneration(int populationLength, FitnessAlgorithm algorithm, Character.Capacities properties, Character.MutationRate mutationRate)
+    public Character.Individual NewGeneration(FitnessAlgorithm algorithm, Character.Capacities properties, Character.MutationRate mutationRate)
     {
         Character.Individual parent1, parent2;
         ChooseParent(out parent1, out parent2, algorithm);
-        return Crossover(parent1, parent2, populationLength, properties, mutationRate);
+        return Crossover(parent1, parent2, properties, mutationRate);
     }
 
-    public void RouletteWheelSelection(out int indexParent1, out int indexParent2)
+    private void RouletteWheelSelection(out int indexParent1, out int indexParent2)
     {
         // Calculer la somme des scores de fitness de tous les individus
         int totalFitness = fertileIndividualsSortedByFitnessScore.Sum(individual => individual.GetFitnessScore());
@@ -149,7 +135,7 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
         return -1;
     }
 
-    public void RandomSelection(out int indexParent1, out int indexParent2)
+    private void RandomSelection(out int indexParent1, out int indexParent2)
     {
         indexParent1 = UnityEngine.Random.Range(0, fertileIndividualsSortedByFitnessScore.Count - 1);
         indexParent2 = UnityEngine.Random.Range(0, fertileIndividualsSortedByFitnessScore.Count - 1);
@@ -159,20 +145,35 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
         }
     }
 
-    public void FertileIndividualsSortedByFitnessScore()
+    public Character ChooseSecondParent(PopulationGeneticAlgorithm.FitnessAlgorithm algorithm, List<Character> fertileIndividuals)
     {
-        fertileIndividualsSortedByFitnessScore = new List<Character.Individual>();
-        foreach (Character.Individual individual in individualsSortedByFitnessScore)
+        Character parent2 = new Character();
+        switch (algorithm)
         {
-            if (individual.IsFertile())
-            {
-                fertileIndividualsSortedByFitnessScore.Add(individual);
-            }
+            case PopulationGeneticAlgorithm.FitnessAlgorithm.random:
+                parent2 = fertileIndividuals[UnityEngine.Random.Range(0, fertileIndividuals.Count - 1)];
+                break;
+            case PopulationGeneticAlgorithm.FitnessAlgorithm.roulette_wheel:
+                fertileIndividuals.Sort((individu1, individu2) => individu2.GetIndividual().GetFitnessScore().CompareTo(individu1.GetIndividual().GetFitnessScore()));
+                int totalFitness = fertileIndividuals.Sum(individual => individual.GetIndividual().GetFitnessScore());
+                int randomNumber = UnityEngine.Random.Range(0, totalFitness);
+                int accumulatedFitness = 0;
+                int index = 0;
+                for (int i = 0; i < fertileIndividuals.Count; i++)
+                {
+                    accumulatedFitness += fertileIndividuals[i].GetIndividual().GetFitnessScore();
+                    if (accumulatedFitness >= randomNumber)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+                parent2 = fertileIndividuals[index];
+                break;
+            default:
+                Debug.LogError("Algorithme non pris en charge.");
+                break;
         }
-    }
-
-    void Update()
-    {
-        FertileIndividualsSortedByFitnessScore();
+        return parent2;
     }
 }

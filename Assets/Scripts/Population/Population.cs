@@ -75,7 +75,6 @@ public class Population : MonoBehaviour
     {
         Character.Individual individual = new Character.Individual();
         individual.EvaluateFitnessScore(properties);
-        PopulationGeneticAlgorithmScript.AddIndividual(individual);
         string name = "Individual" + i;
         CharacterGeneratorScript.GenerateCharacter(individual, prefab, name);
 
@@ -115,38 +114,6 @@ public class Population : MonoBehaviour
         return fertileIndividualsAround;
     }
 
-    Character ChooseSecondParent(PopulationGeneticAlgorithm.FitnessAlgorithm algorithm, List<Character> fertileIndividuals)
-    {
-        Character parent2 = new Character();
-        switch (algorithm)
-        {
-            case PopulationGeneticAlgorithm.FitnessAlgorithm.random:
-                parent2 = fertileIndividuals[UnityEngine.Random.Range(0, fertileIndividuals.Count - 1)];
-                break;
-            case PopulationGeneticAlgorithm.FitnessAlgorithm.roulette_wheel:
-                fertileIndividuals.Sort((individu1, individu2) => individu2.GetIndividual().GetFitnessScore().CompareTo(individu1.GetIndividual().GetFitnessScore()));
-                int totalFitness = fertileIndividuals.Sum(individual => individual.GetIndividual().GetFitnessScore());
-                int randomNumber = UnityEngine.Random.Range(0, totalFitness);
-                int accumulatedFitness = 0;
-                int index = 0;
-                for (int i = 0; i < fertileIndividuals.Count; i++)
-                {
-                    accumulatedFitness += fertileIndividuals[i].GetIndividual().GetFitnessScore();
-                    if (accumulatedFitness >= randomNumber)
-                    {
-                        index = i;
-                        break;
-                    }
-                }
-                parent2 = fertileIndividuals[index];
-                break;
-            default:
-                Debug.LogError("Algorithme non pris en charge.");
-                break;
-        }
-        return parent2;
-    }
-
     void TryToReproduceIndividual(Character[] characters, Character.Capacities properties, Character.MutationRate mutation, PopulationGeneticAlgorithm.FitnessAlgorithm algorithm)
     {
         foreach (var character in characters)
@@ -157,7 +124,7 @@ public class Population : MonoBehaviour
                 List<Character> fertileIndividualsAround = FertileIndividualsAround(characters, character);
                 if (fertileIndividualsAround.Count > 0)
                 {
-                    Character parent2 = ChooseSecondParent(algorithm, fertileIndividualsAround);
+                    Character parent2 = PopulationGeneticAlgorithmScript.ChooseSecondParent(algorithm, fertileIndividualsAround);
                     MakeABaby(parent1, parent2.GetIndividual(), properties, mutation);
                     TriggerParentCoolDown(parent1, character);
                     TriggerParentCoolDown(parent2.GetIndividual(), parent2);
@@ -191,9 +158,8 @@ public class Population : MonoBehaviour
     void MakeABaby(Character.Individual parent1, Character.Individual parent2, Character.Capacities properties, Character.MutationRate mutation)
     {
         Debug.Log("Add Individual");
-        Character.Individual child = PopulationGeneticAlgorithmScript.Crossover(parent1, parent2, populationSize, properties, mutation);
+        Character.Individual child = PopulationGeneticAlgorithmScript.Crossover(parent1, parent2, properties, mutation);
         populationSize++;
-        PopulationGeneticAlgorithmScript.AddIndividual(child);
         string name = "Individual" + populationSize;
         CharacterGeneratorScript.GenerateCharacter(child, characterPrefab, name);
         Debug.Log("Individual added");
