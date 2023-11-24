@@ -5,11 +5,15 @@ public class Character : MonoBehaviour
 {
     public const int ChildhoodTime = 3000; // frame
     public const int OldTime = 9000; // frame
+
     public const int GenomeSize = 20;
 
     public GameObject testDestination;
 
     private Individual individual;
+
+    private CharacterGenerator CharacterGeneratorScript;
+    private Population PopulationScript;
 
     public class Genome
     {
@@ -132,6 +136,9 @@ public class Character : MonoBehaviour
         public bool strength;
         public bool speed;
 
+        public Capacities()
+        {}
+
         public Capacities(bool _vision, bool _smart, bool _resistance, bool _strength, bool _speed)
         {
             vision = _vision;
@@ -179,12 +186,6 @@ public class Character : MonoBehaviour
     public Individual GetIndividual()
     {
         return individual;
-    }
-
-    public void SetIndividual(Individual indiv)
-    {
-        individual = new Individual();
-        individual = indiv;
     }
 
     public void InitializeIndividual()
@@ -368,14 +369,41 @@ public class Character : MonoBehaviour
         }
     }
 
+    public void TriggerCoolDown()
+    {
+        individual.TriggerCoolDown();
+    }
+
+    public bool CanMakeABaby()
+    {
+        return  individual != null &&
+        individual.IsFertile() &&
+        individual.IsCoolDownEnded();
+    }
+
+    public bool CloseEnoughToMakeABaby(Character character)
+    {
+        float distance = Vector3.Distance(transform.position, character.transform.position);
+        return distance < proximityDistance;
+    }
+
     void Start()
     {
+        CharacterGeneratorScript = GetComponent<CharacterGenerator>();
+        PopulationScript = GetComponentInParent<Population>();
         InitializeIndividual();
+        individual.EvaluateFitnessScore(PopulationScript.WantedProperties);
+                
+        // Debug
+        Debug.Log("Information de l'individu " + PopulationScript.NumberOfIndividuals + " :");
+        individual.DebugIndividual();
     }
 
     void Update()
     {
         Vector3 destination = testDestination.transform.position;
         MoveCharacterTo(destination);
+        individual.EvaluateFitnessScore(PopulationScript.WantedProperties);
+        individual.UpdateAge();
     }
 }

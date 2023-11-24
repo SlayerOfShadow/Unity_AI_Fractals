@@ -50,6 +50,12 @@ public class Population : MonoBehaviour
         legNumber2 = 19,
     }
 
+    Character.Capacities wantedProperties = new Character.Capacities();
+
+    public int NumberOfIndividuals { get { return numberOfIndividuals; } }
+    public GameObject CharacterPrefab { get { return characterPrefab; } }
+    public Character.Capacities WantedProperties { get { return wantedProperties; } }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -58,7 +64,7 @@ public class Population : MonoBehaviour
         PopulationGeneticAlgorithmScript = GetComponent<PopulationGeneticAlgorithm>();
         if (CharacterGeneratorScript != null && PopulationGeneticAlgorithmScript != null)
         {
-            var wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
+            wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
             CreateInitialPopulation(initialPopulationSize, characterPrefab, wantedProperties);
         }
         Debug.Log("Population created");
@@ -76,23 +82,16 @@ public class Population : MonoBehaviour
     void CreateIndividual(int i, GameObject prefab, Character.Capacities properties)
     {
         Character.Individual individual = new Character.Individual();
-        individual.EvaluateFitnessScore(properties);
         string name = "Individual" + i;
         CharacterGeneratorScript.GenerateCharacter(individual, prefab, name);
-
-        // Debug
-        Debug.Log("Information de l'individu " + i + " :");
-        individual.DebugIndividual();
     }
 
     private void Update()
     {
-        Character.Capacities wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
+        wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
         Character.MutationRate mutationRate = new Character.MutationRate(bitMutationRate, swapMutationRate, inversionMutationRate);
 
         Character[] characters = GameObject.FindObjectsOfType<Character>();
-
-        UpdatePopulation(characters, wantedProperties);
 
         if (MakeABabyProbability())
         {    
@@ -105,10 +104,9 @@ public class Population : MonoBehaviour
 
         foreach (var character in characters)
         {
-            Character.Individual individual = character.GetIndividual();
             if (parent1 != character &&
-                IndividualCanMakeABaby(individual) &&
-                CloseEnough(parent1, character))
+                character.CanMakeABaby() &&
+                character.CloseEnoughToMakeABaby(parent1))
             {
                 fertileIndividualsAround.Add(character);
             }
@@ -121,40 +119,18 @@ public class Population : MonoBehaviour
         foreach (var character in characters)
         {
             Character.Individual parent1 = character.GetIndividual();
-            if (IndividualCanMakeABaby(parent1))
+            if (character.CanMakeABaby())
             {
                 List<Character> fertileIndividualsAround = FertileIndividualsAround(characters, character);
                 if (fertileIndividualsAround.Count > 0)
                 {
                     Character parent2 = PopulationGeneticAlgorithmScript.ChooseSecondParent(algorithm, fertileIndividualsAround);
                     MakeABaby(parent1, parent2.GetIndividual(), properties, mutation);
-                    TriggerParentCoolDown(parent1, character);
-                    TriggerParentCoolDown(parent2.GetIndividual(), parent2);
+                    character.TriggerCoolDown();
+                    parent2.TriggerCoolDown();
                 }
             }
         }
-    }
-
-    void UpdatePopulation(Character[] characters, Character.Capacities properties)
-    {
-        foreach (var character in characters)
-        {
-            UpdateIndividual(character, properties);
-        }
-    }
-
-    void UpdateIndividual(Character character, Character.Capacities properties)
-    {
-        Character.Individual individual = character.GetIndividual();
-        individual.EvaluateFitnessScore(properties);
-        individual.UpdateAge();
-        character.SetIndividual(individual);
-    }
-
-    void TriggerParentCoolDown(Character.Individual parent, Character character)
-    {
-        parent.TriggerCoolDown();
-        character.SetIndividual(parent);
     }
 
     void MakeABaby(Character.Individual parent1, Character.Individual parent2, Character.Capacities properties, Character.MutationRate mutation)
@@ -167,22 +143,9 @@ public class Population : MonoBehaviour
         Debug.Log("Individual added");
     }
 
-    bool IndividualCanMakeABaby(Character.Individual individual)
-    {
-        return  individual != null &&
-                individual.IsFertile() &&
-                individual.IsCoolDownEnded();
-    }
-
     bool MakeABabyProbability()
     {
         float proba = UnityEngine.Random.Range(0, 100) / 100.0f;
         return proba <= makeABabyProbability;
-    }
-
-    bool CloseEnough(Character character1, Character character2)
-    {
-        float distance = Vector3.Distance(character1.transform.position, character2.transform.position);
-        return distance < Character.proximityDistance;
     }
 }
