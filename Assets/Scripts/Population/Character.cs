@@ -12,7 +12,6 @@ public class Character : MonoBehaviour
 
     private Individual individual;
 
-    private CharacterGenerator CharacterGeneratorScript;
     private Population PopulationScript;
 
     public class Genome
@@ -389,7 +388,6 @@ public class Character : MonoBehaviour
 
     void Start()
     {
-        CharacterGeneratorScript = GetComponent<CharacterGenerator>();
         PopulationScript = GetComponentInParent<Population>();
         InitializeIndividual();
         individual.EvaluateFitnessScore(PopulationScript.WantedProperties);

@@ -60,30 +60,25 @@ public class Population : MonoBehaviour
     void Start()
     {
         Debug.Log("Create population");
+        
         CharacterGeneratorScript = GetComponentInChildren<CharacterGenerator>();
         PopulationGeneticAlgorithmScript = GetComponent<PopulationGeneticAlgorithm>();
+
         if (CharacterGeneratorScript != null && PopulationGeneticAlgorithmScript != null)
         {
             wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
-            CreateInitialPopulation(initialPopulationSize, characterPrefab, wantedProperties);
+            CreateInitialPopulation(initialPopulationSize, characterPrefab);
         }
         Debug.Log("Population created");
     }
 
-    void CreateInitialPopulation(int size, GameObject prefab, Character.Capacities properties)
+    void CreateInitialPopulation(int initialSize, GameObject prefab)
     {
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < initialSize; i++)
         {
             numberOfIndividuals++;
-            CreateIndividual(numberOfIndividuals, prefab, properties);
+            CharacterGeneratorScript.GenerateCharacter(new Character.Individual(), prefab, "Individual" + i);
         }
-    }
-
-    void CreateIndividual(int i, GameObject prefab, Character.Capacities properties)
-    {
-        Character.Individual individual = new Character.Individual();
-        string name = "Individual" + i;
-        CharacterGeneratorScript.GenerateCharacter(individual, prefab, name);
     }
 
     private void Update()
@@ -91,7 +86,7 @@ public class Population : MonoBehaviour
         wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
         Character.MutationRate mutationRate = new Character.MutationRate(bitMutationRate, swapMutationRate, inversionMutationRate);
 
-        Character[] characters = GameObject.FindObjectsOfType<Character>();
+        Character[] characters = FindObjectsOfType<Character>();
 
         if (MakeABabyProbability())
         {    
@@ -137,8 +132,7 @@ public class Population : MonoBehaviour
     {
         Debug.Log("Add Individual");
         Character.Individual child = PopulationGeneticAlgorithmScript.Crossover(parent1, parent2, properties, mutation);
-        string name = "Individual" + numberOfIndividuals;
-        CharacterGeneratorScript.GenerateCharacter(child, characterPrefab, name);
+        CharacterGeneratorScript.GenerateCharacter(child, characterPrefab, "Individual" + numberOfIndividuals);
         numberOfIndividuals++;
         Debug.Log("Individual added");
     }
