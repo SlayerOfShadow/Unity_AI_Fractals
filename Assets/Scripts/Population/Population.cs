@@ -5,7 +5,8 @@ using System.Linq;
 public class Population : MonoBehaviour
 {
     public float makeABabyProbability = 0.5f;
-    public int populationSize = 3;
+    public int initialPopulationSize = 3;
+    private int numberOfIndividuals = 0;
 
     public PopulationGeneticAlgorithm.FitnessAlgorithm fitnessAlgorithm = PopulationGeneticAlgorithm.FitnessAlgorithm.roulette_wheel;
 
@@ -22,7 +23,7 @@ public class Population : MonoBehaviour
 
     public GameObject characterPrefab;
 
-    private CharacterGenerator CharacterGeneratorScript; 
+    private CharacterGenerator CharacterGeneratorScript;
     private PopulationGeneticAlgorithm PopulationGeneticAlgorithmScript; 
 
     public enum GenomeInformations
@@ -58,7 +59,7 @@ public class Population : MonoBehaviour
         if (CharacterGeneratorScript != null && PopulationGeneticAlgorithmScript != null)
         {
             var wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
-            CreateInitialPopulation(populationSize, characterPrefab, wantedProperties);
+            CreateInitialPopulation(initialPopulationSize, characterPrefab, wantedProperties);
         }
         Debug.Log("Population created");
     }
@@ -67,7 +68,8 @@ public class Population : MonoBehaviour
     {
         for (int i = 0; i < size; i++)
         {
-            CreateIndividual(i, prefab, properties);
+            numberOfIndividuals++;
+            CreateIndividual(numberOfIndividuals, prefab, properties);
         }
     }
 
@@ -159,9 +161,9 @@ public class Population : MonoBehaviour
     {
         Debug.Log("Add Individual");
         Character.Individual child = PopulationGeneticAlgorithmScript.Crossover(parent1, parent2, properties, mutation);
-        populationSize++;
-        string name = "Individual" + populationSize;
+        string name = "Individual" + numberOfIndividuals;
         CharacterGeneratorScript.GenerateCharacter(child, characterPrefab, name);
+        numberOfIndividuals++;
         Debug.Log("Individual added");
     }
 
