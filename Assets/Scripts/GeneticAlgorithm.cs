@@ -13,7 +13,7 @@ public class GeneticAlgorithm : MonoBehaviour
     [SerializeField] int tournamentSize = 5;
     [SerializeField] float waterHeight = 10;
     List<Tree> population = new List<Tree>();
-    public GameObject[] treeObjects;
+    GameObject[] treeObjects;
     Terrain terrain;
     Vector3 terrainSize;
     [SerializeField] Vector2 randTreeScale = new Vector2(3, 5);
