@@ -8,8 +8,6 @@ public class Character : MonoBehaviour
 
     public const int GenomeSize = 20;
 
-    public GameObject testDestination;
-
     private Individual individual;
 
     private Population PopulationScript;
@@ -359,15 +357,6 @@ public class Character : MonoBehaviour
         }
     }
 
-    void MoveCharacterTo(Vector3 destination)
-    {
-        var navMeshAgentController = GetComponent<NavMeshAgentController>();
-        if (navMeshAgentController != null)
-        {
-            navMeshAgentController.SetDestination(destination);
-        }
-    }
-
     public void TriggerCoolDown()
     {
         individual.TriggerCoolDown();
@@ -399,8 +388,6 @@ public class Character : MonoBehaviour
 
     void Update()
     {
-        Vector3 destination = testDestination.transform.position;
-        MoveCharacterTo(destination);
         individual.EvaluateFitnessScore(PopulationScript.WantedProperties);
         individual.UpdateAge();
     }
