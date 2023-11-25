@@ -30,6 +30,8 @@ public class CharacterGenerator : MonoBehaviour
         public float legWidthProportion = 0.07f;
 
         public float eyeOffsetProportion = 0.4f;
+
+        public float childProportion = 0.1f;
     }
 
     CharacterInformations characterInformations = new CharacterInformations();
@@ -133,6 +135,9 @@ public class CharacterGenerator : MonoBehaviour
     {
         private GameObject _gameObject;
 
+        public IndividualBody()
+        {}
+
         public IndividualBody(GameObject prefab, string name, Transform transform)
         {
             _gameObject = Instantiate(prefab, prefab.transform.position, Quaternion.identity);
@@ -149,6 +154,21 @@ public class CharacterGenerator : MonoBehaviour
         {
             return _gameObject.transform;
         }
+
+        public void SetScale(Vector3 newScale)
+        {
+            _gameObject.transform.localScale = newScale;
+        }
+
+        public void Grow(Vector3 offset)
+        {
+            _gameObject.transform.localScale += offset;
+        }
+
+        public bool Exists()
+        {
+            return _gameObject != null;
+        }
     }
 
     public void GenerateCharacter(Character.Individual individual, GameObject characterPrefab, string name)
@@ -159,6 +179,10 @@ public class CharacterGenerator : MonoBehaviour
             transform
         );
         InstantiateIndividualModel(individual.GetGenome(), individualBody);
+        
+        individualBody.SetScale(new Vector3(characterInformations.width * characterInformations.childProportion,
+                                            characterInformations.width * characterInformations.childProportion,
+                                            characterInformations.size * characterInformations.childProportion));
     }
 
     public void InstantiateIndividualModel(Character.Genome genome, IndividualBody individualBody)
@@ -409,5 +433,26 @@ public class CharacterGenerator : MonoBehaviour
             }
         }
         Destroy(parentObject);
+    }
+
+    private Vector3 growOffset;
+
+    void Start()
+    {
+        growOffset = new Vector3(
+            (characterInformations.width - characterInformations.width * characterInformations.childProportion)  / Character.ChildhoodTime,
+            (characterInformations.width - characterInformations.width * characterInformations.childProportion)  / Character.ChildhoodTime,
+            (characterInformations.size - characterInformations.size * characterInformations.childProportion)  / Character.ChildhoodTime);
+    }
+
+    void Update()
+    {
+        if (transform.localScale.x < characterInformations.width ||
+            transform.localScale.y < characterInformations.width ||
+            transform.localScale.z < characterInformations.size
+        )
+        {
+            transform.localScale += growOffset;
+        }
     }
 }

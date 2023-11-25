@@ -3,7 +3,7 @@ using System.Linq;
 
 public class Character : MonoBehaviour
 {
-    public const int ChildhoodTime = 3000; // frame
+    public const int ChildhoodTime = 1000; // frame
     public const int OldTime = 9000; // frame
 
     public const int GenomeSize = 20;
@@ -242,7 +242,7 @@ public class Character : MonoBehaviour
             return _fitnessScore;
         }
 
-        public int GetRemainingLife()
+        public int GetAge()
         {
             return _age;
         }
