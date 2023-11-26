@@ -59,7 +59,7 @@ public class Population : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Create population");
+       // Debug.Log("Create population");
         
         CharacterGeneratorScript = GetComponentInChildren<CharacterGenerator>();
         PopulationGeneticAlgorithmScript = GetComponent<PopulationGeneticAlgorithm>();
@@ -69,7 +69,7 @@ public class Population : MonoBehaviour
             wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
             CreateInitialPopulation(initialPopulationSize, characterPrefab);
         }
-        Debug.Log("Population created");
+      //  Debug.Log("Population created");
     }
 
     void CreateInitialPopulation(int initialSize, GameObject prefab)

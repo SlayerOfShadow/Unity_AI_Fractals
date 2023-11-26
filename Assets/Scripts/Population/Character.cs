@@ -382,8 +382,8 @@ public class Character : MonoBehaviour
         individual.EvaluateFitnessScore(PopulationScript.WantedProperties);
                 
         // Debug
-        Debug.Log("Information de l'individu " + PopulationScript.NumberOfIndividuals + " :");
-        individual.DebugIndividual();
+        // Debug.Log("Information de l'individu " + PopulationScript.NumberOfIndividuals + " :");
+        //individual.DebugIndividual();
     }
 
     void Update()

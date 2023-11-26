@@ -237,10 +237,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 9191818967079684238, guid: d18c78883f444eb4281f684eda1fe5ad, type: 3}
   size: 0.5
-  iterations: 300
+  maxIterations: 5
   columns: 20
   rows: 20
-  speed: 20
 --- !u!23 &390969228
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -802,7 +801,7 @@ MonoBehaviour:
     hasUpgradedBrainParametersWithActionSpec: 1
   m_Model: {fileID: 0}
   m_InferenceDevice: 1
-  m_BehaviorType: 0
+  m_BehaviorType: 1
   m_BehaviorName: My Behavior
   TeamId: 0
   m_UseChildSensors: 1
