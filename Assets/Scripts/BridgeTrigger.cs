@@ -10,10 +10,13 @@ public class BridgeTrigger : MonoBehaviour
     {
         if (other.tag == creatureTag)
         {
-            for (int i = 0; i < buildMultiplier; i++)
+            if (other.GetComponent<MlAgent>().ressource == true)
             {
-                bridge.Build();
-                print("build");
+                for (int i = 0; i < buildMultiplier; i++)
+                {
+                    bridge.Build();
+                    print("build");
+                }
             }
         }
     }

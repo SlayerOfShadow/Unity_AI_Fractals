@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class LSystemTree : MonoBehaviour
 {
+    [SerializeField] int maxHealthPoint = 4;
+    public int currentHealthPoint;
     [SerializeField] int iterations = 5; // Depth of the fractal tree.
     [SerializeField] float scale; // Scaling factor for branches.
     [SerializeField] Vector2 randomOffset; // Offset factor for branches.
@@ -15,11 +17,22 @@ public class LSystemTree : MonoBehaviour
 
     void Awake()
     {
+        currentHealthPoint = maxHealthPoint;
         meshFilter = GetComponent<MeshFilter>();
         startPosition = transform.position;
         startRotation = transform.rotation;
         GenerateTree(transform.position, Vector3.up, iterations, prefab.transform.localScale.y);
         CombineMesh();
+    }
+
+    public void LooseHealthPoint()
+    {
+        currentHealthPoint--;
+        gameObject.transform.localScale *= 0.9f;
+        if (currentHealthPoint == 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     void GenerateTree(Vector3 position, Vector3 direction, int iterations, float length)

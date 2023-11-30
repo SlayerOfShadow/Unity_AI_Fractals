@@ -8,7 +8,7 @@ using System.Linq;
 
 public class MlAgent : Agent
 {
-    private bool ressource = false;
+    public bool ressource = false;
     private Vector3 initialAgentPosition;
 
     public GeneticAlgorithm trees;
@@ -155,7 +155,6 @@ public class MlAgent : Agent
                 Debug.Log("bridge");
                 ressource = false;
 
-
             }
         }
         else
@@ -164,8 +163,12 @@ public class MlAgent : Agent
             {
                 SetReward(2f);
                 Debug.Log("tree");
+                if (ressource == false)
+                {
+                    other.GetComponent<LSystemTree>().LooseHealthPoint();
+                }
                 ressource = true;
-
+                print("loose life");
             }
         }
         
