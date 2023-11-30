@@ -148,12 +148,12 @@ public class Character : MonoBehaviour
 
     public class CapacitiesStatistics
     {
-        public int strength;
-        public int speed;
+        public int strength; // nombre et taille bras
+        public int speed; // nombre et taille jambe
         public int health;
-        public int vision;
-        public int smart;
-        public int resistance;
+        public int vision; // nombre et taille yeux
+        public int smart; // taille tête
+        public int resistance; // taille poitrine
 
         public CapacitiesStatistics()
         {
@@ -273,6 +273,11 @@ public class Character : MonoBehaviour
         public void TriggerCoolDown()
         {
             _lastReproductionTime = Time.time;
+        }
+
+        public CapacitiesStatistics GetStatistics()
+        {
+            return _statistics;
         }
 
         private void EvaluateStatistics()
