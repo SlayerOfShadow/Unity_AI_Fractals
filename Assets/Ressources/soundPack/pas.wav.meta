@@ -1,5 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
 guid: f38b60cc47f2f7745953dd4af0a9779c
+=======
+<<<<<<< HEAD:Assets/soundPack/pas.wav.meta
+guid: ab5e7b2b0d21f0749b01e9f21d5b0008
+=======
+guid: f38b60cc47f2f7745953dd4af0a9779c
+>>>>>>> 8f89052ab7cf834590fdfc4df44cc40b1a99b01c:Assets/Ressources/soundPack/pas.wav.meta
+>>>>>>> Stashed changes
 AudioImporter:
   externalObjects: {}
   serializedVersion: 7

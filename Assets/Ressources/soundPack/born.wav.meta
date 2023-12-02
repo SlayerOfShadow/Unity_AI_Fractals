@@ -1,5 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
 guid: f58dc5fb0837db243a8392d1c055fce6
+=======
+<<<<<<< HEAD:Assets/soundPack/born.wav.meta
+guid: 594e9876d268e0c4681efb1a145fc5e4
+=======
+guid: f58dc5fb0837db243a8392d1c055fce6
+>>>>>>> 8f89052ab7cf834590fdfc4df44cc40b1a99b01c:Assets/Ressources/soundPack/born.wav.meta
+>>>>>>> Stashed changes
 AudioImporter:
   externalObjects: {}
   serializedVersion: 7
