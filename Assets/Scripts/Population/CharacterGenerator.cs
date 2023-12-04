@@ -26,8 +26,8 @@ public class CharacterGenerator : MonoBehaviour
         public float armLengthProportion = 0.1f; 
         public float legLengthProportion = 0.2f;
 
-        public float armWidthProportion = 0.04f;
-        public float legWidthProportion = 0.07f;
+        public float armWidthProportion = 0.03f;
+        public float legWidthProportion = 0.03f;
 
         public float eyeOffsetProportion = 0.4f;
 
