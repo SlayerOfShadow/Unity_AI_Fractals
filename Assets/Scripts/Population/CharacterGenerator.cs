@@ -16,8 +16,8 @@ public class CharacterGenerator : MonoBehaviour
 
     class CharacterInformations
     {
-        public float size = 2f;
-        public float width = 2f;
+        public float size = 1.2f;
+        public float width = 1.2f;
 
         public float eyeProportion = 0.06f;
         public float headProportion = 0.4f; 
@@ -31,7 +31,7 @@ public class CharacterGenerator : MonoBehaviour
 
         public float eyeOffsetProportion = 0.4f;
 
-        public float childProportion = 0.1f;
+        public float childProportion = 0.3f;
     }
 
     CharacterInformations characterInformations = new CharacterInformations();
