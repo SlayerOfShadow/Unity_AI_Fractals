@@ -1,5 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
 guid: fc4656df52bb6da46a58dd00cbf6628b
+=======
+<<<<<<< HEAD:Assets/soundPack/drowned.wav.meta
+guid: 41240345103bf1448b4a541c49337517
+=======
+guid: fc4656df52bb6da46a58dd00cbf6628b
+>>>>>>> 8f89052ab7cf834590fdfc4df44cc40b1a99b01c:Assets/Ressources/soundPack/drowned.wav.meta
+>>>>>>> Stashed changes
 AudioImporter:
   externalObjects: {}
   serializedVersion: 7
