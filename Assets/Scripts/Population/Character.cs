@@ -190,7 +190,7 @@ public class Character : MonoBehaviour
         individual = new Individual();
     }
 
-    public const float proximityDistance = 2f;
+    public const float proximityDistance = 7f;
     public const float reproductionCooldown = 10f;
 
     public class Individual

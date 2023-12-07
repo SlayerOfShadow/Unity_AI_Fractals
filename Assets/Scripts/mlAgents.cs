@@ -14,6 +14,7 @@ public class MlAgent : Agent
     public GeneticAlgorithm trees;
     public Terrain terrain;
     public GameObject bridge;
+    private bool mort = false;
 
 
     private Rigidbody rb;
@@ -31,6 +32,7 @@ public class MlAgent : Agent
 
         // Set the new position with the random offsets
         Vector3 newPosition = initialAgentPosition + new Vector3(randomXOffset, 0f, randomZOffset);
+        if(mort)
         transform.position = newPosition;
         float randomYRotation = Random.Range(0f, 360f);
         transform.rotation = Quaternion.Euler(0f, randomYRotation, 0f);
@@ -176,7 +178,7 @@ public class MlAgent : Agent
         {
             SetReward(-2f);
             Debug.Log("water");
-
+            mort = true;
             EndEpisode();
 
         }
