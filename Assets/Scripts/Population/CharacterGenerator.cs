@@ -224,7 +224,7 @@ public class CharacterGenerator : MonoBehaviour
         var standardEye = new BodyPart(
             "Eye",
             eyePrefab,
-            individualBody.GetPosition() + RelativePosition(legGenLength + genChestScale.y + genHeadScale.y / 2f, - headWidth / 2f), // set an eye standard position then instantiation will take care of offsets
+            individualBody.GetPosition() + RelativePosition(legGenLength + genChestScale.y + genHeadScale.y / 2f, headWidth / 2f), // set an eye standard position then instantiation will take care of offsets
             new Vector3(eyeGenScale, eyeGenScale, eyeGenScale),
             new Vector3(0f, 0f, 0f),
             individualBody.GetTransform()
