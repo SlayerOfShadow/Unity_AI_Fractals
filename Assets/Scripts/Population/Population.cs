@@ -77,7 +77,7 @@ public class Population : MonoBehaviour
         for (int i = 0; i < initialSize; i++)
         {
             numberOfIndividuals++;
-            CharacterGeneratorScript.GenerateCharacter(new Character.Individual(), prefab, "Individual" + i);
+            CharacterGeneratorScript.GenerateCharacter(new Character.Individual(), prefab, prefab.transform.position, "Individual" + i);
         }
     }
 
@@ -131,7 +131,11 @@ public class Population : MonoBehaviour
     void MakeABaby(Character parent1, Character parent2, Character.Capacities properties, Character.MutationRate mutation)
     {
         Character.Individual child = PopulationGeneticAlgorithmScript.Crossover(parent1.GetIndividual(), parent2.GetIndividual(), properties, mutation);
-        CharacterGeneratorScript.GenerateCharacter(child, characterPrefab, "Individual" + numberOfIndividuals);
+        var childPosition = new Vector3(
+                    (parent1.transform.position.x + parent2.transform.position.x) / 2f,
+                    parent1.transform.position.y,
+                    (parent1.transform.position.z + parent2.transform.position.z) / 2f);
+        CharacterGeneratorScript.GenerateCharacter(child, characterPrefab, childPosition, "Individual" + numberOfIndividuals);
         parent1.TriggerCoolDown();
         parent2.TriggerCoolDown();
         numberOfIndividuals++;

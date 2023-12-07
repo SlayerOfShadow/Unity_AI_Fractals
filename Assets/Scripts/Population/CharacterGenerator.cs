@@ -138,9 +138,9 @@ public class CharacterGenerator : MonoBehaviour
         public IndividualBody()
         {}
 
-        public IndividualBody(GameObject prefab, string name, Transform transform)
+        public IndividualBody(GameObject prefab, Vector3 position, string name, Transform transform)
         {
-            _gameObject = Instantiate(prefab, prefab.transform.position, Quaternion.identity);
+            _gameObject = Instantiate(prefab, position, Quaternion.identity);
             _gameObject.name = name;
             _gameObject.transform.parent = transform.parent;
         }
@@ -171,10 +171,11 @@ public class CharacterGenerator : MonoBehaviour
         }
     }
 
-    public void GenerateCharacter(Character.Individual individual, GameObject characterPrefab, string name)
+    public void GenerateCharacter(Character.Individual individual, GameObject characterPrefab, Vector3 individualPosition, string name)
     {
         var individualBody = new IndividualBody(
             characterPrefab,
+            individualPosition,
             name,
             transform
         );
