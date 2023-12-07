@@ -69,6 +69,7 @@ public class Population : MonoBehaviour
             wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
             CreateInitialPopulation(initialPopulationSize, characterPrefab);
         }
+        DisableCharacterModel();
       //  Debug.Log("Population created");
     }
 
@@ -130,6 +131,7 @@ public class Population : MonoBehaviour
 
     void MakeABaby(Character parent1, Character parent2, Character.Capacities properties, Character.MutationRate mutation)
     {
+        EnableCharacterModel();
         Character.Individual child = PopulationGeneticAlgorithmScript.Crossover(parent1.GetIndividual(), parent2.GetIndividual(), properties, mutation);
         var childPosition = new Vector3(
                     (parent1.transform.position.x + parent2.transform.position.x) / 2f,
@@ -139,6 +141,7 @@ public class Population : MonoBehaviour
         parent1.TriggerCoolDown();
         parent2.TriggerCoolDown();
         numberOfIndividuals++;
+        DisableCharacterModel();
         Debug.Log("Baby made");
     }
 
@@ -146,5 +149,23 @@ public class Population : MonoBehaviour
     {
         float proba = UnityEngine.Random.Range(0, 100) / 100.0f;
         return proba <= makeABabyProbability;
+    }
+
+    void DisableCharacterModel()
+    {
+        // Désactiver le CharacterModel (le rendre inactif)
+        if (characterPrefab != null)
+        {
+            characterPrefab.SetActive(false);
+        }
+    }
+
+    void EnableCharacterModel()
+    {
+        // Activer le CharacterModel
+        if (characterPrefab != null)
+        {
+            characterPrefab.SetActive(true);
+        }
     }
 }
