@@ -13,7 +13,7 @@ public class GeneticAlgorithm : MonoBehaviour
     [SerializeField] int tournamentSize = 5;
     [SerializeField] float waterHeight = 10;
     List<Tree> population = new List<Tree>();
-    public GameObject[] treeObjects;
+    public List<GameObject> treeObjects;
     Terrain terrain;
     Vector3 terrainSize;
     [SerializeField] Vector2 randTreeScale = new Vector2(3, 5);
@@ -23,11 +23,14 @@ public class GeneticAlgorithm : MonoBehaviour
         terrain = GetComponent<Terrain>();
         terrainSize = terrain.terrainData.size;
 
-        treeObjects = new GameObject[populationSize];
+        treeObjects = new List<GameObject>();
+
         for (int i = 0; i < populationSize; i++)
         {
-            treeObjects[i] = Instantiate(prefab, transform.position, Quaternion.identity, transform);
-            treeObjects[i].transform.localScale = Vector3.one * Random.Range(randTreeScale.x, randTreeScale.y);
+            GameObject treeObject = Instantiate(prefab, transform.position, Quaternion.identity, transform);
+            treeObject.transform.localScale = Vector3.one * Random.Range(randTreeScale.x, randTreeScale.y);
+
+            treeObjects.Add(treeObject); // Add the instantiated object to the list
         }
 
         InitializePopulation();

@@ -3,8 +3,9 @@ using UnityEngine;
 public class BridgeTrigger : MonoBehaviour
 {
     [SerializeField] GameOfLife bridge;
+    [SerializeField] TrueBridge trueBridge;
     [SerializeField] string creatureTag;
-    [SerializeField] int buildMultiplier;
+    public int buildMultiplier;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -15,7 +16,7 @@ public class BridgeTrigger : MonoBehaviour
                 for (int i = 0; i < buildMultiplier; i++)
                 {
                     bridge.Build();
-                    print("build");
+                    trueBridge.Build();
                 }
             }
         }

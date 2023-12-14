@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class LSystemTree : MonoBehaviour
 {
-    [SerializeField] int maxHealthPoint = 4;
+    public int maxHealthPoint = 4;
     public int currentHealthPoint;
     [SerializeField] int iterations = 5; // Depth of the fractal tree.
     [SerializeField] float scale; // Scaling factor for branches.

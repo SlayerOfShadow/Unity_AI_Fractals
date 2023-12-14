@@ -10,7 +10,6 @@ public class MlAgent : Agent
 {
     public bool ressource = false;
     private Vector3 initialAgentPosition;
-
     public GeneticAlgorithm trees;
     public Terrain terrain;
     public GameObject bridge;
@@ -167,7 +166,9 @@ public class MlAgent : Agent
                 Debug.Log("tree");
                 if (ressource == false)
                 {
-                    other.GetComponent<LSystemTree>().LooseHealthPoint();
+                    LSystemTree lSystemTree = other.GetComponent<LSystemTree>();
+                    if (lSystemTree.currentHealthPoint == 1) trees.treeObjects.Remove(other.gameObject);
+                    lSystemTree.LooseHealthPoint();
                 }
                 ressource = true;
                 print("loose life");
