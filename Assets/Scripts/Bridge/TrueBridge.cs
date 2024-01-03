@@ -9,8 +9,10 @@ public class TrueBridge : MonoBehaviour
 
     public void Build()
     {
-        GameObject cube = Instantiate(cubePrefab, new Vector3(transform.position.x - (0.5f * iterations), transform.position.y, transform.position.z), Quaternion.identity, transform);
-        GameObject cube2 = Instantiate(cubePrefab, new Vector3(transform.position.x - (0.5f * iterations), transform.position.y, transform.position.z + 0.5f), Quaternion.identity, transform);
+        for (int i = 0; i < 4; i++)
+        {
+            Instantiate(cubePrefab, new Vector3(transform.position.x - (0.5f * iterations), transform.position.y, transform.position.z + 0.5f * i), Quaternion.identity, transform);
+        }
         iterations += 1;
     }
 }
