@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class GameOfLife : MonoBehaviour
 {
+    bool canBuild = true;
     [SerializeField] GameObject prefab;
     [SerializeField] float size = 1;
     [SerializeField] int maxIterations = 5;
@@ -14,9 +15,17 @@ public class GameOfLife : MonoBehaviour
     float lastFrameTime = 0;
     int count = 0;
     Vector3 startPosition;
+    List<MeshFilter> meshFilters = new List<MeshFilter>();
+    MeshFilter meshFilter;
+    Vector3 objStartPosition;
+    Quaternion startRotation;
 
     void Start()
     {
+        meshFilter = GetComponent<MeshFilter>();
+        objStartPosition = transform.position;
+        startRotation = transform.rotation;
+
         lastFrameTime = Time.time;
         startPosition = transform.position;
         CreateGrid();
@@ -113,6 +122,7 @@ public class GameOfLife : MonoBehaviour
                         GameObject obj = Instantiate(prefab, new Vector3(-count * size + startPosition.x, j * size + startPosition.y, i * size + startPosition.z), Quaternion.identity, gameObject.transform);
                         obj.transform.localScale = new Vector3(size, size, size);
                         cubes[i, j] = obj;
+                        meshFilters.Add(obj.transform.GetComponent<MeshFilter>());
                     }
                 }
             }
@@ -122,6 +132,37 @@ public class GameOfLife : MonoBehaviour
             cells2 = temp;
             count++;
         }
-        
+        else
+        {
+            if (canBuild) CombineMesh();
+            canBuild = false;
+        }
+    }
+
+    void CombineMesh()
+    {
+        transform.position = Vector3.zero;
+        transform.rotation = Quaternion.identity;
+
+        CombineInstance[] combine = new CombineInstance[meshFilters.Count];
+        for (int i = 0; i < meshFilters.Count; i++)
+        {
+            combine[i].mesh = meshFilters[i].mesh;
+            combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+        }
+        Mesh temp = new Mesh
+        {
+            indexFormat = UnityEngine.Rendering.IndexFormat.UInt32
+        };
+        temp.CombineMeshes(combine);
+        meshFilter.mesh = temp;
+
+        transform.position = startPosition;
+        transform.rotation = startRotation;
+
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }
