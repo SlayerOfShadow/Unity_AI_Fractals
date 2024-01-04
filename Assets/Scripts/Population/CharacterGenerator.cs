@@ -171,7 +171,7 @@ public class CharacterGenerator : MonoBehaviour
         }
     }
 
-    public void GenerateCharacter(Character.Individual individual, GameObject characterPrefab, Vector3 individualPosition, string name)
+    public void GenerateCharacter(Character.Individual individual, GameObject characterPrefab, GameObject strangeAttractorPrefab, Vector3 individualPosition, string name)
     {
         var individualBody = new IndividualBody(
             characterPrefab,
@@ -179,14 +179,14 @@ public class CharacterGenerator : MonoBehaviour
             name,
             transform
         );
-        InstantiateIndividualModel(individual.GetGenome(), individualBody);
+        InstantiateIndividualModel(individual.GetGenome(), individualBody, strangeAttractorPrefab);
         
         individualBody.SetScale(new Vector3(characterInformations.width * characterInformations.childProportion,
                                             characterInformations.width * characterInformations.childProportion,
                                             characterInformations.size * characterInformations.childProportion));
     }
 
-    public void InstantiateIndividualModel(Character.Genome genome, IndividualBody individualBody)
+    public void InstantiateIndividualModel(Character.Genome genome, IndividualBody individualBody, GameObject strangeAttractorPrefab)
     {
         float armGenLength = GenSize(
             genome.GetIndex(Population.GenomeInformations.armSize1) + genome.GetIndex(Population.GenomeInformations.armSize2),
@@ -215,6 +215,17 @@ public class CharacterGenerator : MonoBehaviour
             genome.GetIndex(Population.GenomeInformations.chestDeformByZ),
             characterInformations.chestProportion
         );
+
+        // Lorenz
+        var lorenzAttractor = new BodyPart(
+            "Lorenz System",
+            strangeAttractorPrefab,
+            individualBody.GetPosition(),
+            new Vector3(10f, 10f, 10f),
+            new Vector3(0f, 0f, 0f),
+            individualBody.GetTransform()
+        );
+        lorenzAttractor.InstantiateObject();
 
         // Eyes
         float eyeGenScale = GenSize(
