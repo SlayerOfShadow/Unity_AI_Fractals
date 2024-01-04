@@ -326,6 +326,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bfa5ef6c0650f9438e5ee8fe7c7a21d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  direction: {x: 0, y: 0, z: 0}
   cubePrefab: {fileID: 2631085099726781080, guid: b661302c8dc46c3488b13bc74130019a, type: 3}
   iterations: 0
 --- !u!1 &182597020
@@ -836,6 +837,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bfa5ef6c0650f9438e5ee8fe7c7a21d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  direction: {x: 0, y: 0, z: 0}
   cubePrefab: {fileID: 2631085099726781080, guid: b661302c8dc46c3488b13bc74130019a, type: 3}
   iterations: 0
 --- !u!1 &625534573
@@ -1326,6 +1328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bfa5ef6c0650f9438e5ee8fe7c7a21d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  direction: {x: 0, y: 0, z: 0}
   cubePrefab: {fileID: 2631085099726781080, guid: b661302c8dc46c3488b13bc74130019a, type: 3}
   iterations: 0
 --- !u!1 &779723885
@@ -1495,6 +1498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bfa5ef6c0650f9438e5ee8fe7c7a21d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  direction: {x: 1, y: 0, z: 0}
   cubePrefab: {fileID: 2631085099726781080, guid: b661302c8dc46c3488b13bc74130019a, type: 3}
   iterations: 0
 --- !u!1 &940591108
