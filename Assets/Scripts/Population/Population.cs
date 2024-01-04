@@ -26,9 +26,6 @@ public class Population : MonoBehaviour
     private CharacterGenerator CharacterGeneratorScript;
     private PopulationGeneticAlgorithm PopulationGeneticAlgorithmScript; 
 
-    public float spatialGridCellSize = 5f;
-    private SpatialGrid spatialGrid;
-
     public enum GenomeInformations
     {
         eyeSize1 = 0,
@@ -63,7 +60,6 @@ public class Population : MonoBehaviour
     void Start()
     {
        // Debug.Log("Create population");
-       spatialGrid = new SpatialGrid(spatialGridCellSize);
         
         CharacterGeneratorScript = GetComponentInChildren<CharacterGenerator>();
         PopulationGeneticAlgorithmScript = GetComponent<PopulationGeneticAlgorithm>();
@@ -94,24 +90,13 @@ public class Population : MonoBehaviour
         if (IsThereProbabbilityToMakeABaby())
         {    
             Character[] characters = FindObjectsOfType<Character>();
-            foreach (Character character in characters)
-            {
-                spatialGrid.AddObject(character);
-            }
-            for (int i = 0; i < characters.Length; i++)
-            {
-                Vector2Int currentCell = spatialGrid.GetCell(characters[i].transform.position);
-
-                List<Character> charactersInSameCell = spatialGrid.GetObjectsInCell(currentCell);
-
-                TryToReproduceIndividuals(charactersInSameCell, wantedProperties, mutationRate, fitnessAlgorithm);    
-            }
+            TryToReproduceIndividuals(characters, wantedProperties, mutationRate, fitnessAlgorithm);    
         }
     }
 
     // Retourne la liste des individus fertiles suffisament proche du parent choisi pour se reproduire
     // On s'assure aussi que le parent choisi ne se retrouve pas dans la liste
-    List<Character> FertileIndividualsAround(List<Character> characters, Character parentChosen){
+    List<Character> FertileIndividualsAround(Character[] characters, Character parentChosen){
         var fertileIndividualsAround = new List<Character>();
         foreach (var character in characters)
         {
@@ -125,7 +110,7 @@ public class Population : MonoBehaviour
         return fertileIndividualsAround;
     }
 
-    void TryToReproduceIndividuals(List<Character> characters, Character.Capacities properties, Character.MutationRate mutation, PopulationGeneticAlgorithm.FitnessAlgorithm algorithm)
+    void TryToReproduceIndividuals(Character[] characters, Character.Capacities properties, Character.MutationRate mutation, PopulationGeneticAlgorithm.FitnessAlgorithm algorithm)
     {
         foreach (var character in characters)
         {
