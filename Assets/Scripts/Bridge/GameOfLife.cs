@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 public class GameOfLife : MonoBehaviour
 {
+    [SerializeField]
+    TrueBridge trueBridge;
+    Vector3 direction;
     bool canBuild = true;
     [SerializeField] GameObject prefab;
     [SerializeField] float size = 1;
@@ -22,6 +25,8 @@ public class GameOfLife : MonoBehaviour
 
     void Start()
     {
+        direction = trueBridge.direction;
+
         meshFilter = GetComponent<MeshFilter>();
         objStartPosition = transform.position;
         startRotation = transform.rotation;
@@ -111,6 +116,8 @@ public class GameOfLife : MonoBehaviour
     {
         if (count < maxIterations)
         {
+            Vector3 v = new Vector3();
+
             Evolution();
 
             for (int i = 0; i < columns; i++)
@@ -119,7 +126,10 @@ public class GameOfLife : MonoBehaviour
                 {
                     if (cells2[i, j] == 1)
                     {
-                        GameObject obj = Instantiate(prefab, new Vector3(-count * size + startPosition.x, j * size + startPosition.y, i * size + startPosition.z), Quaternion.identity, gameObject.transform);
+                        if (direction.x != 0) v = new Vector3(direction.x * -count * size + startPosition.x, j * size + startPosition.y, i * size + startPosition.z);
+                        else if (direction.y != 0) v = new Vector3(j * size + startPosition.x, direction.y * -count * size + startPosition.y, i * size + startPosition.z);
+                        else if (direction.z != 0) v = new Vector3(j * size + startPosition.x, i * size + startPosition.y, direction.z * -count * size + startPosition.z);
+                        GameObject obj = Instantiate(prefab, v, Quaternion.identity, gameObject.transform);
                         obj.transform.localScale = new Vector3(size, size, size);
                         cubes[i, j] = obj;
                         meshFilters.Add(obj.transform.GetComponent<MeshFilter>());
