@@ -16,7 +16,7 @@ public class BridgeTrigger : MonoBehaviour
                 for (int i = 0; i < buildMultiplier; i++)
                 {
                     bridge.Build();
-                    trueBridge.Build();
+                    if (bridge.count < bridge.maxIterations) trueBridge.Build();
                 }
             }
         }

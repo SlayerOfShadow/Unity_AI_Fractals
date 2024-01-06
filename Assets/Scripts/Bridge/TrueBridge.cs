@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TrueBridge : MonoBehaviour
 {
+    [SerializeField]
+    GameOfLife gameOfLife;
     public Vector3 direction;
     public GameObject cubePrefab;
     public int iterations = 0;

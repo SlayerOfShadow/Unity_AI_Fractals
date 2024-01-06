@@ -9,14 +9,14 @@ public class GameOfLife : MonoBehaviour
     bool canBuild = true;
     [SerializeField] GameObject prefab;
     [SerializeField] float size = 1;
-    [SerializeField] int maxIterations = 5;
+    public int maxIterations = 5;
     [SerializeField] int columns = 20;
     [SerializeField] int rows = 20;
     GameObject[,] cubes;
     int[,] cells;
     int[,] cells2;
     float lastFrameTime = 0;
-    int count = 0;
+    public int count = 0;
     Vector3 startPosition;
     List<MeshFilter> meshFilters = new List<MeshFilter>();
     MeshFilter meshFilter;
