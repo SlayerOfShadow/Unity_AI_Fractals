@@ -381,9 +381,9 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void TriggerCoolDown()
+    public void HaveMadeABaby()
     {
-        individual.TriggerCoolDown();
+        individual.HaveMadeABaby();
     }
 
     public bool CanMakeABaby()
