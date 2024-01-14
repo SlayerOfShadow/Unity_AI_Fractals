@@ -6,7 +6,7 @@ public class GameOfLife : MonoBehaviour
     [SerializeField]
     TrueBridge trueBridge;
     Vector3 direction;
-    bool canBuild = true;
+    public bool canBuild = true;
     [SerializeField] GameObject prefab;
     [SerializeField] float size = 1;
     public int maxIterations = 5;
@@ -144,7 +144,7 @@ public class GameOfLife : MonoBehaviour
         }
         else
         {
-            if (canBuild) CombineMesh();
+            //if (canBuild) CombineMesh();
             canBuild = false;
         }
     }

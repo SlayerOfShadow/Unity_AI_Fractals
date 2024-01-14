@@ -146,6 +146,8 @@ public class Character : MonoBehaviour
         }
     }
 
+    
+
     public class CapacitiesStatistics
     {
         public int strength; // nombre et taille bras

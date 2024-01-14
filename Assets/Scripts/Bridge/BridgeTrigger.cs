@@ -13,7 +13,8 @@ public class BridgeTrigger : MonoBehaviour
         {
             if (other.GetComponent<MlAgent>().ressource == true)
             {
-                for (int i = 0; i < buildMultiplier; i++)
+                int strenght = 2 * (other.GetComponent<MlAgent>().strenght) + 100;
+                for (int i = 0; i < strenght; i++)
                 {
                     bridge.Build();
                     if (bridge.count < bridge.maxIterations) trueBridge.Build();
