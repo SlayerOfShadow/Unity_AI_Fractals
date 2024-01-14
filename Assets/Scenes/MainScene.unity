@@ -208,6 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trueBridge: {fileID: 717189231}
+  canBuild: 1
   prefab: {fileID: 9191818967079684238, guid: d18c78883f444eb4281f684eda1fe5ad, type: 3}
   size: 0.5
   maxIterations: 135
@@ -770,6 +771,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trueBridge: {fileID: 845299164}
+  canBuild: 1
   prefab: {fileID: 9191818967079684238, guid: d18c78883f444eb4281f684eda1fe5ad, type: 3}
   size: 0.5
   maxIterations: 120
@@ -1043,6 +1045,7 @@ GameObject:
   - component: {fileID: 688529558}
   - component: {fileID: 688529557}
   - component: {fileID: 688529556}
+  - component: {fileID: 688529565}
   m_Layer: 0
   m_Name: CharacterModel
   m_TagString: creature
@@ -1080,10 +1083,19 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 1000000
+  speed: 0
+  strenght: 0
+  vision: 0
+  Gol1: {fileID: 0}
+  trees1: {fileID: 0}
+  trees2: {fileID: 0}
+  trees3: {fileID: 0}
+  trees4: {fileID: 0}
+  bridge1: {fileID: 0}
+  bridge2: {fileID: 0}
+  bridge3: {fileID: 0}
+  bridge4: {fileID: 0}
   ressource: 0
-  trees: {fileID: 6148166345205948489}
-  terrain: {fileID: 6148166345205948488}
-  bridge: {fileID: 305256454}
 --- !u!114 &688529558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1208,12 +1220,33 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0.3, z: 0}
+--- !u!65 &688529565
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688529555}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 2, z: 1}
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1765,7 +1798,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  smoothSpeed: 0.05
+  smoothSpeed: 0.02
   offset: {x: 9, y: 5, z: 0}
   cameraPositions:
   - {fileID: 114578493}
@@ -2022,6 +2055,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trueBridge: {fileID: 539873417}
+  canBuild: 1
   prefab: {fileID: 9191818967079684238, guid: d18c78883f444eb4281f684eda1fe5ad, type: 3}
   size: 0.5
   maxIterations: 170
@@ -2542,7 +2576,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2044492107}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
@@ -2697,6 +2731,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trueBridge: {fileID: 150785860}
+  canBuild: 1
   prefab: {fileID: 9191818967079684238, guid: d18c78883f444eb4281f684eda1fe5ad, type: 3}
   size: 0.5
   maxIterations: 113
@@ -3284,22 +3319,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8772945609814820343, guid: 170ab59cf14a5db41ad99663565be8e0, type: 3}
   m_PrefabInstance: {fileID: 6148166345205948485}
   m_PrefabAsset: {fileID: 0}
---- !u!218 &6148166345205948488 stripped
-Terrain:
-  m_CorrespondingSourceObject: {fileID: 3418048135025488526, guid: 170ab59cf14a5db41ad99663565be8e0, type: 3}
-  m_PrefabInstance: {fileID: 6148166345205948485}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &6148166345205948489 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4574612882491419214, guid: 170ab59cf14a5db41ad99663565be8e0, type: 3}
-  m_PrefabInstance: {fileID: 6148166345205948485}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc7e3439e5561e6428e9e47d8969ecdd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &6899405522074361123
 PrefabInstance:
   m_ObjectHideFlags: 0
