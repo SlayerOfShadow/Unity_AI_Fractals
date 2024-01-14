@@ -141,8 +141,8 @@ public class Population : MonoBehaviour
                     parent1.transform.position.y,
                     (parent1.transform.position.z + parent2.transform.position.z) / 2f);
         CharacterGeneratorScript.GenerateCharacter(child, characterPrefab, lorenzPrefab, childPosition, "Individual" + numberOfIndividuals);
-        parent1.TriggerCoolDown();
-        parent2.TriggerCoolDown();
+        parent1.HaveMadeABaby();
+        parent2.HaveMadeABaby();
         numberOfIndividuals++;
         DisableModels();
         Debug.Log("Baby made");

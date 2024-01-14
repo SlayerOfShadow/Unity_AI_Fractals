@@ -200,6 +200,7 @@ public class Character : MonoBehaviour
         private Genome _genome;
         private int _fitnessScore;
         private int _age; // frame
+        private int _number_of_babies = 0;
 
         private float _lastReproductionTime;
         
@@ -247,6 +248,16 @@ public class Character : MonoBehaviour
             return _age;
         }
 
+        public int GetNumberOfBabies()
+        {
+            return _number_of_babies;
+        }
+
+        public void UpdateNumberOfBabies()
+        {
+            _number_of_babies++;
+        }
+
         public void UpdateAge()
         {
             _age++;
@@ -275,6 +286,12 @@ public class Character : MonoBehaviour
         public void TriggerCoolDown()
         {
             _lastReproductionTime = Time.time;
+        }
+
+        public void HaveMadeABaby()
+        {
+            UpdateNumberOfBabies();
+            TriggerCoolDown();
         }
 
         public CapacitiesStatistics GetStatistics()
