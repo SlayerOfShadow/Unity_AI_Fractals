@@ -8,6 +8,7 @@ TagManager:
   - bridge
   - water
   - creature
+  - endOfBridge
   layers:
   - Default
   - TransparentFX

@@ -38,6 +38,12 @@ public class MlAgent : Agent
     public GameObject bridge4;
 
 
+    private GameObject[] bridgeTriggerArray  = new GameObject[4];
+    private GameOfLife[] gameOfLifeArray= new GameOfLife[4];
+    private GeneticAlgorithm[] GeneticAlgorithmArray = new GeneticAlgorithm[4];
+
+    int ile = 0;
+
     public bool ressource = false;
     private Vector3 initialAgentPosition;
     private bool mort = false;
@@ -50,27 +56,50 @@ public class MlAgent : Agent
         character = GetComponent<Character>();
         // Now you can use capacities
         capacitiesStatistics = character.GetIndividual().GetStatistics();
-
+        
+        
+        //attribiut les stat au personnage
         speed = capacitiesStatistics.speed;
         vision = capacitiesStatistics.vision;
         strenght = capacitiesStatistics.strength;
 
+
+        // fix ses rotations 
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         transform.rotation = Quaternion.Euler(0f,0f, 0f);
+
+
+        bridgeTriggerArray[0] = bridge1;
+        bridgeTriggerArray[1] = bridge2;
+        bridgeTriggerArray[2] = bridge3;
+        bridgeTriggerArray[3] = bridge4;
+
+        gameOfLifeArray[0] = Gol1;
+        gameOfLifeArray[1] = Gol2;
+        gameOfLifeArray[2] = Gol3;
+        gameOfLifeArray[3] = Gol4;
+
+        GeneticAlgorithmArray[0] = trees1;
+        GeneticAlgorithmArray[1] = trees2;
+        GeneticAlgorithmArray[2] = trees3;
+        GeneticAlgorithmArray[3] = trees4;
+
+
+
     }
 
     public override void OnEpisodeBegin()
     {
-                        // Reset the agent to its initial position.
+      /*                  // Reset the agent to its initial position.
                         float randomXOffset = Random.Range(-20f, 20f);
                         float randomZOffset = Random.Range(-20f, 20f);
 
                         // Set the new position with the random offsets
                         Vector3 newPosition = initialAgentPosition + new Vector3(randomXOffset, 0f, randomZOffset);
                         if(mort)
-                        transform.position = newPosition;
+                        transform.position = newPosition;*/
 
 
 
@@ -80,33 +109,33 @@ public class MlAgent : Agent
 
 
 
-    private int[] GetClosestTreeIndices(Vector3 agentPosition, Vector3[] treePositions, int numClosestTrees)
-    {
-        // Create a list to store distances and indices
-        List<(float distance, int index)> distancesAndIndices = new List<(float, int)>();
-
-        // Calculate distances and store them along with the tree index
-        for (int i = 0; i < treePositions.Length; i++)
-        {
-            float distance = Vector3.Distance(agentPosition, treePositions[i]);
-            distancesAndIndices.Add((distance, i));
-        }
-
-        // Sort the list by distance in ascending order
-        distancesAndIndices.Sort((a, b) => a.distance.CompareTo(b.distance));
-
-        // Get the indices of the N closest trees
-        int[] closestTreeIndices = distancesAndIndices.Take(numClosestTrees).Select(pair => pair.index).ToArray();
-
-        return closestTreeIndices;
-    }
+    
 
     public override void CollectObservations(VectorSensor sensor)
     {
+
+
+
         if (Gol1 != null && !Gol1.canBuild)
         {
-            Debug.Log("drip");
+            if (Gol2 != null && !Gol1.canBuild)
+            {
+                if (Gol3 != null && !Gol1.canBuild)
+                {
+                    if (Gol4 != null && !Gol1.canBuild)
+                    {
+
+
+                    }
+                }
+            }
+
         }
+
+
+
+
+
         if (bridge1 != null && trees1!=null) { 
           
 
@@ -191,6 +220,11 @@ public class MlAgent : Agent
         continuousActions[0] = Input.GetAxis("Vertical");
         continuousActions[1] = Input.GetAxis("Horizontal");
     }
+
+
+
+
+
     private void OnTriggerEnter(Collider other)
     {
 
@@ -230,10 +264,46 @@ public class MlAgent : Agent
 
         }
     }
+
+
+
+
+
+
         private void Awake()
     {
         // Store the initial positions of the agent and targets.
         initialAgentPosition = transform.position;
 
     }
+
+
+
+
+
+
+
+
+    private int[] GetClosestTreeIndices(Vector3 agentPosition, Vector3[] treePositions, int numClosestTrees)
+    {
+        // Create a list to store distances and indices
+        List<(float distance, int index)> distancesAndIndices = new List<(float, int)>();
+
+        // Calculate distances and store them along with the tree index
+        for (int i = 0; i < treePositions.Length; i++)
+        {
+            float distance = Vector3.Distance(agentPosition, treePositions[i]);
+            distancesAndIndices.Add((distance, i));
+        }
+
+        // Sort the list by distance in ascending order
+        distancesAndIndices.Sort((a, b) => a.distance.CompareTo(b.distance));
+
+        // Get the indices of the N closest trees
+        int[] closestTreeIndices = distancesAndIndices.Take(numClosestTrees).Select(pair => pair.index).ToArray();
+
+        return closestTreeIndices;
+    }
+
+
 }
