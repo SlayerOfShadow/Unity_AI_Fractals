@@ -269,7 +269,7 @@ public class MlAgent : Agent
             Debug.Log("endOfBridge");
             ile++;
             etat = 0;
-            ressource = 0;
+            ressource = false;
         }
 
 

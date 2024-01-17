@@ -68,5 +68,10 @@ public class CameraController : MonoBehaviour
                 transform.rotation = smoothedRotation;
             }
         }
+
+        if (onCreature)
+        {
+            
+        }
     }
 }
