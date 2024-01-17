@@ -14,14 +14,21 @@ public class CharacterGenerator : MonoBehaviour
     public GameObject legPrefab;
     public GameObject armPrefab;
 
+    private MlAgent mlAgent;
     
     private IndividualBody individualBody;
     private Vector3 growOffset;
 
     private BodyPart lorenzAttractor;
     public GameObject lorenzPrefab;
-    public bool generateLorenzSystem = false;
-    public bool destroyLorenzSystem = false;
+
+    private enum LorenzState
+    {
+        IsUnactive,
+        IsActive,
+    }
+
+    private LorenzState lorenzState;
 
     class CharacterInformations
     {
@@ -474,14 +481,22 @@ public class CharacterGenerator : MonoBehaviour
         lorenzAttractor.DestroyObject();
     }
 
+    private bool HaveRessource()
+    {
+        return mlAgent.ressource;
+    }
+
     void Start()
     {
+        mlAgent = GetComponent<MlAgent>();
+
         growOffset = new Vector3(
             (characterInformations.width - characterInformations.width * characterInformations.childProportion)  / Character.ChildhoodTime,
             (characterInformations.width - characterInformations.width * characterInformations.childProportion)  / Character.ChildhoodTime,
             (characterInformations.size - characterInformations.size * characterInformations.childProportion)  / Character.ChildhoodTime);
 
         lorenzPrefab.SetActive(false);
+        lorenzState = LorenzState.IsUnactive;
     }
 
     void Update()
@@ -494,15 +509,17 @@ public class CharacterGenerator : MonoBehaviour
             transform.localScale += growOffset;
         }
 
-        if (generateLorenzSystem)
-        {
-            GenerateLorenzSystem();
-            generateLorenzSystem = false;
-        }
-        if (destroyLorenzSystem)
-        {
-            DestroyLorenzSystem();
-            destroyLorenzSystem = false;
+        if (mlAgent !=null){    
+            if (HaveRessource() && lorenzState == LorenzState.IsUnactive)
+            { 
+                GenerateLorenzSystem();
+                lorenzState = LorenzState.IsActive;
+            }
+            if (!HaveRessource() && lorenzState == LorenzState.IsActive)
+            {
+                DestroyLorenzSystem();
+                lorenzState = LorenzState.IsUnactive;
+            }
         }
     }
 }
