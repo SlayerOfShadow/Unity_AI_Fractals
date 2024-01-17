@@ -38,11 +38,18 @@ public class MlAgent : Agent
     public GameObject bridge4;
 
 
+    public GameObject endOfBridge1;
+    public GameObject endOfBridge2;
+    public GameObject endOfBridge3;
+    public GameObject endOfBridge4;
+
+    private GameObject[] endOfBridgeArray = new GameObject[4];
     private GameObject[] bridgeTriggerArray  = new GameObject[4];
     private GameOfLife[] gameOfLifeArray= new GameOfLife[4];
     private GeneticAlgorithm[] GeneticAlgorithmArray = new GeneticAlgorithm[4];
 
     int ile = 0;
+    int etat = 0;
 
     public bool ressource = false;
     private Vector3 initialAgentPosition;
@@ -87,6 +94,11 @@ public class MlAgent : Agent
         GeneticAlgorithmArray[3] = trees4;
 
 
+        endOfBridgeArray[0] = endOfBridge1;
+        endOfBridgeArray[1] = endOfBridge2;
+        endOfBridgeArray[2] = endOfBridge3;
+        endOfBridgeArray[3] = endOfBridge4;
+
 
     }
 
@@ -115,23 +127,13 @@ public class MlAgent : Agent
     {
 
 
-
-        if (Gol1 != null && !Gol1.canBuild)
+        
+        if (gameOfLifeArray[ile] != null && !gameOfLifeArray[ile].canBuild)
         {
-            if (Gol2 != null && !Gol1.canBuild)
-            {
-                if (Gol3 != null && !Gol1.canBuild)
-                {
-                    if (Gol4 != null && !Gol1.canBuild)
-                    {
-
-
-                    }
-                }
-            }
-
+            sensor.AddObservation(endOfBridgeArray[ile].transform.position);
+            etat = 2;
         }
-
+        
 
 
 
@@ -144,9 +146,9 @@ public class MlAgent : Agent
             {
                 sensor.AddObservation(bridge1.transform.position);
                 Debug.Log(bridge1.transform.position);
-
-
             }
+
+
             else
             {
                 Vector3[] treePositions = trees1.treeObjects.Select(tree => tree.transform.position).ToArray();
@@ -228,17 +230,18 @@ public class MlAgent : Agent
     private void OnTriggerEnter(Collider other)
     {
 
-        if (ressource)
+        if (etat == 1)
         {
-            if (other.CompareTag("bridge"))
+            if (other.gameObject == bridgeTriggerArray[ile])
             {
                 SetReward(4f);
                 Debug.Log("bridge");
                 ressource = false;
+                etat = 0;
 
             }
         }
-        else
+        if (etat == 0 )
         {
             if (other.CompareTag("tree"))
             {
@@ -252,10 +255,28 @@ public class MlAgent : Agent
                 }
                 ressource = true;
                 print("loose life");
+                etat = 1;
             }
         }
         
-        if (other.CompareTag("water") )
+        
+
+
+
+        if (other.gameObject == endOfBridgeArray[ile])
+        {
+            SetReward(2f);
+            Debug.Log("endOfBridge");
+            ile++;
+            etat = 0;
+            ressource = 0;
+        }
+
+
+
+
+
+        if (other.CompareTag("water"))
         {
             SetReward(-2f);
             Debug.Log("water");

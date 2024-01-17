@@ -448,7 +448,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -929,7 +929,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -1018,7 +1018,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -1258,6 +1258,10 @@ MonoBehaviour:
   bridge2: {fileID: 2124746192}
   bridge3: {fileID: 329860372}
   bridge4: {fileID: 364197331}
+  endOfBridge1: {fileID: 517165344}
+  endOfBridge2: {fileID: 409643673}
+  endOfBridge3: {fileID: 1417556181}
+  endOfBridge4: {fileID: 198059877}
   ressource: 0
 --- !u!114 &688529558
 MonoBehaviour:
@@ -2374,7 +2378,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

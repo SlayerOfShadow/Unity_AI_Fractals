@@ -13,7 +13,7 @@ public class BridgeTrigger : MonoBehaviour
         {
             if (other.GetComponent<MlAgent>().ressource == true)
             {
-                int strenght = 2 * (other.GetComponent<MlAgent>().strenght);
+                int strenght = 2 * (other.GetComponent<MlAgent>().strenght) + 200;
                 for (int i = 0; i < strenght; i++)
                 {
                     bridge.Build();
