@@ -1967,6 +1967,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   smoothSpeed: 0.02
+  rotationSpeed: 100
   offset: {x: 9, y: 5, z: 0}
   cameraPositions:
   - {fileID: 114578493}

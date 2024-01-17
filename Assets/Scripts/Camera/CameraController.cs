@@ -8,6 +8,7 @@ public class CameraController : MonoBehaviour
     Vector3 startPosition;
     Quaternion startRotation;
     [SerializeField] float smoothSpeed = 0.05f;
+    [SerializeField] float rotationSpeed = 2.0f;
     [SerializeField] Vector3 offset;
     bool onCreature = false;
 
@@ -56,22 +57,31 @@ public class CameraController : MonoBehaviour
 
         if (target)
         {
-            Vector3 desiredPosition = target.position;
-            if (onCreature) desiredPosition += offset;
-            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-            transform.position = smoothedPosition;
-
-            if (onCreature) transform.LookAt(target);
-            else {
-                Quaternion desiredRotation = target.rotation;
-                Quaternion smoothedRotation = Quaternion.Lerp(transform.rotation, desiredRotation, smoothSpeed);
-                transform.rotation = smoothedRotation;
+            if (onCreature && Input.GetMouseButton(0))
+            {
+                float horizontalInput = Input.GetAxis("Mouse X");
+                transform.RotateAround(target.position, Vector3.up, horizontalInput * rotationSpeed * Time.deltaTime);
+                transform.parent = target;
             }
-        }
+            else
+            {
+                Vector3 desiredPosition = target.position;
+                if (onCreature) 
+                {
+                    desiredPosition += offset;
+                    transform.LookAt(target);
+                }
+                Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+                transform.position = smoothedPosition;
 
-        if (onCreature)
-        {
-            
+                if (!onCreature)
+                {
+                    Quaternion desiredRotation = target.rotation;
+                    Quaternion smoothedRotation = Quaternion.Lerp(transform.rotation, desiredRotation, smoothSpeed);
+                    transform.rotation = smoothedRotation;
+                }
+                transform.parent = null;
+            }
         }
     }
 }
