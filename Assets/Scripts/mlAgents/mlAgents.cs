@@ -23,6 +23,9 @@ public class MlAgent : Agent
 
 
     public GameOfLife Gol1;
+    public GameOfLife Gol2;
+    public GameOfLife Gol3;
+    public GameOfLife Gol4;
 
     public GeneticAlgorithm trees1;
     public GeneticAlgorithm trees2;
@@ -111,6 +114,8 @@ public class MlAgent : Agent
             if (ressource)
             {
                 sensor.AddObservation(bridge1.transform.position);
+                Debug.Log(bridge1.transform.position);
+
 
             }
             else
@@ -168,7 +173,7 @@ public class MlAgent : Agent
         float move = actions.ContinuousActions[0];
         float rotateY = actions.ContinuousActions[1];
 
-        float moveSpeed = 5f* (2f+(float)speed);
+        float moveSpeed = 6f* (2f+(float)speed);
         float rotationSpeed = 100f;
 
         // Interpolate movement for smoother transitions
@@ -208,7 +213,7 @@ public class MlAgent : Agent
                 if (ressource == false)
                 {
                     LSystemTree lSystemTree = other.GetComponent<LSystemTree>();
-                    if (lSystemTree.currentHealthPoint == 1 && lSystemTree != null) trees1.treeObjects.Remove(other.gameObject);
+                    if (lSystemTree.currentHealthPoint == 1 && trees1.treeObjects != null) trees1.treeObjects.Remove(other.gameObject);
                     if (lSystemTree!=null) lSystemTree.LooseHealthPoint();
                 }
                 ressource = true;
