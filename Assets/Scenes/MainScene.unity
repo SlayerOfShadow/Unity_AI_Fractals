@@ -455,7 +455,6 @@ MonoBehaviour:
   smart: 0
   resistance: 0
   characterPrefab: {fileID: 688529555}
-  lorenzPrefab: {fileID: 2044492107}
 --- !u!4 &252200159
 Transform:
   m_ObjectHideFlags: 0
@@ -1176,6 +1175,9 @@ MonoBehaviour:
   chestPrefab4: {fileID: 2481697378108714724, guid: c5ade943bb553d2408516ab8fd7a44da, type: 3}
   legPrefab: {fileID: 7370123494247621927, guid: 35c28608ec2868b4fb700f0306db72a0, type: 3}
   armPrefab: {fileID: 7370123494247621927, guid: 35c28608ec2868b4fb700f0306db72a0, type: 3}
+  lorenzPrefab: {fileID: 2044492107}
+  generateLorenzSystem: 0
+  destroyLorenzSystem: 0
 --- !u!114 &688529562
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -22,11 +22,9 @@ public class Population : MonoBehaviour
     public bool resistance = false;
 
     public GameObject characterPrefab;
-    public GameObject lorenzPrefab;
 
     private CharacterGenerator CharacterGeneratorScript;
     private PopulationGeneticAlgorithm PopulationGeneticAlgorithmScript; 
-    private StrangeAttractor StrangeAttractorScript; 
 
     public enum GenomeInformations
     {
@@ -65,23 +63,22 @@ public class Population : MonoBehaviour
         
         CharacterGeneratorScript = GetComponentInChildren<CharacterGenerator>();
         PopulationGeneticAlgorithmScript = GetComponent<PopulationGeneticAlgorithm>();
-        StrangeAttractorScript = GetComponent<StrangeAttractor>();
 
         if (CharacterGeneratorScript != null && PopulationGeneticAlgorithmScript != null)
         {
             wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
-            CreateInitialPopulation(initialPopulationSize, characterPrefab, lorenzPrefab);
+            CreateInitialPopulation(initialPopulationSize, characterPrefab);
         }
-        DisableModels();
+        DisableModel();
       //  Debug.Log("Population created");
     }
 
-    void CreateInitialPopulation(int initialSize, GameObject characterPrefab, GameObject lorenzPrefab)
+    void CreateInitialPopulation(int initialSize, GameObject characterPrefab)
     {
         for (int i = 0; i < initialSize; i++)
         {
             numberOfIndividuals++;
-            CharacterGeneratorScript.GenerateCharacter(new Character.Individual(), characterPrefab, lorenzPrefab, characterPrefab.transform.position, "Individual" + i);
+            CharacterGeneratorScript.GenerateCharacter(new Character.Individual(), characterPrefab, characterPrefab.transform.position, "Individual" + i);
         }
     }
 
@@ -134,17 +131,17 @@ public class Population : MonoBehaviour
 
     void MakeABaby(Character parent1, Character parent2, Character.Capacities properties, Character.MutationRate mutation)
     {
-        EnableModels();
+        EnableModel();
         Character.Individual child = PopulationGeneticAlgorithmScript.Crossover(parent1.GetIndividual(), parent2.GetIndividual(), properties, mutation);
         var childPosition = new Vector3(
                     (parent1.transform.position.x + parent2.transform.position.x) / 2f,
                     parent1.transform.position.y,
                     (parent1.transform.position.z + parent2.transform.position.z) / 2f);
-        CharacterGeneratorScript.GenerateCharacter(child, characterPrefab, lorenzPrefab, childPosition, "Individual" + numberOfIndividuals);
+        CharacterGeneratorScript.GenerateCharacter(child, characterPrefab, childPosition, "Individual" + numberOfIndividuals);
         parent1.HaveMadeABaby();
         parent2.HaveMadeABaby();
         numberOfIndividuals++;
-        DisableModels();
+        DisableModel();
         Debug.Log("Baby made");
     }
 
@@ -154,23 +151,21 @@ public class Population : MonoBehaviour
         return proba <= makeABabyProbability;
     }
 
-    void DisableModels()
+    void DisableModel()
     {
         // Désactiver le CharacterModel et le Lorenz (les rendre inactifs)
         if (characterPrefab != null)
         {
             characterPrefab.SetActive(false);
-            lorenzPrefab.SetActive(false);
         }
     }
 
-    void EnableModels()
+    void EnableModel()
     {
         // Activer le CharacterModel et le Lorenz
         if (characterPrefab != null)
         {
             characterPrefab.SetActive(true);
-            lorenzPrefab.SetActive(true);
         }
     }
 }

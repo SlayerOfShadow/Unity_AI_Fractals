@@ -14,6 +14,15 @@ public class CharacterGenerator : MonoBehaviour
     public GameObject legPrefab;
     public GameObject armPrefab;
 
+    
+    private IndividualBody individualBody;
+    private Vector3 growOffset;
+
+    private BodyPart lorenzAttractor;
+    public GameObject lorenzPrefab;
+    public bool generateLorenzSystem = false;
+    public bool destroyLorenzSystem = false;
+
     class CharacterInformations
     {
         public float size = 1.2f;
@@ -40,10 +49,14 @@ public class CharacterGenerator : MonoBehaviour
     {
         private string _name;
         private GameObject _prefab;
+        private GameObject _gameObject;
         private Vector3 _position;
         private Vector3 _scale;
         private Vector3 _rotation;
         private Transform _parent;
+
+        public BodyPart()
+        {}
 
         public BodyPart(string name, GameObject prefab, Vector3 position, Vector3 scale, Vector3 rotation, Transform parent)
         {
@@ -122,12 +135,16 @@ public class CharacterGenerator : MonoBehaviour
 
         public void InstantiateObject()
         {
-            GameObject gameObject;
-            gameObject = Instantiate(_prefab, _position, Quaternion.identity);
-            gameObject.name = _name;
-            gameObject.transform.localScale = _scale;
-            gameObject.transform.localRotation = Quaternion.Euler(_rotation);
-            gameObject.transform.SetParent(_parent);
+            _gameObject = Instantiate(_prefab, _position, Quaternion.identity);
+            _gameObject.name = _name;
+            _gameObject.transform.localScale = _scale;
+            _gameObject.transform.localRotation = Quaternion.Euler(_rotation);
+            _gameObject.transform.SetParent(_parent);
+        }
+
+        public void DestroyObject()
+        {
+            Destroy(_gameObject);
         }
     }
 
@@ -171,22 +188,22 @@ public class CharacterGenerator : MonoBehaviour
         }
     }
 
-    public void GenerateCharacter(Character.Individual individual, GameObject characterPrefab, GameObject strangeAttractorPrefab, Vector3 individualPosition, string name)
+    public void GenerateCharacter(Character.Individual individual, GameObject characterPrefab, Vector3 individualPosition, string name)
     {
-        var individualBody = new IndividualBody(
+        individualBody = new IndividualBody(
             characterPrefab,
             individualPosition,
             name,
             transform
         );
-        InstantiateIndividualModel(individual.GetGenome(), individualBody, strangeAttractorPrefab);
+        InstantiateIndividualModel(individual.GetGenome(), individualBody);
         
         individualBody.SetScale(new Vector3(characterInformations.width * characterInformations.childProportion,
                                             characterInformations.width * characterInformations.childProportion,
                                             characterInformations.size * characterInformations.childProportion));
     }
 
-    public void InstantiateIndividualModel(Character.Genome genome, IndividualBody individualBody, GameObject strangeAttractorPrefab)
+    public void InstantiateIndividualModel(Character.Genome genome, IndividualBody individualBody)
     {
         float armGenLength = GenSize(
             genome.GetIndex(Population.GenomeInformations.armSize1) + genome.GetIndex(Population.GenomeInformations.armSize2),
@@ -215,17 +232,6 @@ public class CharacterGenerator : MonoBehaviour
             genome.GetIndex(Population.GenomeInformations.chestDeformByZ),
             characterInformations.chestProportion
         );
-
-        // Lorenz
-        var lorenzAttractor = new BodyPart(
-            "Lorenz System",
-            strangeAttractorPrefab,
-            individualBody.GetPosition(),
-            new Vector3(10f, 10f, 10f),
-            new Vector3(0f, 0f, 0f),
-            individualBody.GetTransform()
-        );
-        lorenzAttractor.InstantiateObject();
 
         // Eyes
         float eyeGenScale = GenSize(
@@ -440,6 +446,7 @@ public class CharacterGenerator : MonoBehaviour
         if (parentObject != null)
         {
             foreach (Transform child in parentObject.transform)
+
             {
                 Destroy(child.gameObject);
             }
@@ -447,7 +454,25 @@ public class CharacterGenerator : MonoBehaviour
         Destroy(parentObject);
     }
 
-    private Vector3 growOffset;
+    private void GenerateLorenzSystem()
+    {
+        lorenzPrefab.SetActive(true);
+        lorenzAttractor = new BodyPart(
+            "Lorenz System",
+            lorenzPrefab,
+            this.transform.position,
+            new Vector3(10f, 10f, 10f),
+            new Vector3(0f, 0f, 0f),
+            this.transform
+        );
+        lorenzAttractor.InstantiateObject();
+        lorenzPrefab.SetActive(false);
+    }
+
+    private void DestroyLorenzSystem()
+    {             
+        lorenzAttractor.DestroyObject();
+    }
 
     void Start()
     {
@@ -455,6 +480,8 @@ public class CharacterGenerator : MonoBehaviour
             (characterInformations.width - characterInformations.width * characterInformations.childProportion)  / Character.ChildhoodTime,
             (characterInformations.width - characterInformations.width * characterInformations.childProportion)  / Character.ChildhoodTime,
             (characterInformations.size - characterInformations.size * characterInformations.childProportion)  / Character.ChildhoodTime);
+
+        lorenzPrefab.SetActive(false);
     }
 
     void Update()
@@ -465,6 +492,17 @@ public class CharacterGenerator : MonoBehaviour
         )
         {
             transform.localScale += growOffset;
+        }
+
+        if (generateLorenzSystem)
+        {
+            GenerateLorenzSystem();
+            generateLorenzSystem = false;
+        }
+        if (destroyLorenzSystem)
+        {
+            DestroyLorenzSystem();
+            destroyLorenzSystem = false;
         }
     }
 }
