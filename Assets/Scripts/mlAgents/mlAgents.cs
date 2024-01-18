@@ -47,7 +47,7 @@ public class MlAgent : Agent
     private GameOfLife[] gameOfLifeArray = new GameOfLife[4];
     private GeneticAlgorithm[] GeneticAlgorithmArray = new GeneticAlgorithm[4];
 
-    public int ile;
+    public int ile ;
     public int etat = 0;
 
     public bool ressource = false;
@@ -110,14 +110,13 @@ public class MlAgent : Agent
 
         // Set the new position with the random offsets
         Vector3 newPosition = initialAgentPosition + new Vector3(randomXOffset, 0f, randomZOffset);
-        if (mort)
-        {
+        if (mort) { 
             transform.position = newPosition;
             mort = false;
         }
 
 
-        ile = 0;
+        ile=0;
         ressource = false;
     }
 
@@ -189,8 +188,7 @@ public class MlAgent : Agent
 
 
 
-        if (etat != 2 && bridgeTriggerArray[ile] != null && GeneticAlgorithmArray[ile] != null)
-        {
+        if (etat != 2 && bridgeTriggerArray[ile] != null && GeneticAlgorithmArray[ile] != null   ) {
 
             if (ressource)
             {
@@ -220,10 +218,10 @@ public class MlAgent : Agent
             }
         }
 
+        
 
 
-
-
+        
     }
 
 
