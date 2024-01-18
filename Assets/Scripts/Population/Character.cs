@@ -399,16 +399,6 @@ public class Character : MonoBehaviour
         return distance < proximityDistance;
     }
 
-    public int GetIleValue()
-    {
-        MlAgent mlAgent = GetComponent<MlAgent>();
-        if (mlAgent != null)
-        {
-            return mlAgent.ile;
-        }
-        return 0;
-    }
-
     void Start()
     {
         PopulationScript = GetComponentInParent<Population>();
