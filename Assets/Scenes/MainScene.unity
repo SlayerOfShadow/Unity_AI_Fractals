@@ -1967,6 +1967,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+<<<<<<< Updated upstream
   smoothSpeed: 0.02
   rotationSpeed: 100
   offset: {x: 9, y: 5, z: 0}
@@ -1980,6 +1981,14 @@ GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
+=======
+  smoothSpeed: 0.125
+  offset: {x: 7, y: 5, z: 0}
+--- !u!4 &1095656347 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5743236373714976689, guid: 9cb47d6f2ad60d546b2f2d89412d13bc, type: 3}
+  m_PrefabInstance: {fileID: 861674730}
+>>>>>>> Stashed changes
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
