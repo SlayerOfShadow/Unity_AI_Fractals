@@ -14,9 +14,6 @@ public class MlAgent : Agent
     private Character.CapacitiesStatistics capacitiesStatistics;
     private bool previousCanMakeABaby = false;
 
-
-
-
     public int speed = 0;
     public int strenght = 0;
     public int vision = 0;
@@ -119,7 +116,7 @@ public class MlAgent : Agent
         }
 
 
-        int ile=0;
+        ile=0;
         ressource = false;
     }
 
@@ -168,13 +165,25 @@ public class MlAgent : Agent
 
         if (etat == 2)
         {
-           // Vector3 = gameObject.transform.position;
+            Vector3 actualPos = gameObject.transform.position;
 
+            float distPrev = Vector3.Distance(prevPos, endOfBridgeArray[ile].transform.position);
+            float distNow = Vector3.Distance(actualPos, endOfBridgeArray[ile].transform.position);
+            if (distPrev > distNow)
+            {
+                SetReward(0.5f); // Add a negative reward for the change
+
+            }
+            else
+            {
+                SetReward(-0.5f); // Add a negative reward for the change
+
+            }
 
 
 
         }
-        //prevPos = gameObject.transform.position;
+        prevPos = gameObject.transform.position;
 
 
 
