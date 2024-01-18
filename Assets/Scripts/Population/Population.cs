@@ -6,6 +6,7 @@ public class Population : MonoBehaviour
 {
     public float makeABabyProbability = 0.5f;
     public int initialPopulationSize = 3;
+    public int maxPopulationSize = 100;
     private int numberOfIndividuals = 0;
 
     public PopulationGeneticAlgorithm.FitnessAlgorithm fitnessAlgorithm = PopulationGeneticAlgorithm.FitnessAlgorithm.roulette_wheel;
@@ -82,13 +83,18 @@ public class Population : MonoBehaviour
         }
     }
 
+    public int PopulationSize()
+    {
+        return transform.childCount - 2;
+    }
+
     private void Update()
     {
-        wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
-        Character.MutationRate mutationRate = new Character.MutationRate(bitMutationRate, swapMutationRate, inversionMutationRate);
-
-        if (IsThereProbabbilityToMakeABaby())
+        if (PopulationSize() < maxPopulationSize && IsThereProbabbilityToMakeABaby())
         {    
+            Debug.Log("Population Size : " + transform.childCount);
+            wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
+            Character.MutationRate mutationRate = new Character.MutationRate(bitMutationRate, swapMutationRate, inversionMutationRate);
             Character[] characters = FindObjectsOfType<Character>();
             TryToReproduceIndividuals(characters, wantedProperties, mutationRate, fitnessAlgorithm);    
         }
