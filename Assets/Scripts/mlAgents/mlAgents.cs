@@ -43,18 +43,21 @@ public class MlAgent : Agent
     public GameObject endOfBridge3;
     public GameObject endOfBridge4;
 
+    public GameObject water;
+
     private GameObject[] endOfBridgeArray = new GameObject[4];
     private GameObject[] bridgeTriggerArray = new GameObject[4];
     private GameOfLife[] gameOfLifeArray = new GameOfLife[4];
     private GeneticAlgorithm[] GeneticAlgorithmArray = new GeneticAlgorithm[4];
 
-    int ile ;
-    int etat = 0;
+    public int ile ;
+    public int etat = 0;
 
     public bool ressource = false;
     private Vector3 initialAgentPosition;
     private bool mort = false;
     private Rigidbody rb;
+    private Vector3 prevPos;
 
 
 
@@ -104,21 +107,21 @@ public class MlAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        /*                  // Reset the agent to its initial position.
-                          float randomXOffset = Random.Range(-20f, 20f);
-                          float randomZOffset = Random.Range(-20f, 20f);
+        // Reset the agent to its initial position.
+        float randomXOffset = Random.Range(-3f, 3f);
+        float randomZOffset = Random.Range(-3f, 3f);
 
-                          // Set the new position with the random offsets
-                          Vector3 newPosition = initialAgentPosition + new Vector3(randomXOffset, 0f, randomZOffset);
-                          if(mort)
-                          transform.position = newPosition;*/
+        // Set the new position with the random offsets
+        Vector3 newPosition = initialAgentPosition + new Vector3(randomXOffset, 0f, randomZOffset);
+        if (mort) { 
+            transform.position = newPosition;
+            mort = false;
+        }
 
 
         int ile=0;
         ressource = false;
     }
-
-
 
 
 
@@ -128,6 +131,34 @@ public class MlAgent : Agent
 
         sensor.AddObservation(etat);
         sensor.AddObservation(ile);
+        sensor.AddObservation(water.transform.position.y);
+
+
+        sensor.AddObservation(speed);
+        sensor.AddObservation(vision);
+        sensor.AddObservation(strenght);
+        sensor.AddObservation(transform.position);
+        sensor.AddObservation(transform.rotation.eulerAngles.y / 360f);
+        sensor.AddObservation(ressource ? 1f : 0f);
+
+
+
+        if (character != null)
+        {
+            bool currentCanMakeABaby = character.CanMakeABaby();
+
+            if (currentCanMakeABaby != previousCanMakeABaby && currentCanMakeABaby == false)
+            {
+                // CanMakeABaby state changed from true to false
+                SetReward(1f); // Add a negative reward for the change
+                Debug.Log("sex");
+
+            }
+            sensor.AddObservation(character.CanMakeABaby());
+            previousCanMakeABaby = currentCanMakeABaby;
+
+        }
+
 
         if (gameOfLifeArray[ile] != null && !gameOfLifeArray[ile].canBuild)
         {
@@ -135,11 +166,20 @@ public class MlAgent : Agent
             etat = 2;
         }
 
+        if (etat = 2)
+        {
+            Vector3 = gameObject.transform.position;
 
 
 
 
-        if (bridgeTriggerArray[ile] != null && GeneticAlgorithmArray[ile] != null && etat!=3 ) {
+        }
+        prevPos = gameObject.transform.position;
+
+
+
+
+        if (etat != 2 && bridgeTriggerArray[ile] != null && GeneticAlgorithmArray[ile] != null   ) {
 
             if (ressource)
             {
@@ -169,29 +209,10 @@ public class MlAgent : Agent
             }
         }
 
-        if (character != null)
-        {
-            bool currentCanMakeABaby = character.CanMakeABaby();
-
-            if (currentCanMakeABaby != previousCanMakeABaby && currentCanMakeABaby == false)
-            {
-                // CanMakeABaby state changed from true to false
-                SetReward(1f); // Add a negative reward for the change
-                Debug.Log("sex");
-
-            }
-            sensor.AddObservation(character.CanMakeABaby());
-            previousCanMakeABaby = currentCanMakeABaby;
-
-        }
+        
 
 
-        sensor.AddObservation(speed);
-        sensor.AddObservation(vision);
-        sensor.AddObservation(strenght);
-        sensor.AddObservation(transform.position);
-        sensor.AddObservation(transform.rotation.eulerAngles.y / 360f);
-        sensor.AddObservation(ressource ? 1f : 0f);
+        
     }
 
 
@@ -212,6 +233,11 @@ public class MlAgent : Agent
         // Rotate around the Y-axis
         transform.Rotate(Vector3.up, rotateY * Time.deltaTime * rotationSpeed);
     }
+
+
+
+
+
     public override void Heuristic(in ActionBuffers ActionsOut)
     {
         ActionSegment<float> continuousActions = ActionsOut.ContinuousActions;
@@ -252,13 +278,9 @@ public class MlAgent : Agent
                     if (lSystemTree != null) lSystemTree.LooseHealthPoint();
                 }
                 ressource = true;
-                print("loose life");
                 etat = 1;
             }
         }
-
-
-
 
 
         if (other.gameObject == endOfBridgeArray[ile])
@@ -266,6 +288,7 @@ public class MlAgent : Agent
             SetReward(2f);
             Debug.Log("endOfBridge");
             ile++;
+            ile = ile % 4;
             etat = 0;
             ressource = false;
         }
@@ -278,8 +301,9 @@ public class MlAgent : Agent
         {
             SetReward(-2f);
             Debug.Log("water");
-            Destroy(gameObject);
-
+            //Destroy(gameObject);
+            mort = true;
+            EndEpisode();
         }
     }
 

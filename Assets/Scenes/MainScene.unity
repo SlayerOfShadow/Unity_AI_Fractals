@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.45033932, g: 0.5003614, b: 0.5752916, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1262,6 +1262,7 @@ MonoBehaviour:
   endOfBridge2: {fileID: 409643673}
   endOfBridge3: {fileID: 1417556181}
   endOfBridge4: {fileID: 198059877}
+  water: {fileID: 113442003}
   ressource: 0
 --- !u!114 &688529558
 MonoBehaviour:
@@ -1503,13 +1504,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: 0.16019078, y: -0.79318875, z: 0.2783739, w: 0.5173958}
+  m_LocalPosition: {x: 327.1, y: 184, z: 56.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 37.4, y: -112.938, z: 2.448}
 --- !u!114 &705507996
 MonoBehaviour:
   m_ObjectHideFlags: 0
