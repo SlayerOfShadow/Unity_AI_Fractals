@@ -18,40 +18,18 @@ public class MlAgent : Agent
     public int strenght = 0;
     public int vision = 0;
 
-
-    public GameOfLife Gol1;
-    public GameOfLife Gol2;
-    public GameOfLife Gol3;
-    public GameOfLife Gol4;
-
-    public GeneticAlgorithm trees1;
-    public GeneticAlgorithm trees2;
-    public GeneticAlgorithm trees3;
-    public GeneticAlgorithm trees4;
-
-    public GameObject bridge1;
-    public GameObject bridge2;
-    public GameObject bridge3;
-    public GameObject bridge4;
-
-
-    public GameObject endOfBridge1;
-    public GameObject endOfBridge2;
-    public GameObject endOfBridge3;
-    public GameObject endOfBridge4;
-
     public GameObject water;
 
-    private GameObject[] endOfBridgeArray = new GameObject[4];
-    private GameObject[] bridgeTriggerArray = new GameObject[4];
-    private GameOfLife[] gameOfLifeArray = new GameOfLife[4];
-    private GeneticAlgorithm[] GeneticAlgorithmArray = new GeneticAlgorithm[4];
+    public GameObject[] spawnArray = new GameObject[4];
+    public GameObject[] endOfBridgeArray = new GameObject[4];
+    public GameObject[] bridgeTriggerArray = new GameObject[4];
+    public GameOfLife[] gameOfLifeArray = new GameOfLife[4];
+    public GeneticAlgorithm[] GeneticAlgorithmArray = new GeneticAlgorithm[4];
 
-    public int ile ;
+    public int ile= 0 ;
     public int etat = 0;
 
     public bool ressource = false;
-    private Vector3 initialAgentPosition;
     private bool mort = false;
     private Rigidbody rb;
     private Vector3 prevPos;
@@ -78,26 +56,15 @@ public class MlAgent : Agent
         transform.rotation = Quaternion.Euler(0f, 0f, 0f);
 
 
-        bridgeTriggerArray[0] = bridge1;
-        bridgeTriggerArray[1] = bridge2;
-        bridgeTriggerArray[2] = bridge3;
-        bridgeTriggerArray[3] = bridge4;
+        
 
-        gameOfLifeArray[0] = Gol1;
-        gameOfLifeArray[1] = Gol2;
-        gameOfLifeArray[2] = Gol3;
-        gameOfLifeArray[3] = Gol4;
+      
 
-        GeneticAlgorithmArray[0] = trees1;
-        GeneticAlgorithmArray[1] = trees2;
-        GeneticAlgorithmArray[2] = trees3;
-        GeneticAlgorithmArray[3] = trees4;
+    
 
 
-        endOfBridgeArray[0] = endOfBridge1;
-        endOfBridgeArray[1] = endOfBridge2;
-        endOfBridgeArray[2] = endOfBridge3;
-        endOfBridgeArray[3] = endOfBridge4;
+        
+       
 
 
     }
@@ -109,14 +76,12 @@ public class MlAgent : Agent
         float randomZOffset = Random.Range(-3f, 3f);
 
         // Set the new position with the random offsets
-        Vector3 newPosition = initialAgentPosition + new Vector3(randomXOffset, 0f, randomZOffset);
+        Vector3 newPosition = spawnArray[ile].transform.position + new Vector3(randomXOffset, 0f, randomZOffset);
         if (mort) { 
             transform.position = newPosition;
             mort = false;
         }
 
-
-        ile=0;
         ressource = false;
     }
 
@@ -171,12 +136,12 @@ public class MlAgent : Agent
             float distNow = Vector3.Distance(actualPos, endOfBridgeArray[ile].transform.position);
             if (distPrev > distNow)
             {
-                SetReward(0.5f); // Add a negative reward for the change
+                SetReward(0.05f); // Add a negative reward for the change
 
             }
             else
             {
-                SetReward(-0.5f); // Add a negative reward for the change
+                SetReward(-0.05f); // Add a negative reward for the change
 
             }
 
@@ -283,7 +248,7 @@ public class MlAgent : Agent
                 if (ressource == false)
                 {
                     LSystemTree lSystemTree = other.GetComponent<LSystemTree>();
-                    if (lSystemTree.currentHealthPoint == 1 && trees1.treeObjects != null) trees1.treeObjects.Remove(other.gameObject);
+                    if (lSystemTree.currentHealthPoint == 1 && GeneticAlgorithmArray[ile].treeObjects != null) GeneticAlgorithmArray[ile].treeObjects.Remove(other.gameObject);
                     if (lSystemTree != null) lSystemTree.LooseHealthPoint();
                 }
                 ressource = true;
@@ -324,7 +289,7 @@ public class MlAgent : Agent
     private void Awake()
     {
         // Store the initial positions of the agent and targets.
-        initialAgentPosition = transform.position;
+        //initialAgentPosition = transform.position;
 
     }
 
