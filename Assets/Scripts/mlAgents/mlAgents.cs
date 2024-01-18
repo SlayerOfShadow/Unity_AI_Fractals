@@ -166,15 +166,15 @@ public class MlAgent : Agent
             etat = 2;
         }
 
-        if (etat = 2)
+        if (etat == 2)
         {
-            Vector3 = gameObject.transform.position;
+           // Vector3 = gameObject.transform.position;
 
 
 
 
         }
-        prevPos = gameObject.transform.position;
+        //prevPos = gameObject.transform.position;
 
 
 
