@@ -135,7 +135,7 @@ public class Population : MonoBehaviour
         Character.Individual child = PopulationGeneticAlgorithmScript.Crossover(parent1.GetIndividual(), parent2.GetIndividual(), properties, mutation);
         var childPosition = new Vector3(
                     (parent1.transform.position.x + parent2.transform.position.x) / 2f,
-                    parent1.transform.position.y,
+                    parent1.transform.position.y + 1f,
                     (parent1.transform.position.z + parent2.transform.position.z) / 2f);
         CharacterGeneratorScript.GenerateCharacter(child, characterPrefab, childPosition, "Individual" + numberOfIndividuals);
         parent1.HaveMadeABaby();
