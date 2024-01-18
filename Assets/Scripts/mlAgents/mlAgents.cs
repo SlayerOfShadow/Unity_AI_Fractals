@@ -116,7 +116,6 @@ public class MlAgent : Agent
 
         int ile=0;
         ressource = false;
-
     }
 
 
@@ -279,8 +278,7 @@ public class MlAgent : Agent
         {
             SetReward(-2f);
             Debug.Log("water");
-            mort = true;
-            EndEpisode();
+            Destroy(gameObject);
 
         }
     }
