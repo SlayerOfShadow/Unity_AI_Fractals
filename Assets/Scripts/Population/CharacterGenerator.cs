@@ -198,7 +198,7 @@ public class CharacterGenerator : MonoBehaviour
     public void GenerateCharacter(Character.Individual individual, GameObject characterPrefab, Vector3 individualPosition, string name, int island = 0)
     {
         mlAgent = GetComponent<MlAgent>();
-        mlAgent.ile = 0;
+        mlAgent.ile = island;
 
         individualBody = new IndividualBody(
             characterPrefab,
