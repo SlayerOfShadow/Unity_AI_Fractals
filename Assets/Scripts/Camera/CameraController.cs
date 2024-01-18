@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour
 {
@@ -11,6 +12,14 @@ public class CameraController : MonoBehaviour
     [SerializeField] float rotationSpeed = 2.0f;
     [SerializeField] Vector3 offset;
     bool onCreature = false;
+    MlAgent stats;
+    Character character;
+    [SerializeField] GameObject statsPanel;
+    [SerializeField] Slider visionSlider;
+    [SerializeField] Slider speedSlider;
+    [SerializeField] Slider strengthSlider;
+    [SerializeField] Text aliveTimer;
+    [SerializeField] Text babyCount;
 
     public List<Transform> cameraPositions = new List<Transform>();
 
@@ -33,6 +42,16 @@ public class CameraController : MonoBehaviour
                 {
                     target = hit.collider.transform;
                     onCreature = true;
+
+                    stats = hit.collider.GetComponent<MlAgent>();
+                    character = hit.collider.GetComponent<Character>();
+                    statsPanel.SetActive(true);
+
+                    visionSlider.value = stats.vision / 6.0f;
+                    speedSlider.value = stats.speed / 6.0f;
+                    strengthSlider.value = stats.strenght / 6.0f;
+                    aliveTimer.text = (character.GetIndividual().GetAge()).ToString() + " s";
+                    babyCount.text = character.GetIndividual().GetNumberOfBabies().ToString();
                 }
             }
         }
@@ -41,22 +60,35 @@ public class CameraController : MonoBehaviour
         {
             target = cameraPositions[0];
             onCreature = false;
+            stats = null;
+            statsPanel.SetActive(false);
         } else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             target = cameraPositions[1];
             onCreature = false;
+            stats = null;
+            statsPanel.SetActive(false);
         } else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             target = cameraPositions[2];
             onCreature = false;
+            stats = null;
+            statsPanel.SetActive(false);
         } else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             target = cameraPositions[3];
             onCreature = false;
+            stats = null;
+            statsPanel.SetActive(false);
         }
 
         if (target)
         {
+            if (onCreature)
+            {
+                aliveTimer.text = (character.GetIndividual().GetAge()).ToString() + " s";
+                babyCount.text = character.GetIndividual().GetNumberOfBabies().ToString();
+            }
             if (onCreature && Input.GetMouseButton(0))
             {
                 float horizontalInput = Input.GetAxis("Mouse X");
