@@ -44,11 +44,11 @@ public class MlAgent : Agent
     public GameObject endOfBridge4;
 
     private GameObject[] endOfBridgeArray = new GameObject[4];
-    private GameObject[] bridgeTriggerArray  = new GameObject[4];
-    private GameOfLife[] gameOfLifeArray= new GameOfLife[4];
+    private GameObject[] bridgeTriggerArray = new GameObject[4];
+    private GameOfLife[] gameOfLifeArray = new GameOfLife[4];
     private GeneticAlgorithm[] GeneticAlgorithmArray = new GeneticAlgorithm[4];
 
-    int ile = 0;
+    int ile ;
     int etat = 0;
 
     public bool ressource = false;
@@ -63,8 +63,8 @@ public class MlAgent : Agent
         character = GetComponent<Character>();
         // Now you can use capacities
         capacitiesStatistics = character.GetIndividual().GetStatistics();
-        
-        
+
+
         //attribiut les stat au personnage
         speed = capacitiesStatistics.speed;
         vision = capacitiesStatistics.vision;
@@ -75,7 +75,7 @@ public class MlAgent : Agent
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-        transform.rotation = Quaternion.Euler(0f,0f, 0f);
+        transform.rotation = Quaternion.Euler(0f, 0f, 0f);
 
 
         bridgeTriggerArray[0] = bridge1;
@@ -104,55 +104,54 @@ public class MlAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-      /*                  // Reset the agent to its initial position.
-                        float randomXOffset = Random.Range(-20f, 20f);
-                        float randomZOffset = Random.Range(-20f, 20f);
+        /*                  // Reset the agent to its initial position.
+                          float randomXOffset = Random.Range(-20f, 20f);
+                          float randomZOffset = Random.Range(-20f, 20f);
 
-                        // Set the new position with the random offsets
-                        Vector3 newPosition = initialAgentPosition + new Vector3(randomXOffset, 0f, randomZOffset);
-                        if(mort)
-                        transform.position = newPosition;*/
+                          // Set the new position with the random offsets
+                          Vector3 newPosition = initialAgentPosition + new Vector3(randomXOffset, 0f, randomZOffset);
+                          if(mort)
+                          transform.position = newPosition;*/
 
 
-
+        int ile=0;
         ressource = false;
 
     }
 
 
 
-    
+
 
     public override void CollectObservations(VectorSensor sensor)
     {
 
 
-        
+        sensor.AddObservation(etat);
+        sensor.AddObservation(ile);
+
         if (gameOfLifeArray[ile] != null && !gameOfLifeArray[ile].canBuild)
         {
             sensor.AddObservation(endOfBridgeArray[ile].transform.position);
             etat = 2;
         }
-        
 
 
 
 
-        if (bridge1 != null && trees1!=null) { 
-          
 
-      
+        if (bridgeTriggerArray[ile] != null && GeneticAlgorithmArray[ile] != null && etat!=3 ) {
+
             if (ressource)
             {
-                sensor.AddObservation(bridge1.transform.position);
-                Debug.Log(bridge1.transform.position);
+                sensor.AddObservation(bridgeTriggerArray[ile].transform.position);
             }
 
 
             else
             {
-                Vector3[] treePositions = trees1.treeObjects.Select(tree => tree.transform.position).ToArray();
-                int[] closestTreeIndices = GetClosestTreeIndices(transform.position, treePositions, 4);
+                Vector3[] treePositions = GeneticAlgorithmArray[ile].treeObjects.Select(tree => tree.transform.position).ToArray();
+                int[] closestTreeIndices = GetClosestTreeIndices(transform.position, treePositions, 7 - vision);
 
 
                 for (int i = 0; i < 7 - vision; i++)
@@ -175,7 +174,7 @@ public class MlAgent : Agent
         {
             bool currentCanMakeABaby = character.CanMakeABaby();
 
-            if (currentCanMakeABaby != previousCanMakeABaby && currentCanMakeABaby== false)
+            if (currentCanMakeABaby != previousCanMakeABaby && currentCanMakeABaby == false)
             {
                 // CanMakeABaby state changed from true to false
                 SetReward(1f); // Add a negative reward for the change
@@ -186,16 +185,14 @@ public class MlAgent : Agent
             previousCanMakeABaby = currentCanMakeABaby;
 
         }
+
+
         sensor.AddObservation(speed);
         sensor.AddObservation(vision);
         sensor.AddObservation(strenght);
         sensor.AddObservation(transform.position);
         sensor.AddObservation(transform.rotation.eulerAngles.y / 360f);
         sensor.AddObservation(ressource ? 1f : 0f);
-
-        
-
-
     }
 
 
@@ -204,7 +201,7 @@ public class MlAgent : Agent
         float move = actions.ContinuousActions[0];
         float rotateY = actions.ContinuousActions[1];
 
-        float moveSpeed = 6f* (2f+(float)speed);
+        float moveSpeed = 6f * (2f + (float)speed);
         float rotationSpeed = 100f;
 
         // Interpolate movement for smoother transitions
@@ -230,7 +227,7 @@ public class MlAgent : Agent
     private void OnTriggerEnter(Collider other)
     {
 
-        if (etat == 1)
+        if (etat == 1 && ressource)
         {
             if (other.gameObject == bridgeTriggerArray[ile])
             {
@@ -241,7 +238,9 @@ public class MlAgent : Agent
 
             }
         }
-        if (etat == 0 )
+
+
+        if (etat == 0 && !ressource)
         {
             if (other.CompareTag("tree"))
             {
@@ -251,15 +250,15 @@ public class MlAgent : Agent
                 {
                     LSystemTree lSystemTree = other.GetComponent<LSystemTree>();
                     if (lSystemTree.currentHealthPoint == 1 && trees1.treeObjects != null) trees1.treeObjects.Remove(other.gameObject);
-                    if (lSystemTree!=null) lSystemTree.LooseHealthPoint();
+                    if (lSystemTree != null) lSystemTree.LooseHealthPoint();
                 }
                 ressource = true;
                 print("loose life");
                 etat = 1;
             }
         }
-        
-        
+
+
 
 
 
@@ -291,7 +290,7 @@ public class MlAgent : Agent
 
 
 
-        private void Awake()
+    private void Awake()
     {
         // Store the initial positions of the agent and targets.
         initialAgentPosition = transform.position;
