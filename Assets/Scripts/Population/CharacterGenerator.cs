@@ -503,12 +503,11 @@ public class CharacterGenerator : MonoBehaviour
     {
         if (transform.localScale.x < characterInformations.width ||
             transform.localScale.y < characterInformations.width ||
-            transform.localScale.z < characterInformations.size
-        )
+            transform.localScale.z < characterInformations.size)
         {
-            transform.localScale += growOffset;
+            transform.localScale += growOffset * Time.deltaTime;
         }
-
+        
         if (mlAgent !=null){    
             if (HaveRessource() && lorenzState == LorenzState.IsUnactive)
             { 
