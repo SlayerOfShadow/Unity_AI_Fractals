@@ -3,8 +3,8 @@ using System.Linq;
 
 public class Character : MonoBehaviour
 {
-    public const int ChildhoodTime = 1200; // frame
-    public const int OldTime = 9000; // frame
+    public const float ChildhoodTime = 160f;
+    public const float OldTime = 9000f;
 
     public const int GenomeSize = 20;
 
@@ -199,7 +199,7 @@ public class Character : MonoBehaviour
     {
         private Genome _genome;
         private int _fitnessScore;
-        private int _age; // frame
+        private float _bornTime;
         private int _number_of_babies = 0;
 
         private float _lastReproductionTime;
@@ -210,6 +210,7 @@ public class Character : MonoBehaviour
         {
             GenerateGenome();
             EvaluateStatistics();
+            _bornTime = Time.realtimeSinceStartup;
         }
 
         public Individual(Genome g)
@@ -243,9 +244,9 @@ public class Character : MonoBehaviour
             return _fitnessScore;
         }
 
-        public int GetAge()
+        public float GetAge()
         {
-            return _age;
+            return Time.realtimeSinceStartup - _bornTime;
         }
 
         public int GetNumberOfBabies()
@@ -258,14 +259,9 @@ public class Character : MonoBehaviour
             _number_of_babies++;
         }
 
-        public void UpdateAge()
-        {
-            _age++;
-        }
-
         public bool IsAChild()
         {
-            return _age <= ChildhoodTime;
+            return GetAge() <= ChildhoodTime;
         }
 
         public bool IsFertile()
@@ -275,7 +271,7 @@ public class Character : MonoBehaviour
 
         public bool IsOld()
         {
-            return _age >= OldTime;
+            return GetAge() >= OldTime;
         }
 
         public bool IsCoolDownEnded()
@@ -370,7 +366,7 @@ public class Character : MonoBehaviour
         public void DebugIndividual(){
             Debug.Log("Génome :" + _genome);
             Debug.Log("Score de fitness : " + _fitnessScore);
-            Debug.Log("Age : " + _age);
+            Debug.Log("Born at : " + _bornTime);
             Debug.Log("Dernière fois que le personnage s'est reproduit : " + _lastReproductionTime);
             Debug.Log("Statistiques : ");
             Debug.Log("Vision : " + _statistics.vision);
@@ -413,6 +409,5 @@ public class Character : MonoBehaviour
     void Update()
     {
         individual.EvaluateFitnessScore(PopulationScript.WantedProperties);
-        individual.UpdateAge();
     }
 }
