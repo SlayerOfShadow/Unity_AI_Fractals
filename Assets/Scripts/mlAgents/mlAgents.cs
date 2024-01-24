@@ -10,6 +10,15 @@ using System.Linq;
 public class MlAgent : Agent
 {
 
+    public AudioSource tree;
+    public AudioSource bridgeTrigger;
+    public AudioSource death;
+    public AudioSource foot;
+    public AudioSource born;
+
+
+
+
     private Character character;
     private Character.CapacitiesStatistics capacitiesStatistics;
     private bool previousCanMakeABaby = false;
@@ -19,6 +28,7 @@ public class MlAgent : Agent
     public int vision = 0;
 
     public GameObject water;
+    public Vector3 LastClosestTree;
 
     public GameObject[] spawnArray = new GameObject[4];
     public GameObject[] endOfBridgeArray = new GameObject[4];
@@ -54,19 +64,6 @@ public class MlAgent : Agent
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-
-
-        
-
-      
-
-    
-
-
-        
-       
-
-
     }
 
     public override void OnEpisodeBegin()
@@ -81,8 +78,8 @@ public class MlAgent : Agent
             transform.position = newPosition;
             mort = false;
         }
+        prevPos = gameObject.transform.position;
 
-        ressource = false;
     }
 
 
@@ -90,7 +87,7 @@ public class MlAgent : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
 
-
+        foot.Play();
         sensor.AddObservation(etat);
         sensor.AddObservation(ile);
         sensor.AddObservation(water.transform.position.y);
@@ -112,8 +109,9 @@ public class MlAgent : Agent
             if (currentCanMakeABaby != previousCanMakeABaby && currentCanMakeABaby == false)
             {
                 // CanMakeABaby state changed from true to false
-                SetReward(1f); // Add a negative reward for the change
-                Debug.Log("sex");
+                SetReward(0.5f); 
+                //Debug.Log("sex");
+                born.Play();
 
             }
             sensor.AddObservation(character.CanMakeABaby());
@@ -134,6 +132,8 @@ public class MlAgent : Agent
 
             float distPrev = Vector3.Distance(prevPos, endOfBridgeArray[ile].transform.position);
             float distNow = Vector3.Distance(actualPos, endOfBridgeArray[ile].transform.position);
+
+
             if (distPrev > distNow)
             {
                 SetReward(0.05f); // Add a negative reward for the change
@@ -145,10 +145,11 @@ public class MlAgent : Agent
 
             }
 
-
-
+            prevPos = gameObject.transform.position;
+            sensor.AddObservation(prevPos);
         }
-        prevPos = gameObject.transform.position;
+
+        
 
 
 
@@ -157,22 +158,56 @@ public class MlAgent : Agent
 
             if (ressource)
             {
+                Vector3 actualPos = gameObject.transform.position;
                 sensor.AddObservation(bridgeTriggerArray[ile].transform.position);
+                //Debug.Log(bridgeTriggerArray[ile].transform.position);
+                float distPrev = Vector3.Distance(prevPos, bridgeTriggerArray[ile].transform.position);
+                float distNow = Vector3.Distance(actualPos, bridgeTriggerArray[ile].transform.position);
+
+                if (distPrev > distNow)
+                {
+                    SetReward(0.5f); // Add a negative reward for the change
+
+                }
+                else
+                {
+                    SetReward(-0.5f); // Add a negative reward for the change
+
+                }
+
+                prevPos = gameObject.transform.position;
+                sensor.AddObservation(prevPos);
             }
 
 
             else
             {
+
                 Vector3[] treePositions = GeneticAlgorithmArray[ile].treeObjects.Select(tree => tree.transform.position).ToArray();
                 int[] closestTreeIndices = GetClosestTreeIndices(transform.position, treePositions, 7 - vision);
 
 
                 for (int i = 0; i < 7 - vision; i++)
                 {
+
                     // Make sure to handle cases where there are fewer than four trees
                     if (i < closestTreeIndices.Length)
                     {
                         sensor.AddObservation(treePositions[closestTreeIndices[i]]);
+                        
+                        if (i == 0)
+                        {
+                            if (Vector3.Distance(gameObject.transform.position, LastClosestTree)> Vector3.Distance(gameObject.transform.position, treePositions[closestTreeIndices[i]]))
+                                SetReward(-0.05f);
+
+                            else
+                                SetReward(0.1f);
+
+                            LastClosestTree = treePositions[closestTreeIndices[i]];
+                        }
+                        
+                        
+
                     }
                     else
                     {
@@ -194,18 +229,44 @@ public class MlAgent : Agent
     {
         float move = actions.ContinuousActions[0];
         float rotateY = actions.ContinuousActions[1];
+        move = Mathf.Abs(move);
 
+        
+        
         float moveSpeed = 6f * (2f + (float)speed);
         float rotationSpeed = 100f;
 
-        // Interpolate movement for smoother transitions
-        float interpolationFactor = 10f; // You can adjust this value based on your preference
-        Vector3 moveDirection = new Vector3(0, 0, move);
-        Vector3 newPosition = transform.position + transform.TransformDirection(moveDirection) * Time.deltaTime * moveSpeed;
-        transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * interpolationFactor);
 
-        // Rotate around the Y-axis
-        transform.Rotate(Vector3.up, rotateY * Time.deltaTime * rotationSpeed);
+       /* if (ressource && etat!=2)
+        {
+        
+            // Get the direction vector towards the target
+            Vector3 targetDirection = bridgeTriggerArray[ile].transform.position - transform.position;
+            targetDirection.y = 0f; // Ignore vertical distance for simplicity
+
+            // Normalize the direction vector to get a unit vector
+            targetDirection.Normalize();
+            float interpolationFactor = 10f; // You can adjust this value based on your preference
+            // Calculate the new position towards the target
+            Vector3 newPosition = transform.position + targetDirection * move * Time.deltaTime * moveSpeed;
+            transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * interpolationFactor);
+            // Rotate towards the target
+            Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+            transform.Rotate(Vector3.up, rotateY * Time.deltaTime * rotationSpeed);
+
+        }
+        else
+        { */
+            // Interpolate movement for smoother transitions
+            float interpolationFactor = 10f; // You can adjust this value based on your preference
+            Vector3 moveDirection = new Vector3(0, 0, move);
+            Vector3 newPosition = transform.position + transform.TransformDirection(moveDirection) * Time.deltaTime * moveSpeed;
+            transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * interpolationFactor);
+
+            // Rotate around the Y-axis
+            transform.Rotate(Vector3.up, rotateY * Time.deltaTime * rotationSpeed);
+        //}
     }
 
 
@@ -231,9 +292,10 @@ public class MlAgent : Agent
             if (other.gameObject == bridgeTriggerArray[ile])
             {
                 SetReward(4f);
-                Debug.Log("bridge");
+                //Debug.Log("bridge");
                 ressource = false;
                 etat = 0;
+                bridgeTrigger.Play();
 
             }
         }
@@ -244,12 +306,13 @@ public class MlAgent : Agent
             if (other.CompareTag("tree"))
             {
                 SetReward(2f);
-                Debug.Log("tree");
+                //Debug.Log("tree");
                 if (ressource == false)
                 {
                     LSystemTree lSystemTree = other.GetComponent<LSystemTree>();
                     if (lSystemTree.currentHealthPoint == 1 && GeneticAlgorithmArray[ile].treeObjects != null) GeneticAlgorithmArray[ile].treeObjects.Remove(other.gameObject);
                     if (lSystemTree != null) lSystemTree.LooseHealthPoint();
+                    tree.Play();
                 }
                 ressource = true;
                 etat = 1;
@@ -259,8 +322,8 @@ public class MlAgent : Agent
 
         if (other.gameObject == endOfBridgeArray[ile])
         {
-            SetReward(2f);
-            Debug.Log("endOfBridge");
+            SetReward(5f);
+            //Debug.Log("endOfBridge");
             ile++;
             ile = ile % 4;
             etat = 0;
@@ -274,10 +337,12 @@ public class MlAgent : Agent
         if (other.CompareTag("water"))
         {
             SetReward(-2f);
-            Debug.Log("water");
+            //Debug.Log("water");
             //Destroy(gameObject);
             mort = true;
+            death.Play();
             EndEpisode();
+
         }
     }
 

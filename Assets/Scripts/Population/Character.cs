@@ -3,7 +3,7 @@ using System.Linq;
 
 public class Character : MonoBehaviour
 {
-    public const float ChildhoodTime = 160f;
+    public const float ChildhoodTime = 30f;
     public const float OldTime = 9000f;
 
     public const int GenomeSize = 20;
