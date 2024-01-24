@@ -3,8 +3,8 @@ using System.Linq;
 
 public class Character : MonoBehaviour
 {
-    public const float ChildhoodTime = 160f;
-    public const float OldTime = 9000f;
+    public const int ChildhoodTime = 160;
+    public const int OldTime = 9000;
 
     public const int GenomeSize = 20;
 
@@ -244,9 +244,9 @@ public class Character : MonoBehaviour
             return _fitnessScore;
         }
 
-        public float GetAge()
+        public int GetAge()
         {
-            return Time.realtimeSinceStartup - _bornTime;
+            return (int)(Time.realtimeSinceStartup - _bornTime);
         }
 
         public int GetNumberOfBabies()
