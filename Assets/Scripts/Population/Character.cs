@@ -244,9 +244,9 @@ public class Character : MonoBehaviour
             return _fitnessScore;
         }
 
-        public float GetAge()
+        public int GetAge()
         {
-            return Time.realtimeSinceStartup - _bornTime;
+            return (int)(Time.realtimeSinceStartup - _bornTime);
         }
 
         public int GetNumberOfBabies()

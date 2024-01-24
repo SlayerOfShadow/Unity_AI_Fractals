@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameOfLife : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class GameOfLife : MonoBehaviour
     MeshFilter meshFilter;
     Vector3 objStartPosition;
     Quaternion startRotation;
+    [SerializeField] Slider gameOfLifeSlider;
+    [SerializeField] GeneralUI generalUI;
 
     void Start()
     {
@@ -141,6 +144,9 @@ public class GameOfLife : MonoBehaviour
             cells = cells2;
             cells2 = temp;
             count++;
+            gameOfLifeSlider.value = (float)count / maxIterations;
+            generalUI.totalCount += 1;
+            generalUI.UpdateSlider();
         }
         else
         {
