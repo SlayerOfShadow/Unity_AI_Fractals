@@ -7,6 +7,8 @@ public class GeneralUI : MonoBehaviour
 {
     [SerializeField] GameOfLife[] gameOfLives;
     [SerializeField] Slider generalSlider;
+    [SerializeField] Text populationCount;
+    [SerializeField] Population population;
     int totalMaxIterations = 0;
     public int totalCount = 0;
 
@@ -22,5 +24,11 @@ public class GeneralUI : MonoBehaviour
     public void UpdateSlider()
     {
         generalSlider.value = (float)totalCount / totalMaxIterations;
+        
+    }
+
+    void Update()
+    {
+        populationCount.text = population.PopulationSize().ToString();
     }
 }
