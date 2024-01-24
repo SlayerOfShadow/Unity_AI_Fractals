@@ -352,7 +352,7 @@ public class Character : MonoBehaviour
             {
                 _genome.SetByIndex(i, UnityEngine.Random.Range(0, 2)); // Remplir le genome avec des 0 ou des 1
             }
-            Debug.Log("Le Génome de l'individu est : "+ string.Join(", ", _genome.Get()));
+            // Debug.Log("Le Génome de l'individu est : "+ string.Join(", ", _genome.Get()));
         }
 
         public void Mutation(MutationRate mutationRate)

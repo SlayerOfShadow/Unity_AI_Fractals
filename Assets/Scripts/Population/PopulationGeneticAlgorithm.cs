@@ -87,7 +87,7 @@ public class PopulationGeneticAlgorithm : MonoBehaviour
             }
         }
         // En cas d'échec
-        Debug.Log("La sélection par roulette a échoué.");
+        Debug.LogError("La sélection par roulette a échoué.");
         return -1;
     }
 

@@ -60,8 +60,6 @@ public class Population : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       // Debug.Log("Create population");
-        
         CharacterGeneratorScript = GetComponentInChildren<CharacterGenerator>();
         PopulationGeneticAlgorithmScript = GetComponent<PopulationGeneticAlgorithm>();
 
@@ -71,7 +69,6 @@ public class Population : MonoBehaviour
             CreateInitialPopulation(initialPopulationSize, characterPrefab);
         }
         DisableModel();
-      //  Debug.Log("Population created");
     }
 
     void CreateInitialPopulation(int initialSize, GameObject characterPrefab)
@@ -92,7 +89,6 @@ public class Population : MonoBehaviour
     {
         if (PopulationSize() < maxPopulationSize && IsThereProbabbilityToMakeABaby())
         {    
-            Debug.Log("Population Size : " + transform.childCount);
             wantedProperties = new Character.Capacities(vision, smart, resistance, strength, speed);
             Character.MutationRate mutationRate = new Character.MutationRate(bitMutationRate, swapMutationRate, inversionMutationRate);
             Character[] characters = FindObjectsOfType<Character>();
@@ -148,7 +144,6 @@ public class Population : MonoBehaviour
         parent2.HaveMadeABaby();
         numberOfIndividuals++;
         DisableModel();
-        Debug.Log("Baby made");
     }
 
     bool IsThereProbabbilityToMakeABaby()
