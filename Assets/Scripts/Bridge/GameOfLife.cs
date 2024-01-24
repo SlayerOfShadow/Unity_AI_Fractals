@@ -25,6 +25,7 @@ public class GameOfLife : MonoBehaviour
     Quaternion startRotation;
     [SerializeField] Slider gameOfLifeSlider;
     [SerializeField] GeneralUI generalUI;
+    [SerializeField] BigTreeManager bigTreeManager;
 
     void Start()
     {
@@ -117,41 +118,45 @@ public class GameOfLife : MonoBehaviour
 
     public void Build()
     {
-        if (count < maxIterations)
+        if (canBuild)
         {
-            Vector3 v = new Vector3();
-
-            Evolution();
-
-            for (int i = 0; i < columns; i++)
+            if (count < maxIterations)
             {
-                for (int j = 0; j < rows; j++)
+                Vector3 v = new Vector3();
+
+                Evolution();
+
+                for (int i = 0; i < columns; i++)
                 {
-                    if (cells2[i, j] == 1)
+                    for (int j = 0; j < rows; j++)
                     {
-                        if (direction.x != 0) v = new Vector3(direction.x * -count * size + startPosition.x, j * size + startPosition.y, i * size + startPosition.z);
-                        else if (direction.y != 0) v = new Vector3(j * size + startPosition.x, direction.y * -count * size + startPosition.y, i * size + startPosition.z);
-                        else if (direction.z != 0) v = new Vector3(j * size + startPosition.x, i * size + startPosition.y, direction.z * -count * size + startPosition.z);
-                        GameObject obj = Instantiate(prefab, v, Quaternion.identity, gameObject.transform);
-                        obj.transform.localScale = new Vector3(size, size, size);
-                        cubes[i, j] = obj;
-                        meshFilters.Add(obj.transform.GetComponent<MeshFilter>());
+                        if (cells2[i, j] == 1)
+                        {
+                            if (direction.x != 0) v = new Vector3(direction.x * -count * size + startPosition.x, j * size + startPosition.y, i * size + startPosition.z);
+                            else if (direction.y != 0) v = new Vector3(j * size + startPosition.x, direction.y * -count * size + startPosition.y, i * size + startPosition.z);
+                            else if (direction.z != 0) v = new Vector3(j * size + startPosition.x, i * size + startPosition.y, direction.z * -count * size + startPosition.z);
+                            GameObject obj = Instantiate(prefab, v, Quaternion.identity, gameObject.transform);
+                            obj.transform.localScale = new Vector3(size, size, size);
+                            cubes[i, j] = obj;
+                            meshFilters.Add(obj.transform.GetComponent<MeshFilter>());
+                        }
                     }
                 }
-            }
 
-            int[,] temp = cells;
-            cells = cells2;
-            cells2 = temp;
-            count++;
-            gameOfLifeSlider.value = (float)count / maxIterations;
-            generalUI.totalCount += 1;
-            generalUI.UpdateSlider();
-        }
-        else
-        {
-            //if (canBuild) CombineMesh();
-            canBuild = false;
+                int[,] temp = cells;
+                cells = cells2;
+                cells2 = temp;
+                count++;
+                gameOfLifeSlider.value = (float)count / maxIterations;
+                generalUI.totalCount += 1;
+                generalUI.UpdateSlider();
+            }
+            else
+            {
+                //if (canBuild) CombineMesh();
+                canBuild = false;
+                bigTreeManager.UpdateBigTree();
+            }
         }
     }
 

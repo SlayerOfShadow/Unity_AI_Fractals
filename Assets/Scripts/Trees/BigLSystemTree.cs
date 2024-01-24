@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class BigLSystemTree : MonoBehaviour
 {
-    [SerializeField] int iterations = 5;
-    [SerializeField] float scale;
-    [SerializeField] Vector2 randomOffset;
-    [SerializeField] Vector2 randomAngle;
+    public int iterations = 1;
+    [SerializeField] float scale = 0.5f;
+    [SerializeField] Vector2 randomOffset = new Vector2(2, 8);
+    [SerializeField] Vector2 randomAngle = new Vector2(90, 90);
     [SerializeField] GameObject prefab; // Reference to a branch prefab.
     List<MeshFilter> meshFilters = new List<MeshFilter>();
     MeshFilter meshFilter;
