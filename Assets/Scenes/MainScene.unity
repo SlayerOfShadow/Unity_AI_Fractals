@@ -4551,7 +4551,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -6202,6 +6202,55 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1507803574
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1507803576}
+  - component: {fileID: 1507803575}
+  m_Layer: 0
+  m_Name: globalPostProcessing
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1507803575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507803574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: eac9327ef0623e94db07bd77babe5d73, type: 2}
+--- !u!4 &1507803576
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507803574}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -22.910614, y: -35.323917, z: -53.620365}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1533335575 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1779955090922525375, guid: 203fcef973bc52045ac275ceb8ee54c8, type: 3}
@@ -8448,6 +8497,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8135025522456066380, guid: 203fcef973bc52045ac275ceb8ee54c8, type: 3}
+      propertyPath: m_MaterialTemplate
+      value: 
+      objectReference: {fileID: 2100000, guid: a78a306f230282245800db0aac4ae9c7, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8731,6 +8784,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Island 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3418048135025488526, guid: 170ab59cf14a5db41ad99663565be8e0, type: 3}
+      propertyPath: m_MaterialTemplate
+      value: 
+      objectReference: {fileID: 2100000, guid: a78a306f230282245800db0aac4ae9c7, type: 2}
     - target: {fileID: 4574612882491419214, guid: 170ab59cf14a5db41ad99663565be8e0, type: 3}
       propertyPath: tournament
       value: 1
@@ -8900,6 +8957,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Island 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7471061264928920740, guid: 71617f757db5980478d493daa1dc5a4d, type: 3}
+      propertyPath: m_MaterialTemplate
+      value: 
+      objectReference: {fileID: 2100000, guid: a78a306f230282245800db0aac4ae9c7, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8924,6 +8985,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 940591109}
     m_Modifications:
+    - target: {fileID: 3505186137228825157, guid: 4df74283be1f170458232a88a2ca9482, type: 3}
+      propertyPath: m_MaterialTemplate
+      value: 
+      objectReference: {fileID: 2100000, guid: a78a306f230282245800db0aac4ae9c7, type: 2}
     - target: {fileID: 7700908446931160751, guid: 4df74283be1f170458232a88a2ca9482, type: 3}
       propertyPath: m_LocalPosition.x
       value: 200
@@ -9008,6 +9073,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 705507995}
+  - {fileID: 1507803576}
   - {fileID: 963194228}
   - {fileID: 792450896}
   - {fileID: 252200159}

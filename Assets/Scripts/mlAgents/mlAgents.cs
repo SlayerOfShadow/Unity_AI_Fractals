@@ -15,7 +15,7 @@ public class MlAgent : Agent
     public AudioSource death;
     public AudioSource foot;
     public AudioSource born;
-
+    private bool isPlaying = false;
 
 
 
@@ -82,12 +82,11 @@ public class MlAgent : Agent
 
     }
 
-
-
+  
     public override void CollectObservations(VectorSensor sensor)
     {
 
-        foot.Play();
+        
         sensor.AddObservation(etat);
         sensor.AddObservation(ile);
         sensor.AddObservation(water.transform.position.y);
