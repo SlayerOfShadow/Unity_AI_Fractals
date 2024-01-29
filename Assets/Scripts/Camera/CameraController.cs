@@ -50,7 +50,7 @@ public class CameraController : MonoBehaviour
                     visionSlider.value = stats.vision / 6.0f;
                     speedSlider.value = stats.speed / 6.0f;
                     strengthSlider.value = stats.strenght / 6.0f;
-                    aliveTimer.text = (character.GetIndividual().GetAge()).ToString() + " s";
+                    aliveTimer.text = (character.GetIndividual().GetAge()).ToString();
                     babyCount.text = character.GetIndividual().GetNumberOfBabies().ToString();
                 }
             }
@@ -86,7 +86,7 @@ public class CameraController : MonoBehaviour
         {
             if (onCreature)
             {
-                aliveTimer.text = (character.GetIndividual().GetAge()).ToString() + " s";
+                aliveTimer.text = (character.GetIndividual().GetAge()).ToString();
                 babyCount.text = character.GetIndividual().GetNumberOfBabies().ToString();
             }
             if (onCreature && Input.GetMouseButton(0))
