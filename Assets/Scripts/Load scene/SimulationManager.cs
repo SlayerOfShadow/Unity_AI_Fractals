@@ -17,7 +17,7 @@ public class SimulationManager : MonoBehaviour
         {
             StartCoroutine(LoadSceneWithDelay("DeadScene"));
         }
-        if (!gameOfLife.trueBridge)
+        if (!gameOfLife.canBuild)
         {
             StartCoroutine(LoadSceneWithDelay("WinScene"));
         }

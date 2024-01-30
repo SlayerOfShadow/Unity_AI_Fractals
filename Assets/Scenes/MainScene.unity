@@ -1619,7 +1619,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   population: {fileID: 252200158}
-  delayBeforeLoad: 3
+  gameOfLife: {fileID: 1300739379}
+  delayBeforeLoadDeadScene: 3
+  delayBeforeLoadWinScene: 3
 --- !u!4 &311561582
 Transform:
   m_ObjectHideFlags: 0
