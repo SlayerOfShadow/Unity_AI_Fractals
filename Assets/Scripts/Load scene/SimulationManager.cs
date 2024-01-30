@@ -7,25 +7,25 @@ using UnityEngine.SceneManagement;
 public class SimulationManager : MonoBehaviour
 {
     [SerializeField] Population population;
+    [SerializeField] GameOfLife gameOfLife;
+    public float delayBeforeLoadDeadScene = 3f;
+    public float delayBeforeLoadWinScene = 3f;
 
     void Update()
     {
         if (population.PopulationSize() == 0)
         {
-            EndOfSimulation();
+            StartCoroutine(LoadSceneWithDelay("DeadScene"));
         }
-    }
-
-    public float delayBeforeLoad = 3f;
-
-    public void EndOfSimulation()
-    {
-        StartCoroutine(LoadSceneWithDelay("EndScene"));
+        if (!gameOfLife.canBuild)
+        {
+            StartCoroutine(LoadSceneWithDelay("WinScene"));
+        }
     }
 
     IEnumerator LoadSceneWithDelay(string sceneName)
     {
-        yield return new WaitForSeconds(delayBeforeLoad);
+        yield return new WaitForSeconds(delayBeforeLoadDeadScene);
         SceneManager.LoadScene(sceneName);
     }
 }
