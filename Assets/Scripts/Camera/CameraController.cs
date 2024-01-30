@@ -80,6 +80,12 @@ public class CameraController : MonoBehaviour
             onCreature = false;
             stats = null;
             statsPanel.SetActive(false);
+        } else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            target = cameraPositions[4];
+            onCreature = false;
+            stats = null;
+            statsPanel.SetActive(false);
         }
 
         if (target)
