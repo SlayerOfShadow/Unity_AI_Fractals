@@ -1618,10 +1618,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa247e0f113f6b249bc5bfd22a628eef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  population: {fileID: 0}
+  population: {fileID: 252200158}
   delayBeforeLoad: 3
-  fadeImage: {fileID: 0}
-  fadeDuration: 1
 --- !u!4 &311561582
 Transform:
   m_ObjectHideFlags: 0
