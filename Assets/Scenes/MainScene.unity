@@ -1129,8 +1129,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   makeABabyProbability: 1
-  initialPopulationSize: 20
-  maxPopulationSize: 50
+  initialPopulationSize: 15
+  maxPopulationSize: 100
   fitnessAlgorithm: 1
   bitMutationRate: 0.1
   swapMutationRate: 0.01
@@ -1151,7 +1151,7 @@ Transform:
   m_GameObject: {fileID: 252200156}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 248.5, y: 16.7, z: 53.3}
+  m_LocalPosition: {x: 252.8, y: 10.8, z: 57.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3022,6 +3022,7 @@ MonoBehaviour:
   - {fileID: 7475202931838560751}
   ile: 0
   etat: 0
+  vie: 1
   ressource: 0
 --- !u!114 &688529558
 MonoBehaviour:
@@ -3045,7 +3046,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 3275a347af8380e4ea16068773a8eafa, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: f861b0710c6f64e4387027943e1108f7, type: 3}
   m_InferenceDevice: 1
   m_BehaviorType: 0
   m_BehaviorName: plop
@@ -8823,7 +8824,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 498613236766381840, guid: 203fcef973bc52045ac275ceb8ee54c8, type: 3}
       propertyPath: populationSize
-      value: 30
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 498613236766381840, guid: 203fcef973bc52045ac275ceb8ee54c8, type: 3}
       propertyPath: randTreeScale.x
@@ -10031,7 +10032,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4574612882491419214, guid: 170ab59cf14a5db41ad99663565be8e0, type: 3}
       propertyPath: populationSize
-      value: 30
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 4574612882491419214, guid: 170ab59cf14a5db41ad99663565be8e0, type: 3}
       propertyPath: tournamentSize
@@ -10200,7 +10201,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1668754784829086743, guid: 71617f757db5980478d493daa1dc5a4d, type: 3}
       propertyPath: populationSize
-      value: 30
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 1668754784829086743, guid: 71617f757db5980478d493daa1dc5a4d, type: 3}
       propertyPath: randTreeScale.x
@@ -10316,7 +10317,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 2792231426708896521, guid: fd85f3efd6ecac949b822e34f8a31c0a, type: 3}
-  populationSize: 30
+  populationSize: 80
   mutationRate: 0.1
   maxGenerations: 100
   maxTreeHeight: 20

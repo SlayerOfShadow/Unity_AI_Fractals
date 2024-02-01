@@ -36,14 +36,14 @@ public class MlAgent : Agent
     public GameOfLife[] gameOfLifeArray = new GameOfLife[4];
     public GeneticAlgorithm[] GeneticAlgorithmArray = new GeneticAlgorithm[4];
 
-    public int ile= 0 ;
+    public int ile= 3 ;
     public int etat = 0;
-
+    public int vie; 
     public bool ressource = false;
     private bool mort = false;
     private Rigidbody rb;
     private Vector3 prevPos;
-
+    
 
 
     void Start()
@@ -64,6 +64,21 @@ public class MlAgent : Agent
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        StartCoroutine(ResetVelocityAfterOneFrame());
+
+
+    }
+
+    IEnumerator ResetVelocityAfterOneFrame()
+    {
+        // Wait for one frame
+        yield return null;
+
+        // Set the velocity to zero
+        rb.velocity = Vector3.zero;
+
+        transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+
     }
 
     public override void OnEpisodeBegin()
@@ -121,6 +136,11 @@ public class MlAgent : Agent
 
         if (gameOfLifeArray[ile] != null && !gameOfLifeArray[ile].canBuild)
         {
+            if(ile == 3)
+            {
+                // Call the coroutine to destroy the game object after 3 seconds
+                StartCoroutine(DestroyAfterDelay());
+            }
             sensor.AddObservation(endOfBridgeArray[ile].transform.position);
             etat = 2;
         }
@@ -290,7 +310,7 @@ public class MlAgent : Agent
         {
             if (other.gameObject == bridgeTriggerArray[ile])
             {
-                SetReward(4f);
+                SetReward(7f);
                 //Debug.Log("bridge");
                 ressource = false;
                 etat = 0;
@@ -321,7 +341,7 @@ public class MlAgent : Agent
 
         if (other.gameObject == endOfBridgeArray[ile])
         {
-            SetReward(5f);
+            SetReward(8f);
             //Debug.Log("endOfBridge");
             ile++;
             ile = ile % 4;
@@ -335,12 +355,19 @@ public class MlAgent : Agent
 
         if (other.CompareTag("water"))
         {
-            SetReward(-2f);
+            SetReward(-10f);
             //Debug.Log("water");
-            //Destroy(gameObject);
             mort = true;
             death.Play();
-            EndEpisode();
+            if (vie>0)
+            { 
+                EndEpisode();
+                vie=vie-1;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
 
         }
     }
@@ -385,5 +412,12 @@ public class MlAgent : Agent
         return closestTreeIndices;
     }
 
+    IEnumerator DestroyAfterDelay()
+    {
+        // Wait for 3 seconds
+        yield return new WaitForSeconds(1f);
 
+        // Destroy the game object
+        Destroy(gameObject);
+    }
 }
